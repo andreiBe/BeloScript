@@ -1,0 +1,76 @@
+print(6 + 2 + 0) #8
+print(9 - 3) #6
+print(2 * 2) #4
+print(6 / 2) #3
+print(3 ^ 4) #81
+print(9 // 2) #4
+print( 1 + 4 / 2) #3
+print( (1+4) / 2) #2.5
+print(5 ^ (2+3)) #3125
+print(-6 -+- 2) #-4
+print(-(-(-4))) #-4
+print(-8 * -3) #24
+print(10 % 3) #1
+# comparing
+print(9 < 3) #0
+print(6 > 4) #1
+print(1/3 == 1/3) #1
+print(3^2 != 10) #1
+print(7 <= 7) #1
+print( 9 >= 3) #1
+#and or
+print(6 == 6 and 7 == 7)
+print(6 == 7 and 7 == 7)
+print(6 == 6 and 7 == 8)
+
+print(6 == 6 or 6 == 6)
+print(6 == 7 or 6==6)
+print(6 == 7 or 6==7)
+# errors
+try {
+    print(8/0)
+} catch(e) {
+    print(e.details)
+}
+#big number
+print(2^32)
+# double + string
+print(3+"hello")
+# string + double
+print("hello" + 3)
+# not valid add operation
+try {
+    print(8+[])
+} catch(e) {
+    print(e.details)
+}
+try {
+    print(3.132 - [])
+} catch(e) {
+    print(e.details)
+}
+#string operations
+print("k"*3)
+try {
+    print("k"*"3")
+} catch(e) {
+    print(e.details)
+}
+
+print("l"=="l")
+print(not not "j"==+5)
+
+print("kkk"[0])
+try {
+    print("kkk"["0"])
+} catch(e) {
+    print(e.details)
+}
+print("kkk".length)
+print("kkk".capitalized)
+print("jou".reversed)
+try {
+    print("lol".lol)
+} catch(e) {
+    print(e.details)
+}

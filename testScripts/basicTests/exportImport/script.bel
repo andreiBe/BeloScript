@@ -1,0 +1,2 @@
+list = import "import.bel"
+print(list[0])

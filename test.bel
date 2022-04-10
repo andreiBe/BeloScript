@@ -1,0 +1,6 @@
+export {
+    i: 9,
+    func: function() {
+        print("jou")
+    }
+}

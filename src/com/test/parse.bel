@@ -1,0 +1,36 @@
+import "hello.bel"
+
+7 + 3
+[7,8].size
+for (i = 0 : i < 9 : i++) {
+    if (i == 8) {
+        break
+    }
+    else print(i)
+    if (i == 3) {
+        continue
+    }
+}
+for (l in [7,3]) {
+
+}
+function hello() {
+    return "hello"
+}
+if (i == 9) print(1)
+elif (i == 9) print(1)
+else print(1)
+
+if (i == 9) print(1)
+
+list[i]
+{
+    lol: 3
+}
+i++
+try 8/2
+"juj"
+-9
+ko = 9
+while (i  < 9) i++
+export 7

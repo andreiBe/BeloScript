@@ -1,0 +1,47 @@
+function hello() {
+    print("Hello")
+}
+hello()
+
+function returner() {
+    return "lol"
+}
+print(returner())
+
+function params(name, age) {
+    return name + " " + (age - 3)
+}
+print(params("Peter", 8))
+
+function funcfunc() {
+    return function() {
+        print("jea")
+    }
+}
+funcfunc()()
+
+function() {
+    print("lambda")
+}()
+
+function returnEarly() {
+    i = 9
+    if (i < 32) {
+        print("return early")
+        return
+    }
+    print("should not happen")
+}
+returnEarly()
+
+oneliner = function() -> print("jou")
+oneliner()
+
+#recursive
+function func(x) {
+    if (x < 0) return
+    print(x)
+    x--
+    func(x)
+}
+func(10)

@@ -1,0 +1,10 @@
+l = try {
+    8 / 0
+} catch(e) {
+    print(e.details)
+}
+try 8/0
+
+try 8/0
+catch(e) print(e.details)
+try 8+3

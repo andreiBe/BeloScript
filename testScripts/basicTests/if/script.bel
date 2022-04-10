@@ -1,0 +1,57 @@
+i = 9
+if (i == 9) {
+    print(1)
+}
+elif (i < 11) {
+    print(2)
+}
+else {
+    print(3)
+}
+i = 8
+if (i < 8) {
+    print(4)
+}
+elif (i < 32) {
+    print(5)
+}
+else {
+    print(6)
+}
+
+if (i < 5) {
+    print(7)
+}
+elif (i < 8) {
+    print(8)
+}
+elif (i < 11) {
+    print(9)
+}
+else {
+    print(10)
+}
+
+if (i < 8) {
+    print(11)
+} else {
+    print(12)
+}
+if (i < 8) {
+    print(13)
+}
+elif (i == 11) {
+    print(14)
+}
+ else {
+    print(15)
+}
+
+if (i == 8) print(16)
+
+if (i < 8) print(17)
+elif (i < 11) print(18)
+
+if (i < 8) print(19)
+elif (i > 98) print(20)
+else print(21)

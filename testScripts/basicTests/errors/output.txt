@@ -1,0 +1,16 @@
+null
+0
+File script.bel, line 7, in <stdin>
+Runtime Error: Division by zero
+
+    8/0
+      ^
+98
+File script.bel, line 14, in <stdin>
+File script.bel, line 14, in toNum
+Runtime Error: NumberFormatError
+
+    toNum("two")
+    ^^^^^
+Too few args
+Too many args

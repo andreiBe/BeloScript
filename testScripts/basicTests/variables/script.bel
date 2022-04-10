@@ -1,0 +1,25 @@
+var = 98
+var2 = var
+var += 43
+var -= 1
+var /= 2
+var *= 1.23
+var //=2
+var ^= 2
+var %= 10
+# var2 ei muutu
+print(var) #9
+print(var2) #98
+var2 = 1
+
+print(8 + --var2) #8
+var2++
+print(8 + var2--) #9
+var2++
+print(8 + ++var2) #10
+--var2
+print(8 + --var2) #9
+
+try {
+    notdefined
+}

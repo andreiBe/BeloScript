@@ -1,0 +1,6 @@
+
+function causeError() {
+    import "noexport.bel"
+}
+
+causeError()

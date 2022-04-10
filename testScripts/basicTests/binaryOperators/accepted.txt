@@ -1,0 +1,41 @@
+8
+6
+4
+3
+81
+4
+3
+2.5
+3125
+-4
+-4
+24
+1
+0
+1
+1
+1
+1
+1
+1
+0
+0
+1
+1
+0
+Division by zero
+4294967296
+3hello
+hello3
+Can't add double to BeloList
+Can't substract BeloList from double
+kkk
+Can't multiply string with BeloString
+1
+0
+k
+Index must be a number
+3
+Kkk
+uoj
+Not a member of class: 'lol' class: BeloString

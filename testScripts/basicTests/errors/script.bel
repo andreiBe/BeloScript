@@ -1,0 +1,30 @@
+#null values
+print(null)
+if (null) print("hello")
+print(null == "null")
+
+try {
+    8/0
+}
+catch(e) {
+    print(e)
+}
+print(toNum("98.0"))
+try {
+    toNum("two")
+} catch(e) {
+    print(e)
+}
+function hello(name,age) {
+
+}
+try {
+hello("Peter")
+} catch(e) {
+    print(e.details)
+}
+try {
+hello("Peter",18,"married")
+} catch(e) print(e.details)
+
+try [].add()
