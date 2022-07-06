@@ -32,6 +32,10 @@ class BeloScriptTest {
         }
     }
     @Test
+    void reflectionLibraries() {
+        TestUtil.testFile("testScripts/beloscript/reflectionlibs");
+    }
+    @Test
     void runWithDifferentOptions() throws BeloScriptException {
         String script = "var = 9";
         BeloScript.run(script,"test.bel","");

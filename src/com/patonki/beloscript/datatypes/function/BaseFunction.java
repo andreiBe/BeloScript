@@ -52,4 +52,8 @@ public abstract class BaseFunction extends BeloClass{
         populateArgs(argNames, args, context);
         return res.success(null);
     }
+
+    public String getName() {
+        return name;
+    }
 }

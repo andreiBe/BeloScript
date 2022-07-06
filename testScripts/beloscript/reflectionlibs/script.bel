@@ -1,0 +1,14 @@
+print(lol)
+printHello("Andrei")
+printHello("Andrei",17)
+
+wow = TestLuokka(1)
+wow2 = TestLuokka(8,2,1)
+
+wow.kasvata()
+wow.kasvata(7)
+print(wow.getMaara())
+print(wow2.getMaara())
+
+wow += wow2
+print(wow.getMaara())

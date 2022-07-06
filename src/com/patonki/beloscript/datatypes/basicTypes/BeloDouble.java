@@ -46,7 +46,10 @@ public class BeloDouble extends BeloClass {
 
     @Override
     public BeloClass not() {
-        return new BeloDouble(-value);
+        if (value > 0) {
+            return new BeloDouble(0);
+        }
+        return new BeloDouble(1);
     }
 
     @Override

@@ -6,6 +6,7 @@ import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.RunTimeResult;
 
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -192,6 +193,7 @@ public abstract class BeloClass {
     public BeloClass setIndex(BeloClass index, BeloClass value) {
         return throwError("Setting elements with '[]' not supported");
     }
+
 
     /**
      * Kutsutaan, kun yritetään päästä käsiksi luokan muuttujaan '.' symboolin avulla esim:

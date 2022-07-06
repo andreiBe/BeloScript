@@ -3,6 +3,8 @@ package com.patonki.beloscript.datatypes.basicTypes;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.errors.RunTimeError;
 
+import java.util.Objects;
+
 public class BeloString extends BeloClass {
     private final String value;
 
@@ -66,5 +68,13 @@ public class BeloString extends BeloClass {
     @Override
     public int hashCode() {
         return value.hashCode();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BeloString that = (BeloString) o;
+        return Objects.equals(value, that.value);
     }
 }

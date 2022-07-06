@@ -1,6 +1,7 @@
 package com.patonki.beloscript.datatypes.basicTypes;
 
 import com.patonki.beloscript.datatypes.BeloClass;
+import com.patonki.beloscript.datatypes.function.BeloScript;
 import com.patonki.beloscript.datatypes.function.BeloScriptFunction;
 import com.patonki.beloscript.datatypes.interfaces.IterableBeloClass;
 import com.patonki.beloscript.errors.RunTimeError;
@@ -8,6 +9,7 @@ import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.RunTimeResult;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
@@ -17,9 +19,8 @@ public class BeloList extends BeloClass implements IterableBeloClass {
     private final BeloScriptFunction add = new BeloScriptFunction("list.add") {
         @Override
         public RunTimeResult execute(Context context, List<BeloClass> args, RunTimeResult res) {
-            if (args.size() != 1) return throwParameterSizeError(res,context,1,args.size());
-            list.add(args.get(0));
-            return res.success(args.get(0));
+            list.addAll(args);
+            return res.success(BeloList.this);
         }
     };
     private final BeloScriptFunction sort = new BeloScriptFunction("list.sort") {
@@ -31,8 +32,8 @@ public class BeloList extends BeloClass implements IterableBeloClass {
             return res.success(new BeloList(newlist));
         }
     };
-    public BeloList(ArrayList<BeloClass> list) {
-        this.list = list;
+    public BeloList(Collection<BeloClass> list) {
+        this.list = new ArrayList<>(list);
     }
 
     @Override
@@ -79,9 +80,10 @@ public class BeloList extends BeloClass implements IterableBeloClass {
     protected int size() {
         return list.size();
     }
-    protected BeloClass get(int index) {
+    public BeloClass get(int index) {
         return list.get(index);
     }
+    public void addItem(BeloClass item) {list.add(item);}
     @Override
     public int compare(BeloClass another) {
         if (another instanceof BeloList) {
