@@ -3,15 +3,16 @@ package com.test;
 import com.patonki.beloscript.BeloScript;
 import com.patonki.beloscript.BeloScriptException;
 import com.patonki.beloscript.Main;
+import com.patonki.beloscript.errors.BeloException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class BeloScriptTest {
-
+    private static final String ROOT = "testScripts/beloscript/";
     @Test
-    void imports() {
+    void imports() throws BeloException {
         //tyhjä jar tiedosto
         Assertions.assertThrows(BeloScriptException.class,
                 () -> BeloScript.runFile("testScripts/beloscript/importEmptyJar/script.bel"));
@@ -32,11 +33,11 @@ class BeloScriptTest {
         }
     }
     @Test
-    void reflectionLibraries() {
+    void reflectionLibraries() throws BeloException {
         TestUtil.testFile("testScripts/beloscript/reflectionlibs");
     }
     @Test
-    void runWithDifferentOptions() throws BeloScriptException {
+    void runWithDifferentOptions() throws BeloException {
         String script = "var = 9";
         BeloScript.run(script,"test.bel","");
         String script2 = "name = input(\"name?: \")";
@@ -44,20 +45,24 @@ class BeloScriptTest {
                 "logParse","logLex", "input:input.txt", "output: output.txt",
                 "json: {var: 4, list:[]}");
 
-        Assertions.assertThrows(BeloScriptException.class,
+        Assertions.assertThrows(BeloException.class,
                 () -> BeloScript.run(script, null, "", "input: notreal.txt"));
 
         BeloScript.run(script, null,"testScripts/beloscript/options/",
                 "jsonfile:json.json");
 
-        Assertions.assertThrows(BeloScriptException.class,
+        Assertions.assertThrows(BeloException.class,
                 () ->BeloScript.run(script, null, "","jsonfile:doesnotexist.json"));
 
         //parameter not defined
-        Assertions.assertThrows(BeloScriptException.class, ()-> BeloScript.run(script,null,"","jsonFile: json.json"));
+        Assertions.assertThrows(BeloException.class, ()-> BeloScript.run(script,null,"","jsonFile: json.json"));
     }
     @Test
-    void main() throws BeloScriptException {
+    void main() throws BeloException {
         Main.main(new String[]{"input.belo","jsonfile:test.json"});
+    }
+    @Test
+    void random() throws BeloException {
+        TestUtil.testFile(ROOT+"random");
     }
 }

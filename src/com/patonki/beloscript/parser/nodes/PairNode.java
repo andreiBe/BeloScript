@@ -6,17 +6,17 @@ import com.patonki.beloscript.lexer.TokenType;
 import static com.patonki.beloscript.lexer.TokenType.*;
 
 public class PairNode extends Node {
-    private final String key;
+    private final Node key;
     private final Node value;
 
-    public PairNode(Token key, Node value) {
-        this.key = key.getValue();
+    public PairNode(Node key, Node value) {
+        this.key = key;
         this.value = value;
         this.start = key.getStart();
         this.end = value.getEnd();
     }
 
-    public String getKey() {
+    public Node getKey() {
         return key;
     }
 

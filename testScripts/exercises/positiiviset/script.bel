@@ -1,0 +1,5 @@
+lista = [-6, 8, 3, -1, 9]
+
+for (item in lista) {
+    if (item > 0) print(item)
+}

@@ -1,0 +1,13 @@
+function invert(map) {
+    temp = {}
+    for (key in map) {
+        print(map[key])
+        temp[map[key]] = key
+    }
+    map.clear()
+    for (key in temp) {
+        map[key] = temp[key]
+    }
+    print(map)
+}
+invert({"hello": 9, "lol": 2, "fuck": 3})

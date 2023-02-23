@@ -1,8 +1,10 @@
 package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.datatypes.BeloClass;
-import com.patonki.beloscript.datatypes.basicTypes.BeloList;
-import com.patonki.beloscript.datatypes.basicTypes.BeloNull;
+import com.patonki.beloscript.datatypes.basicTypes.List;
+import com.patonki.beloscript.datatypes.basicTypes.Null;
+import com.patonki.beloscript.errors.BeloException;
+import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
@@ -52,8 +54,15 @@ public class ForNode extends Node {
             if (res.shouldReturn()) return res;
             elements.add(value);
         }
-        return res.success(this.shouldReturnNull ? new BeloNull() :
-                new BeloList(elements).setContext(context));
+        try {
+            return res.success(this.shouldReturnNull ? new Null() :
+                    List.create(elements).setContext(context));
+        } catch (BeloException e) {
+            e.printStackTrace();
+            return res.failure(
+                    new RunTimeError(getStart(),getEnd(), "Error with creating list!", context)
+            );
+        }
     }
 
     @Override

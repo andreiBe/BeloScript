@@ -1,0 +1,20 @@
+print(i)
+function luoElokuva(nimi, kesto) {
+    return {"nimi": nimi,
+        "kesto": kesto,
+        "json": function() {
+            return {
+                "nimi": self.nimi,
+                "kesto": self.kesto
+            }
+        },
+        "fromJson": function(json) {
+            return luoElokuva(json["nimi"], json["kesto"])
+        },
+        "str": function() {
+            return self.nimi + " (kesto:" + self.kesto+"min)"
+        }
+    }
+}
+elokuva = luoElokuva("Herra Hakkarainen", 500)
+print(elokuva.str())

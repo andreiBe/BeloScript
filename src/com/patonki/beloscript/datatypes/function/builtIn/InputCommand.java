@@ -17,8 +17,10 @@ public class InputCommand extends BeloScriptFunction {
 
     @Override
     public RunTimeResult execute(Context context, List<BeloClass> args, RunTimeResult res) {
-        BeloClass toPrint = args.get(0);
-        context.getSettings().getOutput().println(toPrint);
+        if (args.size() > 0) {
+            BeloClass toPrint = args.get(0);
+            context.getSettings().getOutput().println(toPrint);
+        }
         try {
             String input = context.getSettings().getInput().nextLine();
             return res.success(new BeloString(input));

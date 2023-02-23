@@ -16,6 +16,7 @@ public class BinaryOperatorNode extends Node{
     private final Node right;
     private final Token token;
     private final Calculation binOp;
+
     public BinaryOperatorNode(Node left, Token token, Node right) {
         this.left = left;
         this.right = right;
@@ -33,7 +34,7 @@ public class BinaryOperatorNode extends Node{
             visitMethod = this::or;
         }
         else {
-            throw new IllegalArgumentException("Not operator "+token.getType());
+            throw new IllegalArgumentException("Not an operator "+token.getType());
         }
     }
     private RunTimeResult or(Context context, Interpreter interpreter) {

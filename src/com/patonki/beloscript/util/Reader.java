@@ -28,7 +28,7 @@ public class Reader {
         byte[] buf = new byte[128]; // line length
         int cnt = 0, c;
         while ((c = read()) != -1) {
-            if (c == '\n') {
+            if (c == '\n' || c == 13) {
                 if (cnt != 0) {
                     break;
                 } else {

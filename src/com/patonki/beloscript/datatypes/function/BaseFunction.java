@@ -53,7 +53,7 @@ public abstract class BaseFunction extends BeloClass{
         return res.success(null);
     }
 
-    public String getName() {
+    public String getTypeName() {
         return name;
     }
 }

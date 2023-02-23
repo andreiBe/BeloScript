@@ -3,13 +3,19 @@ package com.patonki.beloscript.datatypes.basicTypes;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.errors.RunTimeError;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 
-public class BeloString extends BeloClass {
+public class BeloString extends BeloClass implements Iterable<BeloClass>{
     private final String value;
 
     public BeloString(String value) {
         this.value = value;
+    }
+    public BeloString(char c) {
+        this.value = c+"";
     }
 
     @Override
@@ -76,5 +82,21 @@ public class BeloString extends BeloClass {
         if (o == null || getClass() != o.getClass()) return false;
         BeloString that = (BeloString) o;
         return Objects.equals(value, that.value);
+    }
+
+    @Override
+    public Iterator<BeloClass> iterator() {
+        return new Iterator<BeloClass>() {
+            private int i = 0;
+            @Override
+            public boolean hasNext() {
+                return i < value.length();
+            }
+
+            @Override
+            public BeloClass next() {
+                return new BeloString(value.charAt(i++));
+            }
+        };
     }
 }

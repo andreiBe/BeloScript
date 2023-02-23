@@ -1,16 +1,16 @@
 package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.datatypes.BeloClass;
-import com.patonki.beloscript.datatypes.basicTypes.BeloList;
-import com.patonki.beloscript.datatypes.basicTypes.BeloNull;
-import com.patonki.beloscript.datatypes.interfaces.IterableBeloClass;
+import com.patonki.beloscript.datatypes.basicTypes.List;
+import com.patonki.beloscript.datatypes.basicTypes.Null;
+import com.patonki.beloscript.errors.BeloException;
 import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
 
 public class ForEachNode extends Node {
     private final String varName;
@@ -31,26 +31,40 @@ public class ForEachNode extends Node {
         ArrayList<BeloClass> elements = new ArrayList<>();
 
         BeloClass classList = res.register(list.execute(context,interpreter));
-        if (!(classList instanceof IterableBeloClass)) {
+        if (!(classList instanceof Iterable)) {
             return res.failure(new RunTimeError(
                     list.getStart(),list.getEnd(),
                     "Value not iterable",context
             ));
         }
-        IterableBeloClass itList = (IterableBeloClass)classList;
-        List<BeloClass> iterableList = itList.iterableList();
-
-        for (BeloClass value : iterableList) {
+        Iterable<BeloClass> itList;
+        try {
+            itList = (Iterable<BeloClass>) classList;
+        } catch (ClassCastException e) {
+            return res.failure(new RunTimeError(
+                    list.getStart(),list.getEnd(),
+                    "Value not iterable (isn't iterating BeloClass)",context
+            ));
+        }
+        for (BeloClass value : itList) {
             context.getSymboltable().set(varName, value);
-            BeloClass val = res.register(body.execute(context,interpreter));
+            BeloClass val = res.register(body.execute(context, interpreter));
 
             if (res.shouldReturn() && !res.isShouldContinue() && !res.isShouldBreak()) return res;
             if (res.isShouldContinue()) continue;
             if (res.isShouldBreak()) break;
             elements.add(val);
         }
-        return res.success(b ? new BeloNull() :
-                new BeloList(elements).setContext(context));
+
+        try {
+            return res.success(b ? new Null() :
+                    List.create(elements).setContext(context));
+        } catch (BeloException e) {
+            e.printStackTrace();
+            return res.failure(
+                    new RunTimeError(getStart(),getEnd(), "Error with creating list!", context)
+            );
+        }
     }
 
     @Override

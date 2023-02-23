@@ -1,0 +1,21 @@
+function Animal(color, voice) {
+    return {
+        "color": color,
+        "voice": voice,
+        "makeNoice": function() {
+            print("Animal says: " + self.voice)
+        }
+    }
+}
+function Dog(color, voice, breed) {
+    return {
+        "breed": breed,
+        "makeNoice": function() {
+            print("Dog says: \"My breed is: " + self.breed+"\" and my color: " + self.color)
+        }
+    }.extend(Animal(color,voice))
+}
+animal = Animal("Blue", "Möö")
+dog = Dog("Yellow", "Vuh", "Golden retriever")
+animal.makeNoice()
+dog.makeNoice()

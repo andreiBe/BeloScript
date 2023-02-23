@@ -2,7 +2,7 @@ package com.patonki.beloscript.datatypes.basicTypes;
 
 import com.patonki.beloscript.datatypes.BeloClass;
 
-public class BeloNull extends BeloClass {
+public class Null extends BeloClass {
 
     @Override
     public boolean isTrue() {
@@ -16,6 +16,6 @@ public class BeloNull extends BeloClass {
 
     @Override
     public int compare(BeloClass another) {
-        return another instanceof BeloNull ? 0 : -1;
+        return another instanceof Null ? 0 : -1;
     }
 }

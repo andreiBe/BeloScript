@@ -2,6 +2,7 @@ package com.test;
 
 import com.patonki.beloscript.BeloScript;
 import com.patonki.beloscript.BeloScriptException;
+import com.patonki.beloscript.errors.BeloException;
 import com.patonki.helper.FileHandler;
 import org.junit.jupiter.api.Assertions;
 
@@ -23,7 +24,7 @@ public class TestUtil {
         long now = System.currentTimeMillis();
         try {
             script.executeFile(root+"\\script.bel", args.toArray(new String[0]));
-        } catch (BeloScriptException e) {
+        } catch (BeloException e) {
             e.printStackTrace();
             Assertions.fail();
         }

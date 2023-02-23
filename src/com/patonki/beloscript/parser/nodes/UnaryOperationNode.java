@@ -25,7 +25,8 @@ public class UnaryOperationNode extends Node{
             String varName = node.getVarName();
             command = (number,c) -> {
                 BeloClass val = number.prePlus();
-                c.getSymboltable().set(varName, val);
+                //TODO changed
+                c.getSymboltable().change(varName, val);
                 return val;
             };
         }
@@ -33,7 +34,8 @@ public class UnaryOperationNode extends Node{
             String varName = node.getVarName();
             command = (number,c) -> {
                 BeloClass val = number.preMinus();
-                c.getSymboltable().set(varName, val);
+                //TODO changed
+                c.getSymboltable().change(varName, val);
                 return val;
             };
         } else {

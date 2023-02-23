@@ -1,17 +1,17 @@
 list = [6,4,2,3,"54"]
-l = list.size
+l = list.size()
 function returnList() {
     return []
 }
 print(l)
-list.add(5)
+list.push(5)
 print(list)
 
 print(list[3])
 listOfLists = [["a","b","b"],["a","a","a"],["a","b","c"],["a"]]
-sorted = listOfLists.sort()
-print(sorted)
+listOfLists.sort()
+print(listOfLists)
 
-sorted[0] = 9
-print(sorted[0])
+listOfLists[0] = 9
+print(listOfLists[0])
 

@@ -1,0 +1,33 @@
+d = for (i in range(17)) for (j in range(51)) for (k in range(51)) 0
+
+n = toNum(input())
+M = 1000000007
+d[0][0][0] = 1
+totalA = totalB = 0
+for (i in range(n)) {
+    s = input()
+    myA = myB = 0
+    for (c in s) {
+        if (c == "a") myA++
+        if (c == "b") myB++
+    }
+    totalA += myA
+    totalB += myB
+    if (i == 0){
+        d[i][myA][myB] = 1
+        continue
+    }
+    for (a in range(51)) {
+        for (b in range(51)) {
+            d[i][a][b] += d[i-1][a][b]
+            d[i][a][b] %= M
+            if (a + myA > 50 or b + myB > 50) continue
+            d[i][a+myA][b+myB] += d[i-1][a][b]
+            d[i][a+myA][b+myB] %= M
+        }
+    }
+}
+if (totalA % 2 == 1 or totalB % 2 == 1) {
+    print(0); return
+}
+print(d[n-1][totalA/2][totalB/2])

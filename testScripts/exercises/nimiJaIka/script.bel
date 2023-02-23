@@ -1,0 +1,10 @@
+function do(nimi, ika) {
+    ika = toNum(ika)
+    if (nimi == "") print("Et antanut nimeä")
+    if (ika < 0) print("Et ole vielä syntynyt!")
+    if (ika > 130) print("En usko!")
+    print("Kiitos!")
+}
+do("", "-5")
+do("Jarmo", "170")
+do("Jl", "54")

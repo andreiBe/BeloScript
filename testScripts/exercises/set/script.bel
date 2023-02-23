@@ -1,0 +1,9 @@
+set = Set()
+
+set.push(98)
+set.push(23)
+
+print(set)
+print(set.size())
+set.remove(23)
+print(set)

@@ -1,7 +1,7 @@
 package com.patonki.beloscript.datatypes.function;
 
 
-import com.patonki.beloscript.datatypes.basicTypes.BeloNull;
+import com.patonki.beloscript.datatypes.basicTypes.Null;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
@@ -37,7 +37,7 @@ public class BeloFunction extends BaseFunction{
         BeloClass returnValue = (shouldAutoReturn ? value :
                 res.getFunctionReturnValue() != null ?
                 res.getFunctionReturnValue() :
-                new BeloNull());
+                new Null());
         return res.success(returnValue);
     }
 

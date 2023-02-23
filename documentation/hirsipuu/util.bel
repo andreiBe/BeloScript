@@ -1,0 +1,14 @@
+sanat = ["auto", "hevonen", "beloscript", "lautanen", "kaappi", "matto", "ihminen", "apina"]
+
+function random_sana() {
+    return pick_random(sanat)
+}
+function print_tilanne(list, mahdollisuuksia) {
+    print(list)
+    print("Yrityksiä jäljellä: " + mahdollisuuksia)
+}
+
+export {
+    "random_sana": random_sana,
+    "print_tilanne": print_tilanne
+}

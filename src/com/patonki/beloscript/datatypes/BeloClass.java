@@ -6,13 +6,12 @@ import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.RunTimeResult;
 
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * Kaikki beloscriptin arvot perivät tämän luokan jopa numerot.
  */
-public abstract class BeloClass {
+public abstract class BeloClass implements Comparable<BeloClass>{
     private Position start;
     private Position end;
     private RunTimeError error;
@@ -26,13 +25,21 @@ public abstract class BeloClass {
     }
 
     /**
-     * Tämän funktion totetutuksen hoitaa beloscript sisäisesti.
+     * Tämä funktiota saa kutsua vain BeloScript sisäisesti
      * @param context Context, eli osoiteavaruus, josta arvo löytyy
      * @return palauttaa itsensä
      */
     public final BeloClass setContext(Context context) {
+        if (this.context != null) {
+            return this; //TODO pls look at this!
+        }
+        //TODO maybe edit
         this.context = context;
         return this;
+    }
+
+    public Context getContext() {
+        return context;
     }
 
     /**
@@ -104,7 +111,9 @@ public abstract class BeloClass {
     public double doubleValue() {
         return Double.NaN;
     }
-
+    public int intValue() {return (int)doubleValue();}
+    public boolean isNumber() {return false;}
+    public String getTypeName() {return this.getClass().getSimpleName();}
     /**
      * Toimii samoin kuin vertailu funktiot yleensä javassa.<br>
      * negatiivinen tarkoittaa, että tämä tulee ennen toista<br>
@@ -115,6 +124,10 @@ public abstract class BeloClass {
      */
     public int compare(BeloClass another) {
         return 0;
+    }
+    @Override
+    public int compareTo(BeloClass o) {
+        return compare(o);
     }
 
     /**

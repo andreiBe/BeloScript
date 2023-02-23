@@ -2,7 +2,7 @@ package com.patonki.beloscript;
 
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
-import com.patonki.beloscript.datatypes.basicTypes.BeloNull;
+import com.patonki.beloscript.datatypes.basicTypes.Null;
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
 
 public class ImportUtil {
@@ -23,7 +23,7 @@ public class ImportUtil {
         return c;
     }
     public static BeloClass matchingBeloClass(Object object) {
-        if (object == null) return new BeloNull();
+        if (object == null) return new Null();
         if (object instanceof Integer) return new BeloDouble((Integer) object);
         if (object instanceof Byte) return new BeloDouble((Byte)object);
         if (object instanceof Character) return new BeloString(object.toString());
@@ -37,7 +37,7 @@ public class ImportUtil {
         return null;
     }
     public static Object matchingPrimitive(Object object, Class<?> shouldBe) {
-        if (object instanceof BeloNull) return null;
+        if (object instanceof Null) return null;
         if (object instanceof BeloDouble) {
             double d = ((BeloDouble) object).doubleValue();
             if (shouldBe.equals(Integer.class) || shouldBe.equals(Integer.TYPE)) return (int) d;

@@ -2,7 +2,7 @@ package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloError;
-import com.patonki.beloscript.datatypes.basicTypes.BeloNull;
+import com.patonki.beloscript.datatypes.basicTypes.Null;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
@@ -30,7 +30,7 @@ public class TryNode extends Node{
         RunTimeResult res = new RunTimeResult();
         BeloClass result = res.register(body.execute(context,interpreter));
         if (res.hasError()) {
-            return res.success(new BeloNull());
+            return res.success(new Null());
         }
         if (res.shouldReturn()) return res;
         return res.success(result);
@@ -40,6 +40,7 @@ public class TryNode extends Node{
         RunTimeResult res = new RunTimeResult();
         BeloClass result = res.register(body.execute(context,interpreter));
         if (res.hasError()) {
+            //Todo remake
             context.getSymboltable().set(errorVarName, new BeloError(res.getError()));
             result = res.register(catchBody.getVisit().visit(context,interpreter));
             if (res.shouldReturn()) return res;

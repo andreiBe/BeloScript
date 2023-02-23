@@ -28,7 +28,9 @@ public class VarAssignNode extends Node {
         if (var instanceof VarAccessNode) {
             setter = (value, context,interpreter,res) -> {
                 VarAccessNode variableName = (VarAccessNode) var;
-                context.getSymboltable().set(variableName.getVarName(),value);
+                //TODO changed
+                if (calculation != null) context.getSymboltable().change(variableName.getVarName(),value);
+                else context.getSymboltable().set(variableName.getVarName(),value);
                 return res.success(value);
             };
         }

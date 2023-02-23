@@ -4,6 +4,9 @@ package com.patonki.beloscript.interpreter;
 import com.patonki.beloscript.BeloScript;
 import com.patonki.beloscript.BeloScriptException;
 import com.patonki.beloscript.datatypes.BeloClass;
+import com.patonki.beloscript.datatypes.basicTypes.BeloError;
+import com.patonki.beloscript.errors.BeloException;
+import com.patonki.beloscript.errors.BeloScriptError;
 import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.parser.nodes.ImportNode;
 import com.patonki.beloscript.parser.nodes.Node;
@@ -16,6 +19,7 @@ public class Interpreter {
     public RunTimeResult execute(Node node, Context context) {
         return node.getVisit().visit(context,this);
     }
+
     public RunTimeResult importFile(ImportNode node, Context context) {
         String path = node.getPath();
         if (!new File(path).isAbsolute()) {
@@ -29,11 +33,14 @@ public class Interpreter {
             BeloClass exported = interpreter.exported;
             if (exported == null) {
                 return res.failure(new RunTimeError(node.getStart(),node.getEnd(),
-                        "File doesn't import anything",context));
+                        "File doesn't export anything",context));
             }
             return res.success(exported);
         } catch (BeloScriptException e) {
             return res.failure(new RunTimeError(e.getError(),context));
+        } catch (BeloException e) {
+            return res.failure(new RunTimeError(node.getStart(),node.getEnd(),
+                    e.getMessage(),context));
         }
     }
 

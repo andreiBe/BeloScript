@@ -39,7 +39,7 @@ public class RunTimeError extends BeloScriptError {
         StringBuilder res = new StringBuilder();
         while (context != null) {
             result.setLength(0);
-            if (pos == null) throw new NullPointerException("Position can't be null!");
+            if (pos == null) break;
             result.append("File ").append(pos.fileName).append(", line ")
                     .append(pos.lineNumber + 1).append(", in ")
                     .append(context.getDisplayName()).append(System.lineSeparator());

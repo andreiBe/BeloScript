@@ -21,14 +21,16 @@ public class PostOperatorNode extends Node {
             case PLUSPLUS:
                 command = (val,c) -> {
                     BeloClass copy = val.copy();
-                    c.getSymboltable().set(varName,val.postPlus());
+                    //TODO changed
+                    c.getSymboltable().change(varName,val.postPlus());
                     return copy;
                 };
                 break;
             case MINUSMINUS:
                 command = (val,c) -> {
                     BeloClass copy = val.copy();
-                    c.getSymboltable().set(varName,val.postMinus());
+                    //TODO changed
+                    c.getSymboltable().change(varName,val.postMinus());
                     return copy;
                 };
                 break;

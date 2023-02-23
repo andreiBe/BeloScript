@@ -1,33 +1,30 @@
 package com.patonki.beloscript.datatypes.function;
 
-import com.patonki.beloscript.Import;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
-import com.patonki.beloscript.datatypes.basicTypes.BeloNull;
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.RunTimeResult;
 import com.patonki.beloscript.interpreter.Settings;
 import com.patonki.datatypes.Pair;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Overloading extends BeloScriptFunction{
-    private final HashMap<List<Class<?>>, BeloScriptFunction> map = new HashMap<>();
+    private final List<Pair<BeloScriptFunction,List<Class<?>>>> possibleFunctions = new ArrayList<>();
 
     public Overloading(List<Pair<BeloScriptFunction,Class<?>[]>> possibleFunctions, String name) {
         super(name);
+
         for (Pair<BeloScriptFunction, Class<?>[]> p : possibleFunctions) {
             Class<?>[] ar = p.second();
             BeloScriptFunction f = p.first();
-            ArrayList<Class<?>> theKey = new ArrayList<>();
+            List<Class<?>> theKey = new ArrayList<>();
             for (Class<?> arg : ar) {
                 if (arg.equals(Settings.class)) continue;
                 theKey.add(matchingBeloClassClass(arg));
             }
-            map.put(theKey, f);
+            this.possibleFunctions.add(new Pair<>(f,theKey));
         }
     }
     private static Class<?> matchingBeloClassClass(Class<?> clazz) {
@@ -41,24 +38,31 @@ public class Overloading extends BeloScriptFunction{
             return BeloDouble.class;
         if (clazz == Character.class || clazz == char.class
         || clazz == String.class) return BeloString.class;
-        if (BeloClass.class.isAssignableFrom(clazz)) return clazz;
-        return null;
+        return clazz;
     }
     @Override
     public RunTimeResult execute(Context context, List<BeloClass> args, RunTimeResult res) {
-        List<Class<?>> classList = new ArrayList<>();
-        for (BeloClass arg : args) {
-            classList.add(arg.getClass());
-        }
-        BeloScriptFunction function = map.get(classList);
-        if (function == null) {
-            for (List<Class<?>> classes : map.keySet()) {
-                System.out.println(classes);
+        for (Pair<BeloScriptFunction, List<Class<?>>> possibleFunction : possibleFunctions) {
+            List<Class<?>> expectedClasses = possibleFunction.second();
+            if (expectedClasses.size() != args.size()) {
+                continue;
             }
-            System.out.println(classList);
-            return throwError(res,context,"Didn't find function with these parameters");
+            boolean fail = false;
+            for (int i = 0; i < expectedClasses.size(); i++) {
+                Class<?> expected = expectedClasses.get(i);
+                Class<?> argClass = args.get(i).getClass();
+                if (!expected.isAssignableFrom(argClass)) {
+                    fail = true;
+                    break;
+                }
+            }
+            if (!fail) {
+                BeloScriptFunction function = possibleFunction.first();
+                function.setPos(getStart(),getEnd());
+                return function.execute(context,args,res);
+            }
         }
-        return function.execute(context,args,res);
+        return throwError(res,context,"Didn't find a function with these parameters");
     }
 
 }

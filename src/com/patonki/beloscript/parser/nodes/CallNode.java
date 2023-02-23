@@ -31,8 +31,10 @@ public class CallNode extends Node {
         List<BeloClass> args = new ArrayList<>();
         BeloClass funcToCall = res.register(atom.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-
-        funcToCall.setPos(atom.getStart(),atom.getEnd()).setContext(context);
+        //todo maybe edit
+        //Position last = this.args.isEmpty() ? atom.getEnd() : this.args.get(this.args.size()-1).getEnd();
+        funcToCall.setPos(atom.getStart(),atom.getEnd());//.setContext(context);
+        if (funcToCall.getContext() == null) funcToCall.setContext(context);
 
         for (Node argNode : this.args) {
             args.add(res.register(argNode.execute(context,interpreter)));

@@ -4,10 +4,10 @@ import com.patonki.beloscript.BeloLibrary;
 import com.patonki.beloscript.BeloScriptException;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
-import com.patonki.beloscript.datatypes.basicTypes.BeloList;
-import com.patonki.beloscript.datatypes.basicTypes.BeloObject;
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
+import com.patonki.beloscript.datatypes.basicTypes.Obj;
 import com.patonki.beloscript.datatypes.function.BeloScriptFunction;
+import com.patonki.beloscript.errors.BeloException;
 import com.patonki.beloscript.errors.BeloScriptError;
 import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
@@ -23,14 +23,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LibJson implements BeloLibrary {
-    public static BeloObject readJson(Settings settings) throws BeloScriptException {
+    public static Obj readJson(Settings settings) throws BeloException {
         return ReadJsonCommand.readJson(settings);
     }
     public static class ReadJsonCommand extends BeloScriptFunction {
         public ReadJsonCommand() {
             super("json.read");
         }
-        private static BeloObject readJson(Settings settings) throws BeloScriptException {
+        private static Obj readJson(Settings settings) throws BeloException {
             String json = settings.getJsondata();
             JSONParser jsonParser = new JSONParser();
 
@@ -39,7 +39,7 @@ public class LibJson implements BeloLibrary {
                 BeloClass value = readJsonData(obj);
 
                 if (value == null) throw new BeloScriptException(new BeloScriptError("Json error","Can't read json string"));
-                return (BeloObject) value;
+                return (Obj) value;
             } catch (ParseException e) {
                 e.printStackTrace();
                 throw new BeloScriptException(new BeloScriptError("Json error","Can't read json string\n"+e.getLocalizedMessage() ));
@@ -49,13 +49,15 @@ public class LibJson implements BeloLibrary {
         public RunTimeResult execute(Context context, List<BeloClass> args, RunTimeResult res) {
             if (args.size() != 0) return throwParameterSizeError(res,context,0,args.size());
             try {
-                BeloObject object = readJson(context.getSettings());
+                Obj object = readJson(context.getSettings());
                 return res.success(object);
             } catch (BeloScriptException e) {
                 return res.failure(new RunTimeError(e.getError(),context));
+            } catch (BeloException e) {
+                return res.failure(new RunTimeError(getStart(), getEnd(),e.getMessage(), context));
             }
         }
-        private static BeloClass readJsonData(Object obj) {
+        private static BeloClass readJsonData(Object obj) throws BeloException {
             if (obj instanceof JSONArray) {
                 return readJsonArray((JSONArray) obj);
             }
@@ -76,17 +78,18 @@ public class LibJson implements BeloLibrary {
             }
             return null;
         }
-        private static BeloList readJsonArray(JSONArray array) {
+        private static com.patonki.beloscript.datatypes.basicTypes.List readJsonArray(JSONArray array) throws BeloException {
             ArrayList<BeloClass> list = new ArrayList<>();
             for (Object o : array) {
                 BeloClass value = readJsonData(o);
                 if (value == null) return null;
                 list.add(value);
             }
-            return new BeloList(list);
+
+            return com.patonki.beloscript.datatypes.basicTypes.List.create(list);
         }
-        private static BeloObject readJsonObject(JSONObject object) {
-            BeloObject obj = new BeloObject();
+        private static Obj readJsonObject(JSONObject object) throws BeloException {
+            Obj obj = Obj.create();
             for (Object o : object.keySet()) {
                 BeloClass value = readJsonData(object.get(o));
                 if (value == null)  return null;

@@ -6,7 +6,7 @@ import com.patonki.beloscript.Position;
 public class StringWithArrows {
     public static String stringWithArrows(String text, Position start, Position end) {
         StringBuilder result = new StringBuilder();
-        int idxStart = Math.max(text.lastIndexOf('\n',start.index),0);
+        int idxStart = Math.max(text.lastIndexOf('\n',start.index-1),0);
         int idxEnd = text.indexOf('\n',idxStart+1);
         if (idxEnd < 0) idxEnd = text.length();
 
@@ -26,6 +26,7 @@ public class StringWithArrows {
                 idxEnd = text.length();
             }
         }
-        return result.toString().replace("\t","");
+        return result.toString();
+        //return result.toString().replace("\t","");
     }
 }

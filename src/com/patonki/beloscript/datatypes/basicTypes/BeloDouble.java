@@ -119,6 +119,11 @@ public class BeloDouble extends BeloClass {
     }
 
     @Override
+    public boolean isNumber() {
+        return true;
+    }
+
+    @Override
     public BeloClass postMinus() {
         return new BeloDouble(this.value-1);
     }

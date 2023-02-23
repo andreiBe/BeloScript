@@ -23,6 +23,7 @@ public class IndexAccessNode extends Node {
         BeloClass index = res.register(this.index.execute(context,interpreter));
         if (res.shouldReturn()) return res;
 
+        //System.out.println("Index: " + index);
         BeloClass result = target.index(index);
         if (result.hasError()) {
             return res.failure(result.getError());

@@ -1,0 +1,22 @@
+lista = [5,4,2,1,6,7]
+
+#shuffle
+shuffle(lista)
+print(lista)
+
+#pick random
+item = pick_random(lista)
+print(item)
+
+#pick 3 random
+items = pick_random(lista, 3)
+print(items)
+
+#error
+try {
+    items = pick_random(lista, 10)
+} catch (e) {
+    print("omg")
+    print(e)
+}
+

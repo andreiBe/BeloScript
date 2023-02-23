@@ -1,0 +1,29 @@
+
+util = import "util.bel"
+sana = util.random_sana()
+# listan kertominen
+list = ["_"] * sana.length
+
+arvatut = 0
+mahdollisuuksia = 10
+function tarkista_kirjain(arvaus) {
+        for (i=0 : i < sana.length : i++) {
+            if (sana[i] == arvaus and list[i] == "_") {
+                list[i] = arvaus
+                arvatut++
+                return
+            }
+        }
+        mahdollisuuksia--
+}
+util.print_tilanne(list,mahdollisuuksia)
+while (arvatut < sana.length and mahdollisuuksia > 0) {
+    arvaus = input("Arvaa koko sana tai yksi kirjain:")
+    if (arvaus.length == 1) tarkista_kirjain(arvaus)
+    elif (arvaus == sana) arvatut = sana.length
+    else mahdollisuuksia--
+    if (arvatut < sana.length) util.print_tilanne(list, mahdollisuuksia)
+}
+print("Sana oli " + sana)
+if (mahdollisuuksia == 0) print("Hävisit!")
+else print("Voitit!")

@@ -99,9 +99,12 @@ public class Parser {
             res.registerAdvancement();
             advance();
             // return lauseke ei välttämättä palauta mitään
-            Node expr = res.tryRegister(expression());
-            if (expr == null) {
-                reverse(res.getToReverseCount());
+            if (curToken.getType() == NEWLINE) return res.success(new ReturnNode(null, start, curToken.getEnd().copy()));
+
+            Node expr = res.register(expression());
+            if (res.hasError()) {
+                return res;
+                //reverse(res.getToReverseCount());
             }
             return res.success(new ReturnNode(expr, start, curToken.getEnd().copy()));
         }
@@ -216,10 +219,42 @@ public class Parser {
      */
     private ParseResult indexAccessSyntax() {
         ParseResult res = new ParseResult();
-        Node pow = res.register(power());
+        Node left = res.register(power());
         if (res.hasError()) return res;
-        if (curToken.getType() == OPENING_SQUARE) return handleErrors(res, () -> squares(pow));
-        return res.success(pow);
+        while (curToken.typeInList(OPENING_SQUARE, LPAREN, DOT)) {
+            if (curToken.getType() == OPENING_SQUARE) {
+                left = res.register(squares(left));
+                if (res.hasError()) return res;
+            }
+            if (curToken.getType() == LPAREN) {
+                left = res.register(functionBuilder(left));
+                if (res.hasError()) return res;
+            }
+            if (curToken.getType() == DOT) {
+                advance();
+                if (!curToken.typeInList(IDENTIFIER,KEYWORD)) {
+                    return res.failure(new InvalidSyntaxError(curToken.getStart(),curToken.getEnd(),
+                            "Unexpected token type: "+curToken.getType()+" expected either identifier or keyword"));
+                }
+                Token name = curToken; advance();
+                if (res.hasError()) return res;
+                left = new DotNode(left,name);
+            }
+        }
+        /*
+        if (curToken.getType() == OPENING_SQUARE) {
+            return handleErrors(res, () -> squares(left));
+        }
+
+         */
+        /*
+        if (curToken.getType() == LPAREN) {
+            Node node = res.register(functionBuilder(pow));
+            if (res.hasError()) return res;
+            pow = node;
+        }
+         */
+        return res.success(left);
     }
     /*
         Löytää [] sulkeet target noden jälkeen ja luo indexAccessNoden
@@ -266,6 +301,7 @@ public class Parser {
         ParseResult res = new ParseResult();
         Node left = res.register(atom());
         if (res.hasError()) return res;
+        //TODO Remove dot and call
         while (curToken.typeInList(LPAREN, DOT, PLUSPLUS,MINUSMINUS)) {
             if (curToken.typeInList(PLUSPLUS,MINUSMINUS)) {
                 Token copy = curToken; advance();
@@ -325,6 +361,7 @@ public class Parser {
         if (curToken.getType() == LPAREN) {
             //kutsutaan recursiivisesti. Jos tilanne on esim. hello()()
             Node node = res.register(functionBuilder(callNode));
+            if (res.hasError()) return res;
             return res.success(node);
         }
         else return res.success(callNode);
@@ -439,25 +476,26 @@ public class Parser {
                 advance();
                 while (curToken.getType() == NEWLINE) advance();
                 pairs.add(res.register(getObjectPair()));
-                while(curToken.getType()==NEWLINE) advance();
                 if (res.hasError()) return res;
+                while(curToken.getType()==NEWLINE) advance();
             }
             while (curToken.getType() == NEWLINE) advance();
             if (curToken.getType() != CLOSING_BRACKET) {
+                //System.out.println("Bruh!");
                 return res.failure(new InvalidSyntaxError(
                         curToken.getStart(),curToken.getEnd(),
-                        "Expected }"
+                        "Expected '}' or ','"
                 ));
             }
         }
         res.registerAdvancement();
         advance();
-
         return res.success(new ObjectNode(pairs,start,curToken.getEnd().copy()));
     }
 
     private ParseResult getObjectPair() {
         ParseResult res = new ParseResult();
+        /*
         if (!curToken.typeInList(INT,FLOAT, STRING, IDENTIFIER,KEYWORD)) {
             return res.failure(new InvalidSyntaxError(
                     curToken.getStart(),curToken.getEnd(),"Expected key of entry"
@@ -465,6 +503,9 @@ public class Parser {
         }
         Token key = curToken;
         advance();
+         */
+        Node keyNode = res.register(expression());
+        if (res.hasError()) return res;
         if (curToken.getType() != DOUBLEDOT) {
             return res.failure(new InvalidSyntaxError(
                     curToken.getStart(),curToken.getEnd(),
@@ -475,7 +516,7 @@ public class Parser {
         advance();
         Node value = res.register(expression());
         if (res.hasError()) return res;
-        return res.success(new PairNode(key,value));
+        return res.success(new PairNode(keyNode,value));
     }
 
     private ParseResult listExpression() {
@@ -703,8 +744,8 @@ public class Parser {
         } else {
             body = res.register(block());
         }
-        while (curToken.getType() == NEWLINE) advance();
         if (res.hasError()) return res;
+        while (curToken.getType() == NEWLINE) advance();
 
         if (!curToken.matches(KEYWORD, "catch")) {
             return res.success(new TryNode(null,body,null));
@@ -768,6 +809,7 @@ public class Parser {
             advance();
 
             Node list = res.register(expression());
+            if (res.hasError()) return res;
             if (curToken.getType() != RPAREN) {
                 return res.failure(new InvalidSyntaxError(
                         curToken.getStart(), curToken.getEnd(),
@@ -796,7 +838,6 @@ public class Parser {
         advance();
 
         Node condition = res.register(expression());
-
         if (res.hasError()) return res;
 
         if (curToken.getType() != DOUBLEDOT) {
