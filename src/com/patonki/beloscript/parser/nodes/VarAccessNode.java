@@ -30,8 +30,7 @@ public class VarAccessNode extends Node {
                     varName + " is not defined",context
             ));
         }
-        value.setPos(getStart(),getEnd()).setContext(context);
-        return res.success(value);
+        return res.success(value, getStart(), getEnd(), context);
     }
 
     public String getVarName() {

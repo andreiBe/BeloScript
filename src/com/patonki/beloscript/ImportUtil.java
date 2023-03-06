@@ -26,8 +26,8 @@ public class ImportUtil {
         if (object == null) return new Null();
         if (object instanceof Integer) return new BeloDouble((Integer) object);
         if (object instanceof Byte) return new BeloDouble((Byte)object);
-        if (object instanceof Character) return new BeloString(object.toString());
-        if (object instanceof String) return new BeloString(object.toString());
+        if (object instanceof Character) return BeloString.create(object.toString());
+        if (object instanceof String) return BeloString.create(object.toString());
         if (object instanceof Long) return new BeloDouble((Long)object);
         if (object instanceof Float) return new BeloDouble((Float)object);
         if (object instanceof Double) return new BeloDouble((Double)object);

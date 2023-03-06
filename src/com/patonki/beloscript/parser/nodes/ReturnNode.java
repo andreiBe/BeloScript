@@ -11,7 +11,6 @@ public class ReturnNode extends Node {
     private final Node expr;
 
     public ReturnNode(Node expr, Position start, Position end) {
-        super();
         this.expr = expr;
         this.start = start;
         this.end = end;
@@ -19,7 +18,7 @@ public class ReturnNode extends Node {
     }
     private RunTimeResult visit(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
-        BeloClass value = new Null();
+        BeloClass value = Null.NULL;
         if (expr != null) {
             value = res.register(expr.execute(context,interpreter));
             if (res.shouldReturn()) return res;

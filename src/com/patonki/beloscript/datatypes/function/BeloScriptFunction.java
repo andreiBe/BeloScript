@@ -17,9 +17,8 @@ public abstract class BeloScriptFunction extends BaseFunction{
     @Override
     public RunTimeResult execute(List<BeloClass> args) {
         RunTimeResult res = new RunTimeResult();
-        Context context = generateNewContext();
-
-        BeloClass returnValue = res.register(this.execute(context,args, new RunTimeResult()));
+        //Context context = generateNewContext();
+        BeloClass returnValue = res.register(this.execute(this.context,args, new RunTimeResult()));
         if (res.shouldReturn()) return res;
         return res.success(returnValue);
     }

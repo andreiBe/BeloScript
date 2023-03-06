@@ -29,11 +29,8 @@ public abstract class BeloClass implements Comparable<BeloClass>{
      * @param context Context, eli osoiteavaruus, josta arvo löytyy
      * @return palauttaa itsensä
      */
-    public final BeloClass setContext(Context context) {
-        if (this.context != null) {
-            return this; //TODO pls look at this!
-        }
-        //TODO maybe edit
+    public BeloClass setContext(Context context) {
+        //TODO CHANGED
         this.context = context;
         return this;
     }
@@ -49,6 +46,8 @@ public abstract class BeloClass implements Comparable<BeloClass>{
      * @return palauttaa itsensä
      */
     public final BeloClass setPos(Position start, Position end) {
+        if (start == null || end == null)
+            throw new IllegalArgumentException("Positions should not be null! class: " +getClass().getSimpleName() +" "+start+" "+end);
         this.start = start;
         this.end = end;
         return this;
@@ -138,8 +137,9 @@ public abstract class BeloClass implements Comparable<BeloClass>{
      * @return virhe
      */
     protected BeloError throwError(String message, Position start, Position end) {
+        System.out.println(this.getClass().getSimpleName()+" " + this.context);
         return new BeloError(new RunTimeError(start,end
-                ,message + "(class:"+this.getClass().getSimpleName()+")"
+                ,message + " (class:"+this.getClass().getSimpleName()+")"
                 ,this.context));
     }
 

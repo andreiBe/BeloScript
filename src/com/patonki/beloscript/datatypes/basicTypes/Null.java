@@ -3,7 +3,7 @@ package com.patonki.beloscript.datatypes.basicTypes;
 import com.patonki.beloscript.datatypes.BeloClass;
 
 public class Null extends BeloClass {
-
+    public static Null NULL = new Null();
     @Override
     public boolean isTrue() {
         return false;

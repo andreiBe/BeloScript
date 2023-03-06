@@ -1,4 +1,4 @@
-print(i)
+
 function luoElokuva(nimi, kesto) {
     return {"nimi": nimi,
         "kesto": kesto,

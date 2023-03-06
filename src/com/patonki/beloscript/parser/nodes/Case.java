@@ -9,6 +9,8 @@ public class Case extends Node {
         this.condition = condition;
         this.statements = statements;
         this.shouldReturnNull = shouldReturnNull;
+        this.start = condition.getStart();
+        this.end = statements.getEnd();
     }
 
     public Node getCondition() {

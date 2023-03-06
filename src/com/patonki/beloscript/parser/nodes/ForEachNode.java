@@ -1,5 +1,6 @@
 package com.patonki.beloscript.parser.nodes;
 
+import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.List;
 import com.patonki.beloscript.datatypes.basicTypes.Null;
@@ -18,9 +19,10 @@ public class ForEachNode extends Node {
     private final Node body;
     private final boolean b;
 
-    public ForEachNode(VarAccessNode startValue, Node list, Node body, boolean b) {
+    public ForEachNode(VarAccessNode startValue, Node list, Node body, boolean b, Position start, Position end) {
         this.varName = startValue.getVarName();
-        //TODO not defining start and end
+        this.start = start;
+        this.end = end;
         this.list = list;
         this.body = body;
         this.b = b;
@@ -55,16 +57,7 @@ public class ForEachNode extends Node {
             if (res.isShouldBreak()) break;
             elements.add(val);
         }
-
-        try {
-            return res.success(b ? new Null() :
-                    List.create(elements).setContext(context));
-        } catch (BeloException e) {
-            e.printStackTrace();
-            return res.failure(
-                    new RunTimeError(getStart(),getEnd(), "Error with creating list!", context)
-            );
-        }
+        return res.success(List.create(elements), getStart(),getEnd(),context);
     }
 
     @Override

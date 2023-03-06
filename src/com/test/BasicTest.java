@@ -15,7 +15,14 @@ public class BasicTest {
     void basicBinaryOperations() {
         TestUtil.testFile(root+"/binaryOperators");
     }
-
+    @Test
+    void theworstbug() {
+        TestUtil.testFile("documentation/hirsipuu/fuck");
+        System.out.println();
+        System.out.println();
+        System.out.println();
+        TestUtil.testFile("documentation/hirsipuu/fuck2");
+    }
     @Test
     void forLoops() {
         TestUtil.testFile(root+"/forLoops");

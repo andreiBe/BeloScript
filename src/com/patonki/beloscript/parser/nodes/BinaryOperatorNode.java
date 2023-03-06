@@ -34,6 +34,7 @@ public class BinaryOperatorNode extends Node{
             visitMethod = this::or;
         }
         else {
+            //ei pitäisi ikinä tapahtua, koska parserin pitäisi tietää mitkä tokenit käy
             throw new IllegalArgumentException("Not an operator "+token.getType());
         }
     }
@@ -41,21 +42,21 @@ public class BinaryOperatorNode extends Node{
         RunTimeResult res = new RunTimeResult();
         BeloClass left = res.register(this.left.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-        if (left.isTrue()) return res.success(new BeloDouble(1));
+        if (left.isTrue()) return res.success(new BeloDouble(1), getStart(), getEnd(),context);
 
         BeloClass right = res.register(this.right.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-        return res.success(new BeloDouble(right.isTrue() ? 1 : 0));
+        return res.success(new BeloDouble(right.isTrue() ? 1 : 0), getStart(),getEnd(),context);
     }
     private RunTimeResult and(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         BeloClass left = res.register(this.left.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-        if (!left.isTrue()) return res.success(new BeloDouble(0));
+        if (!left.isTrue()) return res.success(new BeloDouble(0), getStart(), getEnd(), context);
 
         BeloClass right = res.register(this.right.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-        return res.success(new BeloDouble(right.isTrue() ? 1 : 0));
+        return res.success(new BeloDouble(right.isTrue() ? 1 : 0), getStart(),getEnd(),context);
     }
 
     private RunTimeResult visit(Context context, Interpreter interpreter) {
@@ -69,8 +70,7 @@ public class BinaryOperatorNode extends Node{
         if (result.hasError()) {
             return res.failure(result.getError().setContext(context));
         } else {
-            result.setPos(getStart(),getEnd()).setContext(context);
-            return res.success(result);
+            return res.success(result, getStart(), getEnd(), context);
         }
     }
 

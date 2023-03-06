@@ -1,5 +1,5 @@
 function do(nimi, ika) {
-    ika = toNum(ika)
+    ika = to_num(ika)
     if (nimi == "") print("Et antanut nimeä")
     if (ika < 0) print("Et ole vielä syntynyt!")
     if (ika > 130) print("En usko!")

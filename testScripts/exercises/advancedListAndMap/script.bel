@@ -1,0 +1,17 @@
+list = [1,2,3,4,5,6,7]
+
+list.sort(function(a1,a2) {
+    return a2-a1
+})
+print(list)
+
+map = {}
+
+l = List(list)
+print(l)
+
+l.sort(function(a1,a2) -> a1-a2)
+print(l)
+
+l += [5,4]
+print(l)

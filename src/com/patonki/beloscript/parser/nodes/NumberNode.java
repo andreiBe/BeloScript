@@ -16,8 +16,8 @@ public class NumberNode extends Node {
         this.start = token.getStart();
         this.end = token.getEnd();
 
-        this.value = new BeloDouble(this.token.getNumValue()).setPos(this.start,this.end);
-        this.res = new RunTimeResult().success(value);
+        this.value = new BeloDouble(this.token.getNumValue());
+        this.res = new RunTimeResult().success(value, getStart(),getEnd());
         this.visitMethod = this::visit;
     }
 

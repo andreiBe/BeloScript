@@ -1,6 +1,5 @@
 package com.patonki.beloscript.interpreter;
 
-import com.patonki.beloscript.BeloScriptException;
 import com.patonki.beloscript.errors.BeloException;
 import com.patonki.beloscript.util.FileUtil;
 import com.patonki.beloscript.util.Reader;
@@ -48,7 +47,7 @@ public class Settings {
             throw new BeloException("Json-input file not found: "+path);
         }
     }
-    public Settings(String[] args, String root) throws BeloScriptException, BeloException {
+    public Settings(String[] args, String root) throws BeloException {
         this.args = args;
         this.rootPath = root;
         for (String arg : args) {

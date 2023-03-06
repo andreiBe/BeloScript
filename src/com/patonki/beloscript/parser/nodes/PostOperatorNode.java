@@ -21,7 +21,6 @@ public class PostOperatorNode extends Node {
             case PLUSPLUS:
                 command = (val,c) -> {
                     BeloClass copy = val.copy();
-                    //TODO changed
                     c.getSymboltable().change(varName,val.postPlus());
                     return copy;
                 };
@@ -29,7 +28,6 @@ public class PostOperatorNode extends Node {
             case MINUSMINUS:
                 command = (val,c) -> {
                     BeloClass copy = val.copy();
-                    //TODO changed
                     c.getSymboltable().change(varName,val.postMinus());
                     return copy;
                 };
@@ -46,7 +44,7 @@ public class PostOperatorNode extends Node {
             if (val2.hasError()) {
                 return res.failure(val2.getError());
             }
-            return res.success(val2.setContext(context));
+            return res.success(val2, getStart(), getEnd(), context);
         };
     }
 

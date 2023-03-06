@@ -21,11 +21,13 @@ public class UnaryOperationNode extends Node{
     public UnaryOperationNode(Token operatorToken, VarAccessNode node) {
         this.operatorToken = operatorToken;
         this.node = node;
+        this.start = operatorToken.getStart();
+        this.end = node.getEnd();
+
         if (operatorToken.getType() == PLUSPLUS) {
             String varName = node.getVarName();
             command = (number,c) -> {
                 BeloClass val = number.prePlus();
-                //TODO changed
                 c.getSymboltable().change(varName, val);
                 return val;
             };
@@ -34,25 +36,26 @@ public class UnaryOperationNode extends Node{
             String varName = node.getVarName();
             command = (number,c) -> {
                 BeloClass val = number.preMinus();
-                //TODO changed
                 c.getSymboltable().change(varName, val);
                 return val;
             };
         } else {
+            //ei pitäisi tapahtua, koska tokenit tarkistetaan ennen tänne syöttämistä
             throw new IllegalArgumentException("Not a valid token: "+operatorToken);
         }
         this.visitMethod = this::visit;
     }
+    private static final BeloDouble MINUSONE = new BeloDouble(-1);
     public UnaryOperationNode(Token operatorToken, Node node) {
         this.operatorToken = operatorToken;
         this.node = node;
 
         this.start = operatorToken.getStart();
         this.end = node.getEnd();
-        this.visitMethod = this::visit;
+
         TokenType type = operatorToken.getType();
         if (type == MINUS) {
-            command = (number,c) -> number.multiply(new BeloDouble(-1));
+            command = (number,c) -> number.multiply(MINUSONE);
         }
         else if (operatorToken.matches(KEYWORD, "not")) {
             command = (number, c) -> number.not();
@@ -63,6 +66,7 @@ public class UnaryOperationNode extends Node{
         else {
             throw new IllegalArgumentException("Not a valid token: "+operatorToken);
         }
+        this.visitMethod = this::visit;
     }
     private RunTimeResult visit(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
@@ -74,7 +78,7 @@ public class UnaryOperationNode extends Node{
         if (number.hasError()) {
             return res.failure(number.getError());
         } else {
-            return res.success(number.setPos(node.getStart(),node.getEnd()));
+            return res.success(number,getStart(),getEnd());
         }
     }
 

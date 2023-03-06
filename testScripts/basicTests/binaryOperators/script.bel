@@ -66,9 +66,7 @@ try {
 } catch(e) {
     print(e.details)
 }
-print("kkk".length)
-print("kkk".capitalized)
-print("jou".reversed)
+print("kkk".size())
 try {
     print("lol".lol)
 } catch(e) {

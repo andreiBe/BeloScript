@@ -1,6 +1,6 @@
 export {
-    i: 9,
-    func: function() {
-        print("jou")
+    "i": 9,
+    "func": function() {
+        print("jou " + self.i)
     }
 }

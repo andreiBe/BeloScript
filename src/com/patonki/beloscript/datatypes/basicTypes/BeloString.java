@@ -1,20 +1,30 @@
 package com.patonki.beloscript.datatypes.basicTypes;
 
 import com.patonki.beloscript.datatypes.BeloClass;
-import com.patonki.beloscript.errors.RunTimeError;
+import com.patonki.beloscript.datatypes.function.BeloScript;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
-public class BeloString extends BeloClass implements Iterable<BeloClass>{
+public class BeloString extends CustomBeloClass implements Iterable<BeloClass>{
     private final String value;
 
-    public BeloString(String value) {
+    public static BeloString create(String value) {
+        return new BeloString(value).init_self();
+    }
+    public static BeloString create(char c) {
+        return new BeloString(c).init_self();
+    }
+
+    public static BeloString create_dont_use_optimized_version(String s) {
+        return new BeloString(s);
+    }
+    private BeloString(String value) {
         this.value = value;
     }
-    public BeloString(char c) {
+    private BeloString(char c) {
         this.value = c+"";
     }
 
@@ -28,42 +38,89 @@ public class BeloString extends BeloClass implements Iterable<BeloClass>{
 
     @Override
     public BeloClass add(BeloClass another) {
-        return new BeloString(this.value + another.toString());
+        return BeloString.create(this.value + another.toString());
     }
 
     @Override
     public BeloClass multiply(BeloClass another) {
-        if (Double.isNaN(another.doubleValue())) {
-            return new BeloError(new RunTimeError(getStart(),another.getEnd(),"Can't multiply string with "+
-                    another.getClass().getSimpleName(),context));
+        if (!(another instanceof BeloDouble)) {
+            return throwError("Can't multiply string with " + another.getClass().getSimpleName());
         }
         StringBuilder builder = new StringBuilder();
-        for (int i = (int) another.doubleValue(); i > 0; i--) {
+        for (int i = another.intValue(); i > 0; i--) {
             builder.append(this.value);
         }
-        return new BeloString(builder.toString());
+        return BeloString.create(builder.toString());
     }
+
 
     @Override
     public BeloClass index(BeloClass index) {
-        if (Double.isNaN(index.doubleValue())) {
-            return new BeloError(new RunTimeError(index.getStart(),index.getEnd(),
-                    "Index must be a number",context));
+        if (!(index instanceof BeloDouble)) {
+            return throwError("Index must be a number");
         }
-        return new BeloString(String.valueOf(value.charAt((int)index.doubleValue())));
+        try {
+            return BeloString.create(value.charAt(index.intValue()));
+        } catch (IndexOutOfBoundsException e) {
+            return throwError("IndexOutOfBounds index:"+index.intValue()+" size:"+size());
+        }
     }
-
-    @Override
-    public BeloClass classValue(BeloClass name) {
-        switch (name.toString()) {
-            case "length":
-                return new BeloDouble(this.value.length());
-            case "capitalized":
-                return new BeloString(value.substring(0,1).toUpperCase()+value.substring(1));
-            case "reversed":
-                return new BeloString(new StringBuilder(value).reverse().toString());
-        }
-        return createNotAMemberOfClassError(name);
+    @BeloScript
+    public int size() {
+        return this.value.length();
+    }
+    @BeloScript
+    public String upper_case() {
+        return this.value.toUpperCase();
+    }
+    @BeloScript
+    public String lower_case() {
+        return this.value.toLowerCase();
+    }
+    @BeloScript
+    public boolean contains(String s) {
+        return this.value.contains(s);
+    }
+    @BeloScript
+    public boolean matches(String regex) {
+        return this.value.matches(regex);
+    }
+    @BeloScript
+    public boolean starts_with(String s) {
+        return this.value.startsWith(s);
+    }
+    @BeloScript
+    public boolean ends_with(String s) {
+        return this.value.endsWith(s);
+    }
+    @BeloScript
+    public String trim() {
+        return this.value.trim();
+    }
+    @BeloScript
+    public String replace(String s, String s2) {
+        return this.value.replace(s,s2);
+    }
+    @BeloScript
+    public String substring(int start, int end) {
+        return this.value.substring(start,end);
+    }
+    @BeloScript
+    public String substring(int start) {
+        return this.value.substring(start);
+    }
+    @BeloScript
+    public int index_of(String s) {
+        return this.value.indexOf(s);
+    }
+    @BeloScript
+    public String replace_all(String regex, String with) {
+        return this.value.replaceAll(regex,with);
+    }
+    @BeloScript
+    public List split(String sep) {
+        String[] splitted = this.value.split(sep);
+        return List.create(Arrays.stream(splitted).map(BeloString::create).collect(Collectors.toList()));
     }
 
     @Override
@@ -95,7 +152,7 @@ public class BeloString extends BeloClass implements Iterable<BeloClass>{
 
             @Override
             public BeloClass next() {
-                return new BeloString(value.charAt(i++));
+                return BeloString.create(value.charAt(i++));
             }
         };
     }

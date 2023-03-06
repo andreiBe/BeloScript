@@ -1,4 +1,4 @@
-package com.patonki.beloscript.datatypes.function.builtIn;
+package com.patonki.beloscript.builtInLibraries;
 
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;

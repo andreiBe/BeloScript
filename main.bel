@@ -1,0 +1,3 @@
+obj = import "test.bel"
+
+obj.func()

@@ -27,14 +27,7 @@ public class ObjectNode extends Node {
 
     private RunTimeResult visit(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
-        Obj object = null;
-        try {
-            object = Obj.create();
-        } catch (BeloException e) {
-            return res.failure(
-                    new RunTimeError(getStart(),getEnd(),"Unable to create object", context)
-            );
-        }
+        Obj object = Obj.create();
         Context newContext = new Context("Object", context, this.getStart());
         newContext.setSymboltable(new SymbolTable(newContext.getParent().getSymboltable()));
         newContext.getSymboltable().set("self", object);
@@ -47,7 +40,7 @@ public class ObjectNode extends Node {
 
             object.put(key,value);
         }
-        return res.success(object);
+        return res.success(object, getStart(), getEnd());
     }
 
     @Override

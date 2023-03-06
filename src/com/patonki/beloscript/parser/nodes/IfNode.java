@@ -1,7 +1,9 @@
 package com.patonki.beloscript.parser.nodes;
 
+import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
+import com.patonki.beloscript.datatypes.basicTypes.Null;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
@@ -12,18 +14,14 @@ public class IfNode extends Node {
     private final List<Case> cases;
     private final ElseNode elseCase;
 
-    public IfNode(List<Case> cases, ElseNode elseCase) {
+    public IfNode(List<Case> cases, ElseNode elseCase, Position start, Position end) {
         this.cases = cases;
         this.elseCase = elseCase;
         if (cases.size() == 0) {
             return;
         }
-        this.start = cases.get(0).getStatements().getStart();
-        if (elseCase != null) {
-            end = elseCase.getEnd();
-        } else {
-            end = cases.get(cases.size()-1).getStatements().getEnd();
-        }
+        this.start = start;
+        this.end = end;
         this.visitMethod = this::visit;
     }
     private RunTimeResult visit(Context context, Interpreter interpreter) {
@@ -33,20 +31,19 @@ public class IfNode extends Node {
             if (res.shouldReturn()) return res;
 
             if (conditionValue.isTrue()) {
-                BeloClass linesValue = res.register(cas.getStatements().getVisit().visit(context,interpreter));
+                BeloClass linesValue = res.register(cas.getStatements().execute(context,interpreter));
                 if (res.shouldReturn()) return res;
-                //TODO actual null value
-                return res.success(cas.getShouldReturnNull() ? new BeloDouble(0) : linesValue);
+                return res.success(cas.getShouldReturnNull() ? new Null() : linesValue,
+                        getStart(), getEnd(), context);
             }
         }
         if (elseCase != null) {
             BeloClass linesValue = res.register(elseCase.getStatements().getVisit().visit(context,interpreter));
             if (res.shouldReturn()) return res;
-            //TODO actual null value
-            return res.success(elseCase.getShouldReturnNull() ? new BeloDouble(0) : linesValue);
+            return res.success(elseCase.getShouldReturnNull() ? new Null(): linesValue,
+                    getStart(),getEnd(),context);
         }
-        //TODO actual null value
-        return  res.success(new BeloDouble(0));
+        return  res.success(new Null(),getStart(),getEnd(),context);
     }
 
     @Override

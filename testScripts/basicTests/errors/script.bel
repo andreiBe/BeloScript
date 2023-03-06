@@ -9,9 +9,9 @@ try {
 catch(e) {
     print(e)
 }
-print(toNum("98.0"))
+print(to_num("98.0"))
 try {
-    toNum("two")
+    to_num("two")
 } catch(e) {
     print(e)
 }

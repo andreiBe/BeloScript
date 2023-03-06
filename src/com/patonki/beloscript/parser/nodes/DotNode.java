@@ -36,7 +36,7 @@ public class DotNode extends Node{
         if (result.hasError()) {
             return res.failure(result.getError());
         }
-        return res.success(result);
+        return res.success(result, getStart(), getEnd());
     }
 
     @Override

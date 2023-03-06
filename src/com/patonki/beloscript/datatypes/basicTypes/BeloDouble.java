@@ -8,7 +8,8 @@ import com.patonki.beloscript.errors.RunTimeError;
  */
 public class BeloDouble extends BeloClass {
     private final double value;
-
+    public static final BeloDouble FALSE = new BeloDouble(0);
+    public static final BeloDouble TRUE = new BeloDouble(1);
     public BeloDouble(double value) {
         this.value = value;
     }
@@ -77,7 +78,7 @@ public class BeloDouble extends BeloClass {
         if (!Double.isNaN(d)) {
             return new BeloDouble(value + another.doubleValue());
         } else if (another instanceof BeloString){
-            return new BeloString(this + another.toString());
+            return BeloString.create(this + another.toString());
         }
         else return new BeloError(new RunTimeError(getStart(),another.getEnd(),
                     "Can't add double to "+another.getClass().getSimpleName(),

@@ -1,11 +1,9 @@
 package com.patonki.beloscript;
 
-import com.patonki.beloscript.builtInLibraries.BeloRandom;
-import com.patonki.beloscript.builtInLibraries.LibJson;
+import com.patonki.beloscript.builtInLibraries.*;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.CustomBeloClass;
 import com.patonki.beloscript.datatypes.function.BeloScript;
-import com.patonki.beloscript.datatypes.function.builtIn.RangeCommand;
 import com.patonki.beloscript.datatypes.structures.Set;
 import com.patonki.beloscript.errors.BeloException;
 import com.patonki.beloscript.interpreter.SymbolTable;
@@ -43,6 +41,8 @@ public class Import {
         addMarkedFieldsFromClass(com.patonki.beloscript.datatypes.basicTypes.List.class);
         addMarkedFieldsFromClass(Set.class);
         addMarkedFieldsFromClass(RangeCommand.class);
+        addMarkedFieldsFromClass(IO.class);
+        addMarkedFieldsFromClass(Util.class);
 
         LibJson json = new LibJson();
         Import.libraries.add(json);
@@ -100,7 +100,6 @@ public class Import {
     public static void addMarkedFieldsFromClass(Class<?> clazz) throws IllegalAccessException, BeloException {
         if (clazz.getAnnotation(BeloScript.class) == null) return;
         if (!CustomBeloClass.class.isAssignableFrom(clazz)) {
-            System.out.println(clazz);
             throw new BeloException("Class should inherit CustomBeloClass class");
         }
         CustomBeloClass.addMethodsAndFields(clazz, imported);

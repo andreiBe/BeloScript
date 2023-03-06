@@ -6,6 +6,7 @@ import com.patonki.beloscript.lexer.Token;
 import com.patonki.beloscript.lexer.TokenType;
 import com.patonki.beloscript.parser.nodes.*;
 import com.patonki.datatypes.Pair;
+import javafx.geometry.Pos;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -274,7 +275,7 @@ public class Parser {
         } else {
             res.registerAdvancement();
             advance();
-            Node indexAccNode = new IndexAccessNode(target,index);
+            Node indexAccNode = new IndexAccessNode(target,index, curPos());
             //kutsutaan recursiivisesti, kun kyseessä on esim. moniulotteinen taulukko[][]
             if (curToken.getType() == OPENING_SQUARE) {
                 indexAccNode = res.register(squares(indexAccNode));
@@ -288,8 +289,9 @@ public class Parser {
         dot() ^? factor()?
      */
     private ParseResult power() {
-        return binaryOperator(this::dotAndCall, this::factor, TokenType.POW);
+        return binaryOperator(this::postAndPre, this::factor, TokenType.POW);
     }
+
     /*
         call() .? identifier()?
 
@@ -297,12 +299,12 @@ public class Parser {
         return binaryOperator(this::call, this::call, DOT);
     }
     */
-    private ParseResult dotAndCall() {
+    //TODO move this somewhere else
+    private ParseResult postAndPre() {
         ParseResult res = new ParseResult();
         Node left = res.register(atom());
         if (res.hasError()) return res;
-        //TODO Remove dot and call
-        while (curToken.typeInList(LPAREN, DOT, PLUSPLUS,MINUSMINUS)) {
+        while (curToken.typeInList(PLUSPLUS,MINUSMINUS)) {
             if (curToken.typeInList(PLUSPLUS,MINUSMINUS)) {
                 Token copy = curToken; advance();
                 if (! (left instanceof VarAccessNode)) {
@@ -310,21 +312,6 @@ public class Parser {
                             "Post operations only work with variables"));
                 }
                 left = new PostOperatorNode((VarAccessNode) left,copy);
-            }
-            if (curToken.getType() == LPAREN) {
-                Node node = res.register(functionBuilder(left));
-                if (res.hasError()) return res;
-                left = node;
-            }
-            if (curToken.getType() == DOT) {
-                advance();
-                if (!curToken.typeInList(IDENTIFIER,KEYWORD)) {
-                    return res.failure(new InvalidSyntaxError(curToken.getStart(),curToken.getEnd(),
-                            "Unexpected token type: "+curToken.getType()+" expected either identifier or keyword"));
-                }
-                Token name = curToken; advance();
-                if (res.hasError()) return res;
-                left = new DotNode(left,name);
             }
         }
         return res.success(left);
@@ -434,16 +421,18 @@ public class Parser {
 
     private ParseResult exportExpression() {
         ParseResult res = new ParseResult();
+        Position start = curPos();
         res.registerAdvancement();
         advance();
         Node object = res.register(expression());
         if (res.hasError()) return res;
 
-        return res.success(new ExportNode(object));
+        return res.success(new ExportNode(object,start));
     }
 
     private ParseResult importExpression() {
         ParseResult res = new ParseResult();
+        Position start = curPos();
         res.registerAdvancement();
         advance();
         if (curToken.getType() != STRING) {
@@ -453,7 +442,7 @@ public class Parser {
         Token path = curToken;
         res.registerAdvancement();
         advance();
-        return res.success(new ImportNode(path));
+        return res.success(new ImportNode(path, start));
     }
 
 
@@ -490,7 +479,7 @@ public class Parser {
         }
         res.registerAdvancement();
         advance();
-        return res.success(new ObjectNode(pairs,start,curToken.getEnd().copy()));
+        return res.success(new ObjectNode(pairs,start,curPos()));
     }
 
     private ParseResult getObjectPair() {
@@ -575,7 +564,7 @@ public class Parser {
         }
     }
 
-    private ParseResult ifExprElifOrElse() {
+    private ParseResult ifExprElifOrElse(Position start) {
         ParseResult res = new ParseResult();
         List<Case> cases = new ArrayList<>();
         ElseNode elseCase = null;
@@ -593,7 +582,7 @@ public class Parser {
             if (res.hasError()) return res;
             elseCase = allCases;
         }
-        return res.success(new IfNode(cases,elseCase));
+        return res.success(new IfNode(cases,elseCase,start, curPos()));
     }
 
     private ParseResult ifExprElif() {
@@ -604,6 +593,7 @@ public class Parser {
         List<Case> cases = new ArrayList<>();
         ElseNode elseCase;
 
+        Position start = curPos();
         res.registerAdvancement();
         advance();
 
@@ -613,9 +603,8 @@ public class Parser {
             Node statements = res.register(block());
             if (res.hasError()) return res;
             cases.add(new Case(condition, statements, true));
-            ParseResult re = ifExprElifOrElse();
 
-            IfNode allCases = (IfNode) res.register(re);
+            IfNode allCases = (IfNode) res.register(ifExprElifOrElse(start));
             if (res.hasError()) return res;
             cases.addAll(allCases.getCases());
             elseCase = allCases.getElseCase();
@@ -624,16 +613,19 @@ public class Parser {
             if (res.hasError()) return res;
             cases.add(new Case(condition,node,false));
 
-            IfNode ifNode = (IfNode) res.register(ifExprElifOrElse());
+            IfNode ifNode = (IfNode) res.register(ifExprElifOrElse(start));
             if (res.hasError()) return res;
             cases.addAll(ifNode.getCases());
             elseCase = ifNode.getElseCase();
         }
-        return res.success(new IfNode(cases,elseCase));
+        return res.success(new IfNode(cases,elseCase, start, curPos()));
     }
-
+    private Position curPos() {
+        return curToken.getStart().copy();
+    }
     private ParseResult whileExpression() {
         ParseResult res = new ParseResult();
+        Position start = curPos();
 
         res.registerAdvancement();
         advance();
@@ -644,16 +636,18 @@ public class Parser {
         if (curToken.getType() == OPENING_BRACKET) {
             Node statements = res.register(block());
             if (res.hasError()) return res;
-            return res.success(new WhileNode(condition, statements, true));
+            return res.success(new WhileNode(condition, statements, start, curPos()));
         }
         Node statement = res.register(statement());
         if (res.hasError()) return res;
 
-        return res.success(new WhileNode(condition,statement,false));
+        return res.success(new WhileNode(condition,statement, start, curPos()));
     }
 
     private ParseResult functionDefinition() {
         ParseResult res = new ParseResult();
+        Position start = curPos();
+
         res.registerAdvancement();
         advance();
 
@@ -715,7 +709,7 @@ public class Parser {
             Node body = res.register(expression());
             if (res.hasError()) return res;
 
-            return res.success(new FuncDefNode(varName, argumentNames, body,true));
+            return res.success(new FuncDefNode(varName, argumentNames, body,true, start, curPos()));
         }
 
         if (curToken.getType() != OPENING_BRACKET) {
@@ -724,17 +718,17 @@ public class Parser {
                     "Expected -> or {"
             ));
         }
-        res.registerAdvancement();
-        advance();
-
+        //res.registerAdvancement();
+        //advance();
         Node body = res.register(block());
         if (res.hasError()) return res;
         return res.success(new FuncDefNode(
-           varName, argumentNames, body,false
+           varName, argumentNames, body,false, start, curPos()
         ));
     }
     private ParseResult tryExpression() {
         ParseResult res = new ParseResult();
+        Position start = curPos();
         res.registerAdvancement();
         advance();
 
@@ -748,7 +742,7 @@ public class Parser {
         while (curToken.getType() == NEWLINE) advance();
 
         if (!curToken.matches(KEYWORD, "catch")) {
-            return res.success(new TryNode(null,body,null));
+            return res.success(new TryNode(null,body,null, start, curPos()));
         }
         res.registerAdvancement();
         advance();
@@ -780,11 +774,12 @@ public class Parser {
         }
         if (res.hasError()) return res;
 
-        return res.success(new TryNode(errorVariableName,body,catchBody));
+        return res.success(new TryNode(errorVariableName,body,catchBody, start,curPos()));
     }
     private ParseResult forExpression() {
         ParseResult res = new ParseResult();
 
+        Position start = curPos();
         res.registerAdvancement();
         advance();
         if (curToken.getType() != LPAREN) {
@@ -804,7 +799,7 @@ public class Parser {
                 return res.failure(new InvalidSyntaxError(startValue.getStart(),startValue.getEnd(),
                         "Expected identifier"));
             }
-            VarAccessNode start= (VarAccessNode) startValue;
+            VarAccessNode startVal= (VarAccessNode) startValue;
             res.registerAdvancement();
             advance();
 
@@ -821,12 +816,12 @@ public class Parser {
             if (curToken.getType() == OPENING_BRACKET) {
                 Node body = res.register(block());
                 if (res.hasError()) return res;
-                return res.success(new ForEachNode(start, list, body, true));
+                return res.success(new ForEachNode(startVal, list, body, true, start, curPos()));
             }
             Node body = res.register(statement());
             if (res.hasError()) return res;
 
-            return res.success(new ForEachNode(start,list,body,false));
+            return res.success(new ForEachNode(startVal,list,body,false, start, curPos()));
         }
         if (curToken.getType() != DOUBLEDOT) {
             return res.failure(new InvalidSyntaxError(
@@ -864,12 +859,12 @@ public class Parser {
         if (curToken.getType() == OPENING_BRACKET) {
             Node body = res.register(block());
             if (res.hasError()) return res;
-            return res.success(new ForNode(startValue, condition, change, body, true));
+            return res.success(new ForNode(startValue, condition, change, body, true,start,curPos()));
         }
         Node body = res.register(statement());
         if (res.hasError()) return res;
 
-        return res.success(new ForNode(startValue,condition,change,body,false));
+        return res.success(new ForNode(startValue,condition,change,body,false, start, curPos()));
     }
 
     private ParseResult block() {

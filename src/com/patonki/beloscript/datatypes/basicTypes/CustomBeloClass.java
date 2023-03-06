@@ -1,10 +1,13 @@
 package com.patonki.beloscript.datatypes.basicTypes;
 
+import com.patonki.beloscript.errors.LocalizedBeloException;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.function.BeloScript;
 import com.patonki.beloscript.datatypes.function.BeloScriptFunction;
 import com.patonki.beloscript.datatypes.function.Overloading;
 import com.patonki.beloscript.errors.BeloException;
+import com.patonki.beloscript.errors.BeloScriptError;
+import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.RunTimeResult;
 import com.patonki.beloscript.interpreter.Settings;
@@ -17,9 +20,9 @@ import java.util.stream.Collectors;
 
 import static com.patonki.beloscript.ImportUtil.*;
 
+
 public class CustomBeloClass extends BeloClass{
     public HashMap<BeloClass,BeloClass> classValues = new HashMap<>();
-
 
     @Override
     public BeloClass classValue(BeloClass name) {
@@ -32,7 +35,7 @@ public class CustomBeloClass extends BeloClass{
 
     @Override
     public BeloClass setClassValue(String name, BeloClass newValue) {
-        classValues.put(new BeloString(name),newValue);
+        classValues.put(BeloString.create_dont_use_optimized_version(name),newValue);
         return newValue;
     }
     public<T extends CustomBeloClass> T init_self() throws BeloException {
@@ -80,6 +83,13 @@ public class CustomBeloClass extends BeloClass{
                     e.printStackTrace();
                     return throwError(res, context, "Error calling function");
                 } catch (InvocationTargetException e) {
+                    //oh no this is bad code
+                    if (e.getCause() instanceof LocalizedBeloException) {
+                        BeloScriptError error = ((LocalizedBeloException)e.getCause()).getError();
+                        if (error instanceof RunTimeError) {
+                            return res.failure((RunTimeError) error);
+                        }
+                    }
                     //e.printStackTrace();
                     String message = e.getCause().getMessage();
                     if (message == null) message = e.getCause().toString();
@@ -131,7 +141,7 @@ public class CustomBeloClass extends BeloClass{
         CustomBeloClass beloClass = (CustomBeloClass) o;
 
         for (Overloading overload : overloads) {
-            beloClass.classValues.put(new BeloString(overload.getTypeName()),overload);
+            beloClass.classValues.put(BeloString.create_dont_use_optimized_version(overload.getTypeName()),overload);
         }
     }
     private static BeloScriptFunction createConstructor(Class<?> clazz, Constructor<?> constructor,
@@ -163,7 +173,7 @@ public class CustomBeloClass extends BeloClass{
                             //Esim BeloString -> java.lang.String
                             Object prim = matchingPrimitive(arg, parameterTypes[i]);
                             // ei sama luokka
-                            if (!arg.getClass().equals(parameterTypes[i])) {
+                            if (!parameterTypes[i].isAssignableFrom(arg.getClass())) {
                                 //primitiivinen arvo on sama
                                 if (prim != null && prim.getClass().equals(objectArvo(parameterTypes[i]))) {
                                     input[i] = prim; //päivitetään listaan oikea arvo

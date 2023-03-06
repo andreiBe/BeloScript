@@ -13,11 +13,10 @@ public class StringNode extends Node {
         this.token = token;
         this.start = token.getStart();
         this.end = token.getEnd();
-        this.val = new BeloString(token.getValue());
-        this.val.setPos(token.getStart(),token.getEnd());
-        res.success(val);
+        this.val = BeloString.create(token.getValue());
+        res.success(val, getStart(), getEnd());
         this.visitMethod = (context, interpreter) -> {
-            val.setContext(context);
+            //val.setContext(context);
             return res;
         };
     }

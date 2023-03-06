@@ -7,10 +7,9 @@ Runtime Error: Division by zero
       ^
 98
 File script.bel, line 14, in <stdin>
-File script.bel, line 14, in toNum
-Runtime Error: NumberFormatError
+Runtime Error: For input string: "two"
 
-    toNum("two")
-    ^^^^^
+    to_num("two")
+    ^^^^^^
 Too few args
 Too many args

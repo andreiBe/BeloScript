@@ -1,7 +1,6 @@
 package com.test;
 
 import com.patonki.beloscript.BeloScript;
-import com.patonki.beloscript.BeloScriptException;
 import com.patonki.beloscript.errors.BeloException;
 import com.patonki.helper.FileHandler;
 import org.junit.jupiter.api.Assertions;

@@ -1,6 +1,7 @@
 package com.patonki.beloscript.datatypes.basicTypes;
 
 import com.patonki.beloscript.datatypes.BeloClass;
+import com.patonki.beloscript.datatypes.function.BaseFunction;
 import com.patonki.beloscript.datatypes.function.BeloScript;
 import com.patonki.beloscript.datatypes.interfaces.RandomAccessCollection;
 import com.patonki.beloscript.errors.BeloException;
@@ -36,9 +37,13 @@ public class List extends CustomBeloClass implements RandomAccessCollection, Ite
     public void push(BeloClass item) {
         this.list.add(item);
     }
+
     @BeloScript
-    public void sort(Comparator<BeloClass> comparator) {
-        this.list.sort(comparator);
+    public void sort(BaseFunction f) {
+        this.list.sort((o1, o2) -> {
+            BeloClass c = f.run(new BeloClass[]{o1,o2});
+            return c.intValue();
+        });
     }
     @BeloScript
     public void sort() {
@@ -116,7 +121,7 @@ public class List extends CustomBeloClass implements RandomAccessCollection, Ite
             throw new BeloException("ArrayIndexOutOfBounds indexes:"+ Arrays.toString(index) +" size:"+size());
         }
     }
-    private void handleIndexOutOfBounds(Runnable runnable, int... index) throws BeloException {
+    private void handleIndexOutOfBounds(Runnable runnable, int... index) {
         try {
             runnable.run();
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -126,11 +131,12 @@ public class List extends CustomBeloClass implements RandomAccessCollection, Ite
     @Override
     public BeloClass add(BeloClass another) {
         try {
+            Iterable<BeloClass> it = (Iterable<BeloClass>) another;
             List newlist = create(list);
-            newlist.push(another);
+            newlist.push_all(it);
             return newlist;
-        } catch (BeloException e) {
-            return throwError("Problem with creating list!");
+        } catch (ClassCastException e) {
+            return throwError("Can't add list with " + another.getClass().getSimpleName());
         }
     }
     @Override
@@ -153,6 +159,7 @@ public class List extends CustomBeloClass implements RandomAccessCollection, Ite
         if (!index.isNumber()) {
             return throwError("Index must be a number but was " + index.getTypeName());
         }
+
         try {
             return get(index.intValue());
         } catch (IndexOutOfBoundsException e) {

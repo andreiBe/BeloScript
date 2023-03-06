@@ -27,16 +27,9 @@ public class ListNode extends Node {
             list.add(res.register(node.visitMethod.visit(context,interpreter)));
             if (res.shouldReturn()) return res;
         }
-        try {
-            return res.success(
-                    List.create(list).setContext(context).setPos(getStart(),getEnd())
-            );
-        } catch (BeloException e) {
-            e.printStackTrace();
-            return res.failure(
-                    new RunTimeError(getStart(),getEnd(), "Error with creating list!", context)
-            );
-        }
+        return res.success(
+                List.create(list),getStart(),getEnd(),context
+        );
     }
     @Override
     public String toString() {

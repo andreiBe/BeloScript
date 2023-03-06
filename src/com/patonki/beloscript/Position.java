@@ -24,6 +24,17 @@ public class Position {
         }
         return this;
     }
+
+    @Override
+    public String toString() {
+        return "Position{" +
+                "index=" + index +
+                ", lineNumber=" + lineNumber +
+                ", columnNumber=" + columnNumber +
+                ", fileName='" + fileName + '\'' +
+                '}';
+    }
+
     public Position copy() {
         return new Position(index,lineNumber,columnNumber,fileName,fileContent);
     }

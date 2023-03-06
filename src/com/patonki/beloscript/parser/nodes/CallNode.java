@@ -2,6 +2,7 @@ package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
+import com.patonki.beloscript.datatypes.function.BeloScriptFunction;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
@@ -34,16 +35,19 @@ public class CallNode extends Node {
         //todo maybe edit
         //Position last = this.args.isEmpty() ? atom.getEnd() : this.args.get(this.args.size()-1).getEnd();
         funcToCall.setPos(atom.getStart(),atom.getEnd());//.setContext(context);
-        if (funcToCall.getContext() == null) funcToCall.setContext(context);
+
+        //if (funcToCall.getContext() == null) funcToCall.setContext(context);
 
         for (Node argNode : this.args) {
             args.add(res.register(argNode.execute(context,interpreter)));
             if (res.shouldReturn()) return res;
         }
+        if (funcToCall instanceof BeloScriptFunction) {
+            funcToCall.setContext(context);
+        }
         BeloClass returnValue = res.register(funcToCall.execute(args));
         if (res.shouldReturn()) return res;
 
-        returnValue.setContext(context).setPos(getStart(),getEnd());
-        return res.success(returnValue);
+        return res.success(returnValue, getStart(), getEnd(), context);
     }
 }

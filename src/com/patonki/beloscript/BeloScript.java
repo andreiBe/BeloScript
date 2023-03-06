@@ -3,11 +3,9 @@ package com.patonki.beloscript;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
 import com.patonki.beloscript.datatypes.basicTypes.Null;
-import com.patonki.beloscript.datatypes.function.builtIn.InputCommand;
-import com.patonki.beloscript.datatypes.function.builtIn.NumCommand;
-import com.patonki.beloscript.datatypes.function.builtIn.PrintCommand;
 import com.patonki.beloscript.errors.BeloException;
 import com.patonki.beloscript.errors.BeloScriptError;
+import com.patonki.beloscript.errors.LocalizedBeloException;
 import com.patonki.beloscript.interpreter.*;
 import com.patonki.beloscript.lexer.LexResult;
 import com.patonki.beloscript.lexer.Lexer;
@@ -23,16 +21,16 @@ public class BeloScript {
     private SymbolTable globalSymbolTable;
     private Interpreter interpreter;
 
-    private void reset(String root) throws BeloScriptException {
+    private void reset(String root) throws LocalizedBeloException {
         globalSymbolTable = new SymbolTable();
         try {
             Import.importEverything(globalSymbolTable, root);
         } catch (BeloException | IOException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new BeloScriptException(new BeloScriptError("Import error",e.getMessage()));
+            throw new LocalizedBeloException(new BeloScriptError("Import error",e.getMessage()));
         }
-        globalSymbolTable.defineFunction("print",new PrintCommand("print"));
-        globalSymbolTable.defineFunction("input",new InputCommand("input"));
-        globalSymbolTable.defineFunction("toNum",new NumCommand("toNum"));
+        // globalSymbolTable.defineFunction("print",new PrintCommand("print"));
+        // globalSymbolTable.defineFunction("input",new InputCommand("input"));
+        // globalSymbolTable.defineFunction("toNum",new NumCommand("toNum"));
 
         globalSymbolTable.set("true",new BeloDouble(1));
         globalSymbolTable.set("false",new BeloDouble(0));
@@ -56,7 +54,7 @@ public class BeloScript {
         String content = fileHandler.currentContent();
         IOException possibleError = fileHandler.close();
         if (possibleError != null) {
-            throw new BeloScriptException("File error", "Can't close file stream");
+            throw new BeloException("Can't close file stream");
         }
         return execute(content, rootPath,name,args);
     }
@@ -67,7 +65,7 @@ public class BeloScript {
         long now = System.currentTimeMillis();
         LexResult lexResult = lexer.makeTokens();
         if (lexResult.hasError()) {
-            throw new BeloScriptException(lexResult.getError());
+            throw new LocalizedBeloException(lexResult.getError());
         }
         if (settings.logLexResult()) {
             System.out.println(lexResult);
@@ -76,7 +74,7 @@ public class BeloScript {
         Parser parser = new Parser(lexResult.getTokens());
         ParseResult parseResult = parser.parse();
         if (parseResult.hasError()) {
-            throw new BeloScriptException(parseResult.getError());
+            throw new LocalizedBeloException(parseResult.getError());
         }
         if (settings.logParseResult()) {
             System.out.println(parseResult.getNode());
@@ -86,14 +84,14 @@ public class BeloScript {
         return run(settings, rootPath,parseResult.getNode());
     }
 
-    private BeloClass run(Settings settings, String rootPath, Node node) throws BeloScriptException {
+    private BeloClass run(Settings settings, String rootPath, Node node) throws LocalizedBeloException {
         reset(rootPath);
         Context context = new Context("<stdin>");
         context.setSymboltable(globalSymbolTable);
         context.setSettings(settings);
         RunTimeResult res = interpreter.execute(node, context);
         if (res.hasError()) {
-            throw new BeloScriptException(res.getError());
+            throw new LocalizedBeloException(res.getError());
         }
         return res.getFunctionReturnValue();
     }

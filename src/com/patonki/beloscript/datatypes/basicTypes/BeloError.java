@@ -16,7 +16,7 @@ public class BeloError extends BeloClass {
     @Override
     public BeloClass classValue(BeloClass name) {
         if (name.toString().equals("details"))
-            return new BeloString(this.getError().getErrorDefails());
+            return BeloString.create(this.getError().getErrorDefails());
         return createNotAMemberOfClassError(name);
     }
 }

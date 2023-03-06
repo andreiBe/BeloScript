@@ -28,10 +28,9 @@ public class VarAssignNode extends Node {
         if (var instanceof VarAccessNode) {
             setter = (value, context,interpreter,res) -> {
                 VarAccessNode variableName = (VarAccessNode) var;
-                //TODO changed
                 if (calculation != null) context.getSymboltable().change(variableName.getVarName(),value);
                 else context.getSymboltable().set(variableName.getVarName(),value);
-                return res.success(value);
+                return res.success(value, getStart(), getEnd());
             };
         }
         //arvon asettaminen indeksissä n. Esim: muuttuja[8] = 9
@@ -48,7 +47,7 @@ public class VarAssignNode extends Node {
                 if (result.hasError()) {
                     return res.failure(result.getError());
                 } else {
-                    return res.success(result);
+                    return res.success(result, getStart(), getEnd());
                 }
             };
         }
@@ -63,7 +62,7 @@ public class VarAssignNode extends Node {
                 if (result.hasError()) {
                     return res.failure(result.getError());
                 } else {
-                    return res.success(result);
+                    return res.success(result, getStart(), getEnd());
                 }
              };
         }
@@ -87,7 +86,8 @@ public class VarAssignNode extends Node {
                 return res.failure(value.getError());
             }
         }
-
+        value.setPos(getStart(),getEnd());
+        value.setContext(context);
         return this.setter.set(value,context,interpreter,res);
     }
 

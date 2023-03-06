@@ -1,6 +1,7 @@
 package com.patonki.beloscript.interpreter;
 
 
+import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.errors.RunTimeError;
 
@@ -43,6 +44,19 @@ public class RunTimeResult {
     public RunTimeResult success(BeloClass value) {
         this.reset();
         this.value = value;
+        return this;
+    }
+    public RunTimeResult success(BeloClass value, Position start, Position end, Context context) {
+        this.reset();
+        this.value = value;
+        this.value.setPos(start,end);
+        this.value.setContext(context);
+        return this;
+    }
+    public RunTimeResult success(BeloClass value, Position start, Position end) {
+        this.reset();
+        this.value = value;
+        this.value.setPos(start,end);
         return this;
     }
 

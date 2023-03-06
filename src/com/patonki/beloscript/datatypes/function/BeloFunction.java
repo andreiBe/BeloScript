@@ -29,7 +29,6 @@ public class BeloFunction extends BaseFunction{
 
         res.register(checkAndPopulateArgs(argNames,args,newContext));
         if (res.shouldReturn()) return res;
-
         BeloClass value = res.register(interpreter.execute(body,newContext));
         if (res.shouldReturn() && res.getFunctionReturnValue() == null){
             return res;
@@ -38,7 +37,7 @@ public class BeloFunction extends BaseFunction{
                 res.getFunctionReturnValue() != null ?
                 res.getFunctionReturnValue() :
                 new Null());
-        return res.success(returnValue);
+        return res.success(returnValue, getStart(), getEnd(),context);
     }
 
     @Override

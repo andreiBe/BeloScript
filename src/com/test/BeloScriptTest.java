@@ -1,26 +1,24 @@
 package com.test;
 
 import com.patonki.beloscript.BeloScript;
-import com.patonki.beloscript.BeloScriptException;
+import com.patonki.beloscript.errors.LocalizedBeloException;
 import com.patonki.beloscript.Main;
 import com.patonki.beloscript.errors.BeloException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class BeloScriptTest {
     private static final String ROOT = "testScripts/beloscript/";
     @Test
     void imports() throws BeloException {
         //tyhjä jar tiedosto
-        Assertions.assertThrows(BeloScriptException.class,
+        Assertions.assertThrows(LocalizedBeloException.class,
                 () -> BeloScript.runFile("testScripts/beloscript/importEmptyJar/script.bel"));
         try {
             BeloScript.runFile("testScripts/beloscript/imports/script.bel");
             //pitäis tulla error
             Assertions.fail("No error");
-        } catch (BeloScriptException e) {
+        } catch (LocalizedBeloException e) {
             e.printStackTrace();
         }
         //error toisessa tiedostossa
@@ -28,7 +26,7 @@ class BeloScriptTest {
                 () -> BeloScript.runFile("testScript/beloscript/imports/script2.bel"));
         try {
             BeloScript.runFile("testScripts/beloscript/imports/script2.bel");
-        } catch (BeloScriptException e) {
+        } catch (LocalizedBeloException e) {
             e.printStackTrace();
         }
     }

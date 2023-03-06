@@ -1,0 +1,21 @@
+str = "makkarakeitto"
+str += 6 # makkarakeitto6
+str *= 2 #makkarakeitto6makkarakeitto6
+str[1] #a
+str.size()
+str = str.upper_case()
+str = str.lower_case()
+str.contains("makkara") #true
+str.matches("\\w*") #true
+str.starts_with("makkara") #true
+str.ends_with("mato") #false
+str = str.trim()
+str = str.replace("makkara", "sipuli")
+str = str.substring(3)
+str = str.substring(1, 9)
+str.index_of("makkara")
+str = str.replace_all("ma", "MAH")
+lista = str.split("MAH")
+for (merkki in str) {
+    print(merkki)
+}

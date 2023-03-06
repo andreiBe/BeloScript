@@ -1,6 +1,6 @@
 d = for (i in range(17)) for (j in range(51)) for (k in range(51)) 0
 
-n = toNum(input())
+n = to_num(input())
 M = 1000000007
 d[0][0][0] = 1
 totalA = totalB = 0

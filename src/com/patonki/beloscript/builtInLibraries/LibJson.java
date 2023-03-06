@@ -1,7 +1,7 @@
 package com.patonki.beloscript.builtInLibraries;
 
 import com.patonki.beloscript.BeloLibrary;
-import com.patonki.beloscript.BeloScriptException;
+import com.patonki.beloscript.errors.LocalizedBeloException;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
@@ -38,11 +38,11 @@ public class LibJson implements BeloLibrary {
                 Object obj = jsonParser.parse(json);
                 BeloClass value = readJsonData(obj);
 
-                if (value == null) throw new BeloScriptException(new BeloScriptError("Json error","Can't read json string"));
+                if (value == null) throw new LocalizedBeloException(new BeloScriptError("Json error","Can't read json string"));
                 return (Obj) value;
             } catch (ParseException e) {
                 e.printStackTrace();
-                throw new BeloScriptException(new BeloScriptError("Json error","Can't read json string\n"+e.getLocalizedMessage() ));
+                throw new LocalizedBeloException(new BeloScriptError("Json error","Can't read json string\n"+e.getLocalizedMessage() ));
             }
         }
         @Override
@@ -51,7 +51,7 @@ public class LibJson implements BeloLibrary {
             try {
                 Obj object = readJson(context.getSettings());
                 return res.success(object);
-            } catch (BeloScriptException e) {
+            } catch (LocalizedBeloException e) {
                 return res.failure(new RunTimeError(e.getError(),context));
             } catch (BeloException e) {
                 return res.failure(new RunTimeError(getStart(), getEnd(),e.getMessage(), context));
@@ -65,7 +65,7 @@ public class LibJson implements BeloLibrary {
                 return readJsonObject((JSONObject) obj);
             }
             if (obj instanceof String) {
-                return new BeloString((String) obj);
+                return BeloString.create((String) obj);
             }
             if (obj instanceof Double) {
                 return new BeloDouble((Double) obj);

@@ -11,10 +11,15 @@ public class StringWithArrows {
         if (idxEnd < 0) idxEnd = text.length();
 
         int lineCount = end.lineNumber - start.lineNumber + 1;
+
         for (int i = 0; i < lineCount; i++) {
             String line = text.substring(idxStart,idxEnd);
             int colStart = i== 0 ? start.columnNumber : 0;
             int colEnd = i == lineCount-1 ? end.columnNumber : line.length()-1;
+            if (end.lineNumber > start.lineNumber && i != lineCount-1) {
+                colStart = i == 0 ? end.columnNumber : 0;
+                colEnd = line.length()-1;
+            }
             result.append(line).append(System.lineSeparator());
             String spaces = new String(new char[colStart]).replace("\0", " ");
             String arrows = new String(new char[colEnd-colStart]).replace("\0","^");

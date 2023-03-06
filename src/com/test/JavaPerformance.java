@@ -1,22 +1,22 @@
 package com.test;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.Random;
 
 public class JavaPerformance {
     public static void main(String[] args) {
-        long nanotime = System.nanoTime();
-        ArrayList<ArrayList<ArrayList<Integer>>> lista = new ArrayList<>();
-        for (int i = 0; i < 17; i++) {
-            ArrayList<ArrayList<Integer>> list = new ArrayList<>();
-            for (int j = 0; j < 51; j++) {
-                ArrayList<Integer> numbers = new ArrayList<>();
-                for (int k = 0; k < 51; k++) {
-                    numbers.add(0);
-                }
-                list.add(numbers);
-            }
-            lista.add(list);
+        ArrayList<Integer> list = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            list.add(i);
         }
-        System.out.println("Took: " + (System.nanoTime()-nanotime));
+        try {
+            list.sort((o1, o2) -> {
+                if (new Random().nextInt(10) == 4) throw new NullPointerException();
+                return o1-o2;
+            });
+        } catch (NullPointerException e) {
+            System.out.println(list);
+        }
     }
 }

@@ -1,5 +1,6 @@
 package com.patonki.beloscript.parser.nodes;
 
+import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
@@ -9,10 +10,12 @@ public class IndexAccessNode extends Node {
     private final Node target;
     private final Node index;
 
-    public IndexAccessNode(Node target, Node index) {
+    public IndexAccessNode(Node target, Node index, Position end) {
         this.target = target;
         this.index = index;
         this.visitMethod = this::visit;
+        this.start = target.getStart();
+        this.end = end;
     }
     private RunTimeResult visit(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
@@ -28,7 +31,7 @@ public class IndexAccessNode extends Node {
         if (result.hasError()) {
             return res.failure(result.getError());
         }
-        return res.success(result);
+        return res.success(result, getStart(), getEnd(), context);
     }
     public Node getTarget() {
         return target;

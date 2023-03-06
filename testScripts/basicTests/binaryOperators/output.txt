@@ -30,12 +30,10 @@ hello3
 Can't add double to List
 Can't substract List from double
 kkk
-Can't multiply string with BeloString
+Can't multiply string with BeloString (class:BeloString)
 1
 0
 k
-Index must be a number
+Index must be a number (class:BeloString)
 3
-Kkk
-uoj
 Not a member of class: 'lol' class: BeloString

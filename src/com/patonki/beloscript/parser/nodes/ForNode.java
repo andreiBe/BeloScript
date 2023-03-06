@@ -1,5 +1,6 @@
 package com.patonki.beloscript.parser.nodes;
 
+import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.List;
 import com.patonki.beloscript.datatypes.basicTypes.Null;
@@ -19,14 +20,15 @@ public class ForNode extends Node {
     private final Node body;
     private final boolean shouldReturnNull;
 
-    public ForNode(Node startValue, Node condition, Node change, Node body, boolean shouldReturnNull) {
+    public ForNode(Node startValue, Node condition, Node change, Node body, boolean shouldReturnNull, Position start, Position end) {
         this.startValue = startValue;
         this.condition = condition;
         this.change = change;
         this.body = body;
         this.shouldReturnNull = shouldReturnNull;
         this.visitMethod = this::visit;
-        //TODO not defining start and end
+        this.start = start;
+        this.end = end;
     }
     private RunTimeResult visit(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
@@ -54,15 +56,7 @@ public class ForNode extends Node {
             if (res.shouldReturn()) return res;
             elements.add(value);
         }
-        try {
-            return res.success(this.shouldReturnNull ? new Null() :
-                    List.create(elements).setContext(context));
-        } catch (BeloException e) {
-            e.printStackTrace();
-            return res.failure(
-                    new RunTimeError(getStart(),getEnd(), "Error with creating list!", context)
-            );
-        }
+        return res.success(List.create(elements),getStart(),getEnd(), context);
     }
 
     @Override

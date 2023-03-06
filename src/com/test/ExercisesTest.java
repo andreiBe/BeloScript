@@ -28,4 +28,8 @@ public class ExercisesTest {
     void oop() {
         TestUtil.testFile(ROOT+"oop");
     }
+    @Test
+    void advancedListAndMap() {
+        TestUtil.testFile(ROOT+"advancedListAndMap");
+    }
 }

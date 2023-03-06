@@ -7,6 +7,8 @@ public class ElseNode extends Node {
     public ElseNode(Boolean shouldReturnNull, Node statements) {
         this.shouldReturnNull = shouldReturnNull;
         this.statements = statements;
+        this.start = statements.getStart();
+        this.end = statements.getEnd();
     }
 
     public Boolean getShouldReturnNull() {
