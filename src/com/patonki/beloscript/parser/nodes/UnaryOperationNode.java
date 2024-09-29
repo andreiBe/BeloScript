@@ -14,6 +14,7 @@ public class UnaryOperationNode extends Node{
     private final Token operatorToken;
     private final Node node;
     private final Unary command;
+    private static final BeloDouble MINUSONE = new BeloDouble(-1);
 
     private interface Unary {
         BeloClass calculate(BeloClass number, Context context);
@@ -43,9 +44,8 @@ public class UnaryOperationNode extends Node{
             //ei pitäisi tapahtua, koska tokenit tarkistetaan ennen tänne syöttämistä
             throw new IllegalArgumentException("Not a valid token: "+operatorToken);
         }
-        this.visitMethod = this::visit;
     }
-    private static final BeloDouble MINUSONE = new BeloDouble(-1);
+
     public UnaryOperationNode(Token operatorToken, Node node) {
         this.operatorToken = operatorToken;
         this.node = node;
@@ -66,12 +66,12 @@ public class UnaryOperationNode extends Node{
         else {
             throw new IllegalArgumentException("Not a valid token: "+operatorToken);
         }
-        this.visitMethod = this::visit;
     }
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
 
-        BeloClass number = res.register(getNode().visitMethod.visit(context,interpreter));
+        BeloClass number = res.register(getNode().execute(context,interpreter));
         if (res.shouldReturn()) return res;
         number = command.calculate(number,context);
 

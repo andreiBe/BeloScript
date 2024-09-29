@@ -19,19 +19,19 @@ public class CallNode extends Node {
         this.args = args;
         this.start = atom.getStart();
         this.end = end;
-        this.visitMethod = this::visit;
     }
 
     @Override
     public String toString() {
         return "{" + atom.toString() + " args: " + args.toString()+ "}";
     }
-
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
-        List<BeloClass> args = new ArrayList<>();
         BeloClass funcToCall = res.register(atom.execute(context,interpreter));
         if (res.shouldReturn()) return res;
+
+        List<BeloClass> args = new ArrayList<>();
         //todo maybe edit
         //Position last = this.args.isEmpty() ? atom.getEnd() : this.args.get(this.args.size()-1).getEnd();
         funcToCall.setPos(atom.getStart(),atom.getEnd());//.setContext(context);

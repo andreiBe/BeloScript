@@ -26,11 +26,11 @@ public class ForNode extends Node {
         this.change = change;
         this.body = body;
         this.shouldReturnNull = shouldReturnNull;
-        this.visitMethod = this::visit;
         this.start = start;
         this.end = end;
     }
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         ArrayList<BeloClass> elements = new ArrayList<>();
 

@@ -40,8 +40,10 @@ public class List extends CustomBeloClass implements RandomAccessCollection, Ite
 
     @BeloScript
     public void sort(BaseFunction f) {
+        System.out.println("OMG " + f);
         this.list.sort((o1, o2) -> {
             BeloClass c = f.run(new BeloClass[]{o1,o2});
+            System.out.println("Comparison result: " + c);
             return c.intValue();
         });
     }

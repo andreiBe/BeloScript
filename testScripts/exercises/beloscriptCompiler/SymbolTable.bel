@@ -1,0 +1,15 @@
+class SymbolTable(parent) {
+    symbols = {}
+    parent
+    getVar(name) {
+        val = self.symbols.get(name)
+        if (val == null and self.parent != null) {
+            return self.parent.get(name)
+        }
+        return val
+    }
+    setVar(name, value) {
+        self.symbols[name] = value
+    }
+}
+export SymbolTable

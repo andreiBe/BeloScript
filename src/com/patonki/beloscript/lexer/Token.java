@@ -9,7 +9,6 @@ public class Token {
     private final Position start;
     private final Position end;
 
-
     public Token(TokenType type, String value, Position start, Position end) {
         this.type = type;
         this.value = value;
@@ -46,7 +45,7 @@ public class Token {
     public String getValue() {
         return value;
     }
-    public double getNumValue() {return Double.parseDouble(value);};
+    public double getNumValue() {return Double.parseDouble(value);}
 
     public Position getStart() {
         return start;

@@ -50,4 +50,15 @@ public class Context {
     public void setSymboltable(SymbolTable symboltable) {
         this.symboltable = symboltable;
     }
+
+    @Override
+    public String toString() {
+        return "Context{" +
+                "displayName='" + displayName + '\'' +
+                ", parent=" + parent +
+                ", parentEntyPosition=" + parentEntyPosition +
+                ", symboltable=" + symboltable +
+                ", settings=" + settings +
+                '}';
+    }
 }

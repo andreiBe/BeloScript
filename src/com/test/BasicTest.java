@@ -5,12 +5,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class BasicTest {
-    private BeloScript script;
     private final String root = "testScripts/basicTests";
-    @BeforeEach
-    void reset() {
-        script = new BeloScript();
-    }
     @Test
     void basicBinaryOperations() {
         TestUtil.testFile(root+"/binaryOperators");

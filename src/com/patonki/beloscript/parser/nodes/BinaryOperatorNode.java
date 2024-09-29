@@ -16,6 +16,8 @@ public class BinaryOperatorNode extends Node{
     private final Node right;
     private final Token token;
     private final Calculation binOp;
+    private static final BeloDouble ONE = new BeloDouble(1);
+    private static final BeloDouble ZERO = new BeloDouble(0);
 
     public BinaryOperatorNode(Node left, Token token, Node right) {
         this.left = left;
@@ -25,13 +27,13 @@ public class BinaryOperatorNode extends Node{
         this.end = right.getEnd();
         this.binOp = TokenType.getMatchingCalculation(token.getType());
         if (binOp != null) {
-            visitMethod = this::visit;
+            this.setVisitMethod(this::visitBinOp);
         }
         else if (token.matches(KEYWORD,"and")) {
-            visitMethod = this::and;
+            this.setVisitMethod(this::and);
         }
         else if (token.matches(KEYWORD, "or")) {
-            visitMethod = this::or;
+            this.setVisitMethod(this::or);
         }
         else {
             //ei pitäisi ikinä tapahtua, koska parserin pitäisi tietää mitkä tokenit käy
@@ -42,24 +44,24 @@ public class BinaryOperatorNode extends Node{
         RunTimeResult res = new RunTimeResult();
         BeloClass left = res.register(this.left.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-        if (left.isTrue()) return res.success(new BeloDouble(1), getStart(), getEnd(),context);
+        if (left.isTrue()) return res.success(ONE, getStart(), getEnd(),context);
 
         BeloClass right = res.register(this.right.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-        return res.success(new BeloDouble(right.isTrue() ? 1 : 0), getStart(),getEnd(),context);
+        return res.success(right.isTrue() ? ONE : ZERO, getStart(),getEnd(),context);
     }
     private RunTimeResult and(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         BeloClass left = res.register(this.left.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-        if (!left.isTrue()) return res.success(new BeloDouble(0), getStart(), getEnd(), context);
+        if (!left.isTrue()) return res.success(ZERO, getStart(), getEnd(), context);
 
         BeloClass right = res.register(this.right.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-        return res.success(new BeloDouble(right.isTrue() ? 1 : 0), getStart(),getEnd(),context);
+        return res.success(right.isTrue() ? ONE : ZERO, getStart(),getEnd(),context);
     }
 
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    private RunTimeResult visitBinOp(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         BeloClass left = res.register(this.left.execute(context,interpreter));
         if (res.shouldReturn()) return res;

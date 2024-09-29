@@ -15,17 +15,16 @@ public class FuncDefNode extends Node {
     private final Node body;
     private final BeloFunction function;
 
-    public FuncDefNode(Token varName, List<Token> argumentNames, Node body, boolean b, Position start, Position end) {
+    public FuncDefNode(Token varName, List<Token> argumentNames, Node body, boolean shouldAutoReturn, Position start, Position end) {
         this.varName = varName;
         this.body = body;
         this.start = start;
         this.end = end;
         List<String> argNames = argumentNames.stream().map(Token::getValue).collect(Collectors.toList());
         String funcName = varName != null ? varName.getValue() : null;
-        function = new BeloFunction(funcName, body,argNames, b);
-        this.visitMethod = this::visit;
+        function = new BeloFunction(funcName, body,argNames, shouldAutoReturn);
     }
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
 
         if (varName != null) {

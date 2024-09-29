@@ -13,11 +13,11 @@ public class IndexAccessNode extends Node {
     public IndexAccessNode(Node target, Node index, Position end) {
         this.target = target;
         this.index = index;
-        this.visitMethod = this::visit;
         this.start = target.getStart();
         this.end = end;
     }
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
 
         BeloClass target = res.register(this.target.execute(context,interpreter));

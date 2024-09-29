@@ -20,21 +20,21 @@ public class WhileNode extends Node {
     public WhileNode(Node condition, Node statements, Position start, Position end) {
         this.condition = condition;
         this.statements = statements;
-        this.visitMethod = this::visit;
         this.start = start;
         this.end = end;
     }
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         ArrayList<BeloClass> elements = new ArrayList<>();
 
         while (true) {
-            BeloClass conditionValue = res.register(condition.visitMethod.visit(context,interpreter));
+            BeloClass conditionValue = res.register(condition.execute(context,interpreter));
             if (res.shouldReturn()) return res;
 
             if (!conditionValue.isTrue()) break;
 
-            BeloClass value = res.register(statements.visitMethod.visit(context,interpreter));
+            BeloClass value = res.register(statements.execute(context,interpreter));
             if (res.shouldReturn() && !res.isShouldContinue() && !res.isShouldBreak()) return res;
             if (res.isShouldContinue()) continue;
             if (res.isShouldBreak()) break;

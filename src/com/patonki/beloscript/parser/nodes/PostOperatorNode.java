@@ -2,6 +2,7 @@ package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.interpreter.Context;
+import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
 import com.patonki.beloscript.lexer.Token;
 
@@ -35,17 +36,19 @@ public class PostOperatorNode extends Node {
             default:
                 throw new IllegalArgumentException("Not a post operator: "+post);
         }
-        this.visitMethod = (context, interpreter) -> {
-            RunTimeResult res = new RunTimeResult();
-            BeloClass val = res.register(value.execute(context, interpreter));
-            if (res.shouldReturn()) return res;
+    }
 
-            BeloClass val2 = command.calculate(val,context);
-            if (val2.hasError()) {
-                return res.failure(val2.getError());
-            }
-            return res.success(val2, getStart(), getEnd(), context);
-        };
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
+        RunTimeResult res = new RunTimeResult();
+        BeloClass val = res.register(value.execute(context, interpreter));
+        if (res.shouldReturn()) return res;
+
+        BeloClass val2 = command.calculate(val,context);
+        if (val2.hasError()) {
+            return res.failure(val2.getError());
+        }
+        return res.success(val2, getStart(), getEnd(), context);
     }
 
     @Override

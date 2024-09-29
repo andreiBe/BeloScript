@@ -22,10 +22,9 @@ public class ObjectNode extends Node {
         }
         this.start = start;
         this.end = end;
-        this.visitMethod = this::visit;
     }
-
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         Obj object = Obj.create();
         Context newContext = new Context("Object", context, this.getStart());

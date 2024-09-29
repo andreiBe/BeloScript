@@ -18,23 +18,21 @@ import java.io.File;
 import java.io.IOException;
 
 public class BeloScript {
-    private SymbolTable globalSymbolTable;
     private Interpreter interpreter;
 
-    private void reset(String root) throws LocalizedBeloException {
-        globalSymbolTable = new SymbolTable();
+    private SymbolTable createGlobalSymbolTable(String rootPath) {
+        SymbolTable symbolTable = new SymbolTable();
         try {
-            Import.importEverything(globalSymbolTable, root);
+            Import.importEverything(symbolTable, rootPath);
         } catch (BeloException | IOException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             throw new LocalizedBeloException(new BeloScriptError("Import error",e.getMessage()));
         }
-        // globalSymbolTable.defineFunction("print",new PrintCommand("print"));
-        // globalSymbolTable.defineFunction("input",new InputCommand("input"));
-        // globalSymbolTable.defineFunction("toNum",new NumCommand("toNum"));
-
-        globalSymbolTable.set("true",new BeloDouble(1));
-        globalSymbolTable.set("false",new BeloDouble(0));
-        globalSymbolTable.set("null",new Null());
+        symbolTable.set("true",new BeloDouble(1));
+        symbolTable.set("false",new BeloDouble(0));
+        symbolTable.set("null",new Null());
+        return symbolTable;
+    }
+    private void reset() throws LocalizedBeloException {
         this.interpreter = new Interpreter();
     }
 
@@ -58,11 +56,11 @@ public class BeloScript {
         }
         return execute(content, rootPath,name,args);
     }
-    public BeloClass execute(String script, String rootPath, String fileName, String... args) throws BeloException{
+    private BeloClass execute(String script, String rootPath, String fileName, String... args) throws BeloException{
         Settings settings = new Settings(args,rootPath);
 
         Lexer lexer = new Lexer(fileName == null ? "<anynymous>" : fileName, script);
-        long now = System.currentTimeMillis();
+        //long now = System.currentTimeMillis();
         LexResult lexResult = lexer.makeTokens();
         if (lexResult.hasError()) {
             throw new LocalizedBeloException(lexResult.getError());
@@ -84,12 +82,12 @@ public class BeloScript {
         return run(settings, rootPath,parseResult.getNode());
     }
 
-    private BeloClass run(Settings settings, String rootPath, Node node) throws LocalizedBeloException {
-        reset(rootPath);
+    private BeloClass run(Settings settings, String rootPath, Node rootNode) throws LocalizedBeloException {
+        reset();
         Context context = new Context("<stdin>");
-        context.setSymboltable(globalSymbolTable);
+        context.setSymboltable(createGlobalSymbolTable(rootPath));
         context.setSettings(settings);
-        RunTimeResult res = interpreter.execute(node, context);
+        RunTimeResult res = interpreter.execute(rootNode, context);
         if (res.hasError()) {
             throw new LocalizedBeloException(res.getError());
         }

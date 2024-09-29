@@ -17,14 +17,14 @@ public class ListNode extends Node {
         this.statements = statements;
         this.start = start;
         this.end = end;
-        this.visitMethod = this::visit;
     }
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         ArrayList<BeloClass> list = new ArrayList<>();
 
         for (Node node : statements) {
-            list.add(res.register(node.visitMethod.visit(context,interpreter)));
+            list.add(res.register(node.execute(context,interpreter)));
             if (res.shouldReturn()) return res;
         }
         return res.success(

@@ -14,9 +14,9 @@ public class ReturnNode extends Node {
         this.expr = expr;
         this.start = start;
         this.end = end;
-        this.visitMethod = this::visit;
     }
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         BeloClass value = Null.NULL;
         if (expr != null) {

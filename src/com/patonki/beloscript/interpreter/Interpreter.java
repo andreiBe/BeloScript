@@ -15,7 +15,7 @@ public class Interpreter {
     private BeloClass exported;
 
     public RunTimeResult execute(Node node, Context context) {
-        return node.getVisit().visit(context,this);
+        return node.execute(context,this);
     }
 
     public RunTimeResult importFile(ImportNode node, Context context) {
@@ -24,8 +24,9 @@ public class Interpreter {
             path = context.getSettings().getRootPath()+path;
         }
         RunTimeResult res = new RunTimeResult();
+        BeloScript script = new BeloScript();
         try {
-            BeloScript script = new BeloScript();
+
             //TODO fix importing
             script.executeFile(path,context.getSettings().getArgs());
             Interpreter interpreter = script.getInterpreter();

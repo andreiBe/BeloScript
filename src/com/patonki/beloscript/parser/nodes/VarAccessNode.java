@@ -16,10 +16,9 @@ public class VarAccessNode extends Node {
         this.start = token.getStart().copy();
         this.end = token.getEnd().copy();
         this.varName = token.getValue();
-        this.visitMethod = this::visit;
     }
-
-    public RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
 
         BeloClass value = context.getSymboltable().get(varName);

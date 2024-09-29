@@ -1,19 +1,19 @@
 #null values
-print(null)
+print(null) #null
 if (null) print("hello")
-print(null == "null")
+print(null == "null") #0
 
 try {
     8/0
 }
 catch(e) {
-    print(e)
+    print(e) #Division by zero
 }
-print(to_num("98.0"))
+print(to_num("98.0")) #98
 try {
     to_num("two")
 } catch(e) {
-    print(e)
+    print(e) #prints error
 }
 function hello(name,age) {
 
@@ -21,10 +21,10 @@ function hello(name,age) {
 try {
 hello("Peter")
 } catch(e) {
-    print(e.details)
+    print(e.details) #too few args
 }
 try {
 hello("Peter",18,"married")
-} catch(e) print(e.details)
+} catch(e) print(e.details) #too many args
 
 try [].add()

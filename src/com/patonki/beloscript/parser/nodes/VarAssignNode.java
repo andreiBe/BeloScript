@@ -70,10 +70,9 @@ public class VarAssignNode extends Node {
         else {
             throw new IllegalArgumentException("Type of variable not supported: "+var.getClass().getSimpleName());
         }
-        this.visitMethod = this::visit;
     }
-
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         BeloClass value = res.register(this.value.execute(context, interpreter));
         if (res.shouldReturn()) return res;
@@ -87,7 +86,7 @@ public class VarAssignNode extends Node {
             }
         }
         value.setPos(getStart(),getEnd());
-        value.setContext(context);
+        //value.setContext(context);
         return this.setter.set(value,context,interpreter,res);
     }
 

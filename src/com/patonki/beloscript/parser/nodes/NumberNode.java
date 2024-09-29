@@ -18,13 +18,13 @@ public class NumberNode extends Node {
 
         this.value = new BeloDouble(this.token.getNumValue());
         this.res = new RunTimeResult().success(value, getStart(),getEnd());
-        this.visitMethod = this::visit;
     }
 
     private final BeloClass value;
     private final RunTimeResult res;
 
-    public RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         value.setContext(context);
         return res;
     }

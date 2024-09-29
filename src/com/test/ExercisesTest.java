@@ -29,6 +29,14 @@ public class ExercisesTest {
         TestUtil.testFile(ROOT+"oop");
     }
     @Test
+    void classes() {
+        TestUtil.testFile(ROOT+"class");
+    }
+    @Test
+    void beloscriptCompiler() {
+        TestUtil.testFile(ROOT+"beloscriptCompiler");
+    }
+    @Test
     void advancedListAndMap() {
         TestUtil.testFile(ROOT+"advancedListAndMap");
     }

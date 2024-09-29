@@ -17,17 +17,17 @@ public class IfNode extends Node {
     public IfNode(List<Case> cases, ElseNode elseCase, Position start, Position end) {
         this.cases = cases;
         this.elseCase = elseCase;
-        if (cases.size() == 0) {
+        if (cases.isEmpty()) {
             return;
         }
         this.start = start;
         this.end = end;
-        this.visitMethod = this::visit;
     }
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         for (Case cas : cases) {
-            BeloClass conditionValue = res.register(cas.getCondition().getVisit().visit(context,interpreter));
+            BeloClass conditionValue = res.register(cas.getCondition().execute(context,interpreter));
             if (res.shouldReturn()) return res;
 
             if (conditionValue.isTrue()) {
@@ -38,7 +38,7 @@ public class IfNode extends Node {
             }
         }
         if (elseCase != null) {
-            BeloClass linesValue = res.register(elseCase.getStatements().getVisit().visit(context,interpreter));
+            BeloClass linesValue = res.register(elseCase.getStatements().execute(context,interpreter));
             if (res.shouldReturn()) return res;
             return res.success(elseCase.getShouldReturnNull() ? new Null(): linesValue,
                     getStart(),getEnd(),context);

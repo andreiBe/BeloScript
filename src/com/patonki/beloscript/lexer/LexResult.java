@@ -5,9 +5,13 @@ import com.patonki.beloscript.errors.BeloScriptError;
 import java.util.List;
 
 public class LexResult {
-    private List<Token> tokens;
-    private BeloScriptError error;
+    private final List<Token> tokens;
+    private final BeloScriptError error;
 
+    /**
+     * @param tokens Resulting list of tokens, must not be null
+     * @param error possible error, can be null
+     */
     public LexResult(List<Token> tokens, BeloScriptError error) {
         this.tokens = tokens;
         this.error = error;
@@ -17,6 +21,9 @@ public class LexResult {
         return error != null;
     }
 
+    /**
+     * @return List of tokens, cannot be null
+     */
     public List<Token> getTokens() {
         return tokens;
     }

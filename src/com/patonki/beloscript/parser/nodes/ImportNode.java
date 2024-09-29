@@ -14,10 +14,10 @@ public class ImportNode extends Node{
         this.path = stringToken.getValue();
         this.start = start;
         this.end = stringToken.getEnd();
-        this.visitMethod = this::visit;
     }
 
-    private RunTimeResult visit(Context context, Interpreter interpreter) {
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         BeloClass object = res.register(interpreter.importFile(this,context));
         if (res.shouldReturn()) return res;

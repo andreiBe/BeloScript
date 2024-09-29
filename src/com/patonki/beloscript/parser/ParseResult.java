@@ -8,10 +8,9 @@ public class ParseResult {
     private Node node;
     private BeloScriptError error;
     private int advanceCount = 0;
-    private int toReverseCount = 0;
     private int lastRegisteredAdvanceCount = 0;
 
-    public Node register(ParseResult res) {
+    protected Node register(ParseResult res) {
         lastRegisteredAdvanceCount = res.advanceCount;
         advanceCount += res.advanceCount;
         if (res.hasError()) {
@@ -19,22 +18,15 @@ public class ParseResult {
         }
         return res.node;
     }
-    public Node tryRegister(ParseResult res) {
-        if (res.hasError()) {
-            this.toReverseCount = res.getAdvanceCount();
-            return null;
-        }
-        return register(res);
-    }
-    public void registerAdvancement() {
+    protected void registerAdvancement() {
         lastRegisteredAdvanceCount = 1;
         advanceCount++;
     }
-    public ParseResult success(Node node) {
+    protected ParseResult success(Node node) {
         this.node = node;
         return this;
     }
-    public ParseResult failure(BeloScriptError error) {
+    protected ParseResult failure(BeloScriptError error) {
         if (this.error == null || lastRegisteredAdvanceCount == 0) {
             this.error = error;
         }
@@ -50,13 +42,5 @@ public class ParseResult {
 
     public Node getNode() {
         return node;
-    }
-
-    public int getAdvanceCount() {
-        return advanceCount;
-    }
-
-    public int getToReverseCount() {
-        return toReverseCount;
     }
 }

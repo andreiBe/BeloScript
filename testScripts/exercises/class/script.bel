@@ -1,0 +1,26 @@
+class SymbolTable(parent) {
+    symbols = {}
+    parent
+    SymbolTable {
+        print("Parent is " + self.parent)
+    }
+    getVar(name) {
+        val = self.symbols.get(name)
+        if (val == null and self.parent != null) {
+            return self.parent.get(name)
+        }
+        return val
+    }
+    setVar(name, value) {
+        self.symbols[name] = value
+    }
+}
+parent = SymbolTable(null)
+instance = SymbolTable(parent)
+
+a = instance.getVar("lol")
+print(a)
+
+instance.setVar("lol", 5)
+a = instance.getVar("lol")
+print(a)

@@ -55,3 +55,10 @@ elif (i < 11) print(18)
 if (i < 8) print(19)
 elif (i > 98) print(20)
 else print(21)
+
+if (i < 2) {
+    print(21)
+}
+else {
+    print(22)
+}

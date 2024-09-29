@@ -14,11 +14,11 @@ public class DotNode extends Node{
         this.left = left;
         this.start = left.getStart();
         this.end = right.getEnd();
-        this.visitMethod = this::execute;
     }
     protected String getMemberString() {
         return right.getToken().getValue();
     }
+
     protected RunTimeResult executeLeft(Context context, Interpreter interpreter) {
         return left.execute(context,interpreter);
     }

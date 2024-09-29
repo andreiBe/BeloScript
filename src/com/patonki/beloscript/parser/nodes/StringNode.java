@@ -1,24 +1,26 @@
 package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
+import com.patonki.beloscript.interpreter.Context;
+import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
 import com.patonki.beloscript.lexer.Token;
 
 public class StringNode extends Node {
     private final Token token;
     private final RunTimeResult res = new RunTimeResult();
-    private final BeloString val;
 
     public StringNode(Token token) {
         this.token = token;
         this.start = token.getStart();
         this.end = token.getEnd();
-        this.val = BeloString.create(token.getValue());
+        BeloString val = BeloString.create(token.getValue());
         res.success(val, getStart(), getEnd());
-        this.visitMethod = (context, interpreter) -> {
-            //val.setContext(context);
-            return res;
-        };
+    }
+
+    @Override
+    public RunTimeResult execute(Context context, Interpreter interpreter) {
+        return res;
     }
 
     public Token getToken() {

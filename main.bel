@@ -1,3 +1,4 @@
-obj = import "test.bel"
-
-obj.func()
+function hell(str) {
+    str-5
+}
+hell("lol")

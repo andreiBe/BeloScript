@@ -19,11 +19,11 @@ public class TryNode extends Node{
         this.start = start;
         this.end = end;
         if (catchBody == null) {
-            this.visitMethod = this::noCatch;
+            this.setVisitMethod(this::noCatch);
         } else {
             this.errorVarName = errorVarName;
             this.catchBody = catchBody;
-            this.visitMethod = this::visit;
+            this.setVisitMethod(this::visit);
         }
     }
 

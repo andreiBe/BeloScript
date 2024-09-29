@@ -20,9 +20,9 @@ function funcfunc() {
 }
 funcfunc()()
 
-function() {
-    print("lambda")
-}()
+function(test) {
+    print("lambda" + test)
+}("test1")
 
 function returnEarly() {
     i = 9

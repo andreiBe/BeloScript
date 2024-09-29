@@ -1,0 +1,23 @@
+SymbolTable = import "SymbolTable.bel"
+Interpreter = import "Interpreter.bel"
+Settings = import "Settings.bel"
+class BeloScript {
+    interpreter
+    createGlobalSymbolTable() {
+        symbolTable = SymbolTable()
+        symbolTable.setVar("true",1);
+        symbolTable.setVar("false",0);
+        symbolTable.setVar("null",null);
+        return symbolTable
+    }
+    reset() {
+        self.interpreter = Interpreter()
+    }
+    execute(script, rootPath, fileName, args) {
+        settings = Settings(args, rootPath)
+    }
+}
+function run(script, fileName, rootPath, args) {
+    BeloScript().execute(script,rootPath,fileName,args)
+}
+export run

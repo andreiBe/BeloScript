@@ -19,7 +19,7 @@ public class Lexer {
     private static final String[] KEYWORDS = new String[]{
             "and", "or", "not", "if","else","elif",
             "for", "while","function","return","continue",
-            "break","in","try", "catch","import","export"
+            "break","in","try", "catch","import","export", "class"
     };
     //käsiteltävä teksti
     private final String text;
@@ -271,10 +271,9 @@ public class Lexer {
     }
     //jättää merkkejä huomiotta kunnes löytää rivinvaihdon
     private void skipComment() {
-        advance();
-        while (curChar != '\n' && curChar != 0) {
+        do {
             advance();
-        }
+        } while (curChar != '\n' && curChar != 0);
     }
     // > merkki voi esiintyä yksinään tai '>='
     private Token makeGreaterThan() {

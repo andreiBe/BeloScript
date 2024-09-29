@@ -66,7 +66,8 @@ public class Obj extends CustomBeloClass implements Iterable<BeloClass> {
     }
     @BeloScript
     public BeloClass get(BeloClass key) {
-        return map.get(key);
+        BeloClass val = map.get(key);
+        return val == null ? new Null() : val;
     }
     @BeloScript
     public boolean containsKey(BeloClass key) {
@@ -97,5 +98,10 @@ public class Obj extends CustomBeloClass implements Iterable<BeloClass> {
             }
         }
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return map.toString();
     }
 }

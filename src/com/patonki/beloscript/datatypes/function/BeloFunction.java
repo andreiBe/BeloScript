@@ -25,7 +25,9 @@ public class BeloFunction extends BaseFunction{
     public RunTimeResult execute(List<BeloClass> args) {
         RunTimeResult res = new RunTimeResult();
         Interpreter interpreter = new Interpreter();
+        System.out.println("OLD Context: " + context);
         Context newContext = generateNewContext();
+        System.out.println("NEW Context: " + newContext);
 
         res.register(checkAndPopulateArgs(argNames,args,newContext));
         if (res.shouldReturn()) return res;
@@ -45,5 +47,12 @@ public class BeloFunction extends BaseFunction{
         BeloClass copy = new BeloFunction(this.name,this.body,this.argNames,this.shouldAutoReturn);
         copy.setContext(context);
         return copy;
+    }
+
+    @Override
+    public String toString() {
+        return "Func("
+                + argNames +
+                ')';
     }
 }
