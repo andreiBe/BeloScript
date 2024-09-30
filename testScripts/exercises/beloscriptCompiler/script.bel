@@ -1,3 +1,3 @@
 run = import "BeloScript.bel"
 
-run("a=5;print(\"Hello world\"", "test.bel", "", [])
+run("?", "test.bel", "", [])

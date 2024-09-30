@@ -1,0 +1,143 @@
+Position = import "../Position.bel"
+LexResult = import "LexResult.bel"
+keywords = (["and", "or", "not", "if","else","elif",
+                       "for", "while","function","return","continue",
+                       "break","in","try", "catch","import","export", "class", "enum", "static"])
+TokenType = import "TokenType.bel"
+TokenType.spread()
+
+class Lexer(filename, text) {
+    # käsiteltävä teksti
+    text
+    # kohta tekstistä, jota käsitellään
+    pos
+    # tiedosto, jota käsittellään
+    fileName
+    curChar
+    #sisältää tiedon siitä kuinka syvällä suluissa ollaan. Eli kuinka monta avautuvaa suljetta "(" ollaan löydetty, joille
+    #ei olla löydetty vastaavaa sulkevaa suljetta ")"
+    paramDeepness = 0
+
+    Lexer {
+        self.pos = Position(-1, 0, -1, self.fileName, self.text);
+        self.curChar = 0;
+        self.advance();
+    }
+   advance() {
+        self.pos.advance(self.curChar);
+        self.curChar = if (self.pos.index < self.text.size()) self.text[self.pos.index] else ""
+    }
+    # ainut public metodi, joka palauttaa LexResultin, joka sisältää token listan ja mahdolliset virheet suorituksessa
+    makeTokens() {
+        tokens = []
+        # Käydään kaikki tiedoston merkit läpi.
+        while (self.curChar != 0) { # ei olla käsitelty kaikkia merkkejä
+            if (self.curChar == " " or self.curChar == "\t") {
+                #välilyönnit ja tabit jätetään huomiotta
+                self.advance();
+            }
+            else if (self.curChar == "\n" or self.curChar == ";") {
+                # Sulkujen sisällä olevat välilyönnit jätetään huomiotta
+                if (self.paramDeepness == 0) {
+                    tokens.push(Token(NEWLINE,self.pos));
+                }
+                self.advance();
+            }
+            else if (self.curChar == "{") {
+                tokens.push(Token(OPENING_BRACKET,self.pos));
+                self.advance();
+            }
+            else if (self.curChar == "}") {
+                tokens.push(Token(CLOSING_BRACKET,self.pos));
+                self.advance();
+            }
+            else if (self.curChar == "[") {
+                tokens.push(Token(OPENING_SQUARE,self.pos));
+                self.advance();
+            }
+            else if (self.curChar == "]") {
+                tokens.push(Token(CLOSING_SQUARE,self.pos));
+                self.advance();
+            }
+            else if (self.curChar == ":") {
+                tokens.push(Token(DOUBLEDOT,self.pos));
+               self.advance();
+            }
+            else if (self.curChar == ".") {
+                tokens.push(Token(DOT,self.pos));
+               self.advance();
+            }
+            else if (self.curChar == "#") {
+                self.skipComment();
+            }
+            else if (self.curChar == ",") {
+                tokens.push(Token(COMMA,pos));
+               self.advance();
+            }
+            else if (self.curChar == "\"") {
+                tokens.push(self.makeString());
+            }
+            else if (self.curChar == "/") {
+                tokens.push(self.makeDivOrEQ());
+            }
+            else if (self.curChar == "+") {
+                tokens.push(self.makePlusOrEQorPlusplus());
+            }
+            else if (self.curChar == "-") {
+                tokens.push(self.makeMinusOrArrowOrMinEQ());
+            }
+            else if (self.curChar == "*") {
+                tokens.push(self.makeMulOrEQ());
+            }
+            else if (self.curChar == "^") {
+                tokens.push(self.makePowOrEQ());
+            }
+            else if (self.curChar == "%") {
+                tokens.push(self.makeRemainderOrEQ());
+            }
+            else if (self.curChar == "(") {
+                self.paramDeepness+=1;
+                tokens.push(Token(TokenType.LPAREN,self.pos));
+               self.advance();
+            }
+            else if (self.curChar == ")") {
+                self.paramDeepness-=1;
+                tokens.push(Token(TokenType.RPAREN,self.pos));
+               self.advance();
+            }
+            else if (self.curChar == "!") {
+                r = self.makeNotEquals();
+                if (r.hasError()) return r;
+                tokens.push(r.getTokens().get(0));
+            }
+            else if (self.curChar == "=") {
+                tokens.push(self.makeEquals());
+            }
+            else if (self.curChar == "<") {
+                tokens.push(self.makeLessThan());
+            }
+            else if (self.curChar == ">") {
+                tokens.push(self.makeGreaterThan());
+            }
+            #TODO do method
+            else if (self.curChar.isDigits()) {
+                tokens.push(self.makeNumber());
+            }
+            #TODO do method
+            else if (self.curChar.isLetters()) {
+                print(self.curChar.isLetters())
+                tokens.push(self.make_identifier());
+            }
+            else {
+                #Virhe
+                start =self.pos.copy();
+                ch = self.curChar;
+                self.advance();
+                return LexResult([], IllegalCharError(start,self.pos, ch + " " + "at file: "+self.fileName));
+            }
+        }
+        tokens.push(Token(EOF,self.pos)); # EOF = end of file
+        return LexResult(tokens, null);
+    }
+}
+export Lexer

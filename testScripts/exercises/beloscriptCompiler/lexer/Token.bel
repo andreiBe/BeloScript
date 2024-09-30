@@ -1,0 +1,92 @@
+import TokenType
+TokenType.spread()
+
+class Token(type, value, start, end) {
+    type
+    value
+    start
+    end
+    Token {
+        if (self.value == null) self.value = ""
+        if (self.end == null) self.end = self.start.copy().advance(0)
+        self.start = self.start.copy()
+        self.end = self.end.copy()
+    }
+
+    matches(type,value) {
+        return type == self.type and value == self.value
+    }
+
+    getType() {
+        return self.type
+    }
+
+    getValue() {
+        return self.value;
+    }
+    getNumValue() {
+        return Double.parseDouble(value)
+    }
+
+    getStart() {
+        return self.start
+    }
+
+    getEnd() {
+        return self.end
+    }
+
+    typeInList(tokenTypes) {
+        for (tokenType in tokenTypes) {
+            if (self.type == tokenType) return true;
+        }
+        return false;
+    }
+    typeAndValueMatches(pairsOfTokenTypeAndValue) {
+        for (token in pairsOfTokenTypeAndValue) {
+            if (self.type == token.first() && self.value == token.second()) return true;
+        }
+        return false;
+    }
+    static SETTERS = [EQ, PLUSEQ, MINUSEQ, DIVEQ,INTDIVEQ, MULEQ, POWEQ, REMEQ]
+    #TODO switch statement
+    static getMatchingCalculation(type) {
+            switch (type) {
+                case PLUS:
+                case PLUSEQ:
+                    return BeloClass::add;
+                case MINUS:
+                case MINUSEQ:
+                    return BeloClass::substract;
+                case MUL:
+                case MULEQ:
+                    return BeloClass::multiply;
+                case DIV:
+                case DIVEQ:
+                    return BeloClass::divide;
+                case INTDIV:
+                case INTDIVEQ:
+                    return BeloClass::intdiv;
+                case REMAINDER:
+                case REMEQ:
+                    return BeloClass::remainder;
+                case POW:
+                case POWEQ:
+                    return BeloClass::power;
+                case EE:
+                    return (first, second) -> new BeloDouble(first.compare(second) == 0);
+                case LTE:
+                    return ((first, second) -> new BeloDouble(first.compare(second) <= 0));
+                case GTE:
+                    return ((first, second) -> new BeloDouble(first.compare(second) >= 0));
+                case LT:
+                    return ((first, second) -> new BeloDouble(first.compare(second) < 0));
+                case GT:
+                    return ((first, second) -> new BeloDouble(first.compare(second) > 0));
+                case NE:
+                    return ((first, second) -> new BeloDouble(first.compare(second) != 0));
+            }
+            return null;
+        }
+}
+export Token

@@ -1,0 +1,9 @@
+enum Test(
+    ZERO,ONE,TWO,THREE
+)
+
+print(Test.TWO)
+
+Test.spread()
+
+print(THREE)

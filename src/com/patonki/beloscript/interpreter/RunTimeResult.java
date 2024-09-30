@@ -50,7 +50,7 @@ public class RunTimeResult {
         this.reset();
         this.value = value;
         this.value.setPos(start,end);
-        this.value.setContext(context);
+        //this.value.setContext(context);
         return this;
     }
     public RunTimeResult success(BeloClass value, Position start, Position end) {

@@ -1,0 +1,15 @@
+class LexResult(tokens, error) {
+    tokens
+    error
+
+    hasError() {
+        return self.error != null
+    }
+    getTokens() {
+        return self.tokens
+    }
+    getError() {
+        return self.error
+    }
+}
+export LexResult

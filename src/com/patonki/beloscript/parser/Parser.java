@@ -363,6 +363,9 @@ public class Parser {
         else if (token.matches(KEYWORD, "class")) {
             return handleErrors(res, this::classDefinition);
         }
+        else if (token.matches(KEYWORD, "enum")) {
+            return handleErrors(res, this::enumDefinition);
+        }
         else if (token.matches(KEYWORD, "for")) {
             return handleErrors(res, this::forExpression);
         }
@@ -619,6 +622,42 @@ public class Parser {
 
         return res.success(new WhileNode(condition,statement, start, curPos()));
     }
+    private ParseResult enumDefinition() {
+        ParseResult res = new ParseResult();
+        Position start = curPos();
+        res.registerAdvancement();
+        advance();
+
+        if (curToken.getType() != IDENTIFIER) {
+            return res.failure(new InvalidSyntaxError(
+                    curToken.getStart(), curToken.getEnd(),
+                    "Expected identifier"
+            ));
+        }
+        String enumName = curToken.getValue();
+        res.registerAdvancement();
+        advance();
+        if (curToken.getType() != LPAREN) {
+            return res.failure(new InvalidSyntaxError(
+                    curToken.getStart(), curToken.getEnd(),
+                    "Expected ("
+            ));
+        }
+        res.registerAdvancement();
+        advance();
+
+        ArrayList<Token> arguments = arguments(res);
+        if (res.hasError()) return res;
+        if (curToken.getType() != RPAREN) {
+            return res.failure(new InvalidSyntaxError(
+                    curToken.getStart(), curToken.getEnd(),
+                    "Expected )"
+            ));
+        }
+        res.registerAdvancement();
+        advance();
+        return res.success(new EnumDefNode(enumName, arguments, start, curToken.getEnd()));
+    }
     private ParseResult classDefinition() {
         ParseResult res = new ParseResult();
         Position start = curPos();
@@ -660,9 +699,10 @@ public class Parser {
         res.registerAdvancement();
         advance();
         LinkedHashMap<Node, Node> properties = new LinkedHashMap<>();
+        LinkedHashMap<Node, Node> staticProperties = new LinkedHashMap<>();
         boolean constructorFound = false;
 
-        while (curToken.getType() == IDENTIFIER || curToken.getType() == NEWLINE) {
+        while (curToken.typeInList(IDENTIFIER, NEWLINE) || curToken.matches(KEYWORD, "static")) {
             while (curToken.getType() == NEWLINE) {
                 res.registerAdvancement();
                 advance();
@@ -672,6 +712,14 @@ public class Parser {
                 advance();
                 break;
             }
+            boolean isStatic = false;
+            if (curToken.getType() == KEYWORD) {
+                //static
+                isStatic = true;
+                res.registerAdvancement();
+                advance();
+            }
+            //TODO might not be identifier
             Token nameOfProperty = curToken;
             if (nameOfProperty.getValue().equals(className)) {
                 if (constructorFound) {
@@ -699,7 +747,8 @@ public class Parser {
                 Node value = res.register(comp());
                 if (res.hasError()) return res;
 
-                properties.put(new StringNode(nameOfProperty), value);
+                if (isStatic) staticProperties.put(new StringNode(nameOfProperty), value);
+                else properties.put(new StringNode(nameOfProperty), value);
                 res.registerAdvancement();
                 advance();
             }
@@ -708,10 +757,12 @@ public class Parser {
                 Node func = res.register(functionDefinition(true, true));
                 if (res.hasError()) return res;
 
-                properties.put(new StringNode(nameOfProperty), func);
+                if (isStatic) staticProperties.put(new StringNode(nameOfProperty), func);
+                else properties.put(new StringNode(nameOfProperty), func);
             }
             else if (curToken.getType() == NEWLINE) {
-                properties.put(new StringNode(nameOfProperty), null);
+                if (isStatic) staticProperties.put(new StringNode(nameOfProperty), null);
+                else properties.put(new StringNode(nameOfProperty), null);
             }
             else {
                 return res.failure(new InvalidSyntaxError(
@@ -721,7 +772,7 @@ public class Parser {
         }
 
         return res.success(new ClassDefNode(className, arguments,
-                properties, start, curToken.getEnd()));
+                properties,staticProperties, start, curToken.getEnd()));
     }
     private ParseResult functionDefinition() {
         return functionDefinition(false, false);

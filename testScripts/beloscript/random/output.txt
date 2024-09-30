@@ -1,6 +1,6 @@
-[5, 1, 2, 6, 7, 4]
-7
-[6, 2, 7]
+[5, 2, 4, 1, 6, 7]
+6
+[2, 5, 6]
 omg
 File script.bel, line 17, in <stdin>
 Runtime Error: X is larger than collection size

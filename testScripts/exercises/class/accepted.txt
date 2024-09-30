@@ -1,1 +1,6 @@
-#ignore
+Parent is null
+Parent is {parent=null, setVar=Func([name, value]), getVar=Func([name]), symbols={}}
+null
+5
+Static func lol
+55

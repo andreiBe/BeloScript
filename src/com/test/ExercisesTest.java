@@ -33,6 +33,10 @@ public class ExercisesTest {
         TestUtil.testFile(ROOT+"class");
     }
     @Test
+    void enums() {
+        TestUtil.testFile(ROOT+"enum");
+    }
+    @Test
     void beloscriptCompiler() {
         TestUtil.testFile(ROOT+"beloscriptCompiler");
     }

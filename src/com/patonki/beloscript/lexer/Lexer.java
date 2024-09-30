@@ -19,7 +19,7 @@ public class Lexer {
     private static final String[] KEYWORDS = new String[]{
             "and", "or", "not", "if","else","elif",
             "for", "while","function","return","continue",
-            "break","in","try", "catch","import","export", "class"
+            "break","in","try", "catch","import","export", "class","enum", "static"
     };
     //käsiteltävä teksti
     private final String text;
@@ -267,6 +267,7 @@ public class Lexer {
             advance();
         }
         advance();
+
         return new Token(STRING, sb.toString(), start, pos);
     }
     //jättää merkkejä huomiotta kunnes löytää rivinvaihdon

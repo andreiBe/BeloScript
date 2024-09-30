@@ -1,6 +1,7 @@
 SymbolTable = import "SymbolTable.bel"
 Interpreter = import "Interpreter.bel"
 Settings = import "Settings.bel"
+Lexer = import "lexer/Lexer.bel"
 class BeloScript {
     interpreter
     createGlobalSymbolTable() {
@@ -19,5 +20,7 @@ class BeloScript {
 }
 function run(script, fileName, rootPath, args) {
     BeloScript().execute(script,rootPath,fileName,args)
+    lexer = Lexer(if (fileName == null) "<anynymous>" else fileName, script)
+    lexResult = lexer.makeTokens()
 }
 export run

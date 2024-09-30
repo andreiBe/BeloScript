@@ -4,6 +4,11 @@ class SymbolTable(parent) {
     SymbolTable {
         print("Parent is " + self.parent)
     }
+    static test(par) {
+        print("Static func " + par)
+    }
+    static testproperty = 55
+
     getVar(name) {
         val = self.symbols.get(name)
         if (val == null and self.parent != null) {
@@ -24,3 +29,6 @@ print(a)
 instance.setVar("lol", 5)
 a = instance.getVar("lol")
 print(a)
+
+SymbolTable.test("lol")
+print(SymbolTable.testproperty)

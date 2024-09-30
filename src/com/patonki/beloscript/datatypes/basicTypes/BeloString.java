@@ -118,6 +118,21 @@ public class BeloString extends CustomBeloClass implements Iterable<BeloClass>{
         return this.value.replaceAll(regex,with);
     }
     @BeloScript
+    public boolean isDigits() {
+        for (int i = 0; i < this.value.length(); i++) {
+            if (!Character.isDigit(this.value.charAt(i))) return false;
+        }
+        return !this.value.isEmpty();
+    }
+    @BeloScript
+    public boolean isLetters() {
+        for (int i = 0; i < this.value.length(); i++) {
+            if (!Character.isLetter(this.value.charAt(i))) return false;
+        }
+        System.out.println("WTF " + value);
+        return !this.value.isEmpty();
+    }
+    @BeloScript
     public List split(String sep) {
         String[] splitted = this.value.split(sep);
         return List.create(Arrays.stream(splitted).map(BeloString::create).collect(Collectors.toList()));

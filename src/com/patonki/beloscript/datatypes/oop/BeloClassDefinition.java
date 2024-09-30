@@ -11,16 +11,20 @@ import com.patonki.beloscript.interpreter.RunTimeResult;
 import com.patonki.beloscript.interpreter.SymbolTable;
 import com.patonki.beloscript.parser.nodes.Node;
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 
 public class BeloClassDefinition extends BeloClass {
     private final List<String> parameters;
     private final LinkedHashMap<Node, Node> properties;
+    private final HashMap<BeloClass, BeloClass> staticProperties;
     private final String className;
-    public BeloClassDefinition(List<String> parameters, LinkedHashMap<Node, Node> properties, String className) {
+    public BeloClassDefinition(List<String> parameters, LinkedHashMap<Node, Node> properties,
+                               HashMap<BeloClass,BeloClass> staticProperties, String className) {
         this.parameters = parameters;
         this.properties = properties;
+        this.staticProperties = staticProperties;
         this.className = className;
     }
     private RunTimeResult createObject(RunTimeResult res, List<BeloClass> args) {
@@ -53,6 +57,12 @@ public class BeloClassDefinition extends BeloClass {
             if (res.shouldReturn()) return res;
         }
         return res.success(obj);
+    }
+
+    @Override
+    public BeloClass classValue(BeloClass name) {
+        BeloClass val = this.staticProperties.get(name);
+        return val == null ? new Null() : val;
     }
 
     @Override

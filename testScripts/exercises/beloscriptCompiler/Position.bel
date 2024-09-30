@@ -1,0 +1,22 @@
+class Position(index, lineNumber, columnNumber, fileName, fileContent) {
+    index
+    lineNumber
+    columnNumber
+    fileName
+    fileContent
+
+    advance(curChar) {
+        self.index+=1
+        self.columnNumber+=1
+        if (curChar == "\n") {
+            self.lineNumber+=1
+            self.columnNumber = 0
+        }
+        return self
+    }
+
+    copy() {
+        return Position(self.index,self.lineNumber,self.columnNumber,self.fileName,self.fileContent)
+    }
+}
+export Position

@@ -1,0 +1,12 @@
+enum TokenType(    INT, FLOAT,
+                   PLUS, MINUS, MUL, DIV, INTDIV, REMAINDER,POW,
+                   LPAREN, RPAREN,
+                   EOF, IDENTIFIER, KEYWORD,
+                   EQ, PLUSEQ, MINUSEQ, DIVEQ,INTDIVEQ, MULEQ, POWEQ, REMEQ,
+                   PLUSPLUS, MINUSMINUS,
+                   EE, NE,LT,GT,LTE,GTE, NEWLINE,
+                   OPENING_BRACKET, CLOSING_BRACKET, STRING, ARROW,
+                   OPENING_SQUARE, CLOSING_SQUARE, DOUBLEDOT, DOT,
+                   COMMA)
+
+export TokenType

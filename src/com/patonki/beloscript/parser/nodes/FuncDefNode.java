@@ -30,6 +30,7 @@ public class FuncDefNode extends Node {
         if (varName != null) {
             context.getSymboltable().set(varName.getValue(), function);
         }
+        function.setContext(context);
         return res.success(function,getStart(),getEnd(), context);
     }
 
