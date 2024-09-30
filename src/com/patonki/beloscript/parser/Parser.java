@@ -689,7 +689,17 @@ public class Parser {
         } else {
             arguments = new ArrayList<>();
         }
-
+        LinkedHashMap<Node, Node> properties = new LinkedHashMap<>();
+        LinkedHashMap<Node, Node> staticProperties = new LinkedHashMap<>();
+        //TODO CHECK IF WORKS
+        if (curToken.getType() == NEWLINE) {
+            while (curToken.getType() == NEWLINE) {
+                res.registerAdvancement();
+                advance();
+            }
+            return res.success(new ClassDefNode(className, arguments,
+                    properties,staticProperties, start, curToken.getEnd()));
+        }
         if (curToken.getType() != OPENING_BRACKET) {
             return res.failure(new InvalidSyntaxError(
                     curToken.getStart(), curToken.getEnd(),
@@ -698,8 +708,7 @@ public class Parser {
         }
         res.registerAdvancement();
         advance();
-        LinkedHashMap<Node, Node> properties = new LinkedHashMap<>();
-        LinkedHashMap<Node, Node> staticProperties = new LinkedHashMap<>();
+
         boolean constructorFound = false;
 
         while (curToken.typeInList(IDENTIFIER, NEWLINE) || curToken.matches(KEYWORD, "static")) {

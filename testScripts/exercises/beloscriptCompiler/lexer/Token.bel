@@ -25,7 +25,7 @@ class Token(type, value, start, end) {
         return self.value;
     }
     getNumValue() {
-        return Double.parseDouble(value)
+        return to_num(self.value)
     }
 
     getStart() {

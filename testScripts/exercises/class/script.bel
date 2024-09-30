@@ -32,3 +32,10 @@ print(a)
 
 SymbolTable.test("lol")
 print(SymbolTable.testproperty)
+
+
+class RecordTest(one,two,three)
+
+r = RecordTest(1,2,3)
+print(r.two)
+
