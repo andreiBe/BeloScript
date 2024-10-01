@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static com.patonki.beloscript.lexer.TokenType.*;
@@ -65,14 +66,18 @@ public class Parser {
         Position start = curToken.getStart().copy();
 
         List<Node> statements = new ArrayList<>();
+        Predicate<Token> checkIfShouldStop = token ->
+                token.typeInList(CLOSING_BRACKET, EOF)
+                || token.matches(KEYWORD, "case")
+                || token.matches(KEYWORD, "default");
 
-        while (!curToken.typeInList(CLOSING_BRACKET, EOF)) {
+        while (!checkIfShouldStop.test(curToken)) {
             while (curToken.getType() == NEWLINE) {
                 //skipataan
                 res.registerAdvancement();
                 advance();
             }
-            if (curToken.typeInList(CLOSING_BRACKET, EOF)) break;
+            if (checkIfShouldStop.test(curToken)) break;
 
             Node statement = res.register(statement());
             if (res.hasError()) return res;
@@ -374,6 +379,9 @@ public class Parser {
         }
         else if (token.matches(KEYWORD, "import")) {
             return handleErrors(res, this::importExpression);
+        }
+        else if (token.matches(KEYWORD, "switch")) {
+            return handleErrors(res, this::switchExpression);
         }
         else if (token.matches(KEYWORD, "export")) {
             return handleErrors(res,this::exportExpression);
@@ -877,6 +885,62 @@ public class Parser {
         if (res.hasError()) return res;
         return res.success(body);
     }
+    private ParseResult switchExpression() {
+        ParseResult res = new ParseResult();
+        Position start = curPos();
+        res.registerAdvancement();
+        advance();
+
+        this.expect(res, LPAREN);
+        if (res.hasError()) return res;
+
+        Node var = res.register(this.expression());
+        if (res.hasError()) return res;
+
+        this.expect(res, RPAREN);
+        if (res.hasError()) return res;
+
+        this.expect(res, OPENING_BRACKET);
+        if (res.hasError()) return res;
+
+        ArrayList<Pair<List<Node>, Node>> cases = new ArrayList<>();
+        Node defaultCase = null;
+        skipNewlines(res);
+
+        ArrayList<Node> conditions = new ArrayList<>();
+        while (curToken.matches(KEYWORD, "case") || curToken.matches(KEYWORD, "default")) {
+            boolean isDefault = curToken.getValue().equals("default");
+
+            res.registerAdvancement();
+            advance();
+            if (!isDefault) {
+                Node condition = res.register(this.expression());
+                if (res.hasError()) return res;
+                conditions.add(condition);
+            }
+            this.expect(res, DOUBLEDOT);
+            if (res.hasError()) return res;
+
+            skipNewlines(res);
+            if (curToken.matches(KEYWORD, "case")) {
+                continue;
+            }
+            Node body = res.register(statements());
+            if (res.hasError()) return res;
+
+            if (isDefault) {
+                defaultCase = body;
+                break;
+            } else {
+                cases.add(new Pair<>(new ArrayList<>(conditions), body));
+                conditions.clear();
+            }
+            skipNewlines(res);
+        }
+        this.expect(res, CLOSING_BRACKET);
+        if (res.hasError()) return res;
+        return res.success(new SwitchNode(cases, defaultCase, var, start, curPos()));
+    }
     private ParseResult tryExpression() {
         ParseResult res = new ParseResult();
         Position start = curPos();
@@ -1075,5 +1139,29 @@ public class Parser {
             left = new BinaryOperatorNode(left, operatorToken, right);
         }
         return res.success(left);
+    }
+    private Token expect(ParseResult res, TokenType tokenType) {
+        return expect(res, tokenType, null);
+    }
+    private Token expect(ParseResult res, TokenType tokenType, String value) {
+        if (curToken.getType() != tokenType || (value != null && !curToken.getValue().equals(value))) {
+            String errorMsg = "Expected " + tokenType;
+            if (value != null) {
+                errorMsg += " of value " + value;
+            }
+            errorMsg += " but got " + curToken;
+            res.failure(new InvalidSyntaxError(curToken.getStart(), curToken.getEnd(),
+                    errorMsg));
+        }
+        Token token = curToken;
+        res.registerAdvancement();
+        advance();
+        return token;
+    }
+    private void skipNewlines(ParseResult res) {
+        while (curToken.getType() == NEWLINE) {
+            res.registerAdvancement();
+            advance();
+        }
     }
 }

@@ -55,4 +55,9 @@ public class BasicTest {
     void exportImport() {
         TestUtil.testFile(root+"/exportImport");
     }
+
+    @Test
+    void switchStatement() {
+        TestUtil.testFile(root+"/switch");
+    }
 }

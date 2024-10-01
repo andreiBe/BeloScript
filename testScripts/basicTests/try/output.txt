@@ -1,2 +1,4 @@
 Division by zero
+[null]
 Division by zero
+4

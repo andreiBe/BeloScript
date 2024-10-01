@@ -19,7 +19,8 @@ public class Lexer {
     private static final String[] KEYWORDS = new String[]{
             "and", "or", "not", "if","else","elif",
             "for", "while","function","return","continue",
-            "break","in","try", "catch","import","export", "class","enum", "static"
+            "break","in","try", "catch","import","export", "class","enum", "static",
+            "switch", "case", "default"
     };
     //käsiteltävä teksti
     private final String text;

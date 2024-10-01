@@ -1,0 +1,48 @@
+val = 9
+
+val2 = switch (val) {
+    case 3:
+        print(3)
+        "false"
+    case 9:
+        print("WOW 9") #prints
+        return "true"
+}
+print(val2) #true
+
+val2 = switch (val) {
+    case 1:
+        "lol"
+    case 9:
+        "not returning anything"
+}
+print(val2)
+
+val2 = switch (val) {
+    case 1:
+        "test"
+    default:
+        return "wow"
+}
+print(val2)
+
+val2 = switch (val) {
+    case 7:
+    case 9:
+    case 3:
+        return "jou"
+    default:
+        return "not"
+}
+print(val2)
+
+val2 = switch (val) {
+    case 7 > 4:
+    case 9 + 4:
+        return "wrong1"
+    case (function() -> 9)():
+        return "right"
+    default:
+        return "wrong2"
+}
+print(val2)
