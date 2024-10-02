@@ -44,4 +44,12 @@ public class ExercisesTest {
     void advancedListAndMap() {
         TestUtil.testFile(ROOT+"advancedListAndMap");
     }
+    @Test
+    void inheritance() {
+        TestUtil.testFile(ROOT+"inheritance");
+    }
+    @Test
+    void staticProperties() {
+        TestUtil.testFile(ROOT+"/staticProperties");
+    }
 }

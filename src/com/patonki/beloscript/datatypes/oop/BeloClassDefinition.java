@@ -11,58 +11,76 @@ import com.patonki.beloscript.interpreter.RunTimeResult;
 import com.patonki.beloscript.interpreter.SymbolTable;
 import com.patonki.beloscript.parser.nodes.Node;
 
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class BeloClassDefinition extends BeloClass {
     private final List<String> parameters;
-    private final LinkedHashMap<Node, Node> properties;
-    private final HashMap<BeloClass, BeloClass> staticProperties;
+    private final PropertiesAccess properties;
     private final String className;
-    public BeloClassDefinition(List<String> parameters, LinkedHashMap<Node, Node> properties,
-                               HashMap<BeloClass,BeloClass> staticProperties, String className) {
+    private final BeloClassDefinition parent;
+    public BeloClassDefinition(List<String> parameters,
+                               PropertiesAccess properties,
+                               String className,
+                               BeloClassDefinition parent) {
         this.parameters = parameters;
         this.properties = properties;
-        this.staticProperties = staticProperties;
         this.className = className;
+        this.parent = parent;
     }
+
     private RunTimeResult createObject(RunTimeResult res, List<BeloClass> args) {
         Obj obj = Obj.create();
+
         Interpreter interpreter = new Interpreter();
         Context newContext = new Context(className, getContext(), this.getStart());
         newContext.setSymboltable(new SymbolTable(getContext().getSymboltable()));
         newContext.getSymboltable().set("self", obj);
-        Node constructor = null;
-        for (Node keyNode : properties.keySet()) {
-            BeloClass key = res.register(interpreter.execute(keyNode, newContext));
-            if (res.shouldReturn()) return res;
 
-            if (key instanceof BeloString && key.toString().equals(className)) {
-                constructor = properties.get(keyNode);
+        Node constructor = this.findConstructorAndSetDefaultValuesOfProperties(
+                res, interpreter, newContext, obj
+        );
+        if (res.shouldReturn()) return res;
+
+        this.setConstructorValues(obj, args);
+        this.executeConstructor(res, constructor, interpreter, newContext);
+        if (res.shouldReturn()) return res;
+
+        return res.success(obj);
+    }
+    private Node findConstructorAndSetDefaultValuesOfProperties(
+            RunTimeResult res, Interpreter interpreter, Context context, Obj obj
+    ) {
+        Node constructor = null;
+        for (String key : properties.getPropertyKeys()) {
+            if (key.equals(className)) {
+                constructor = properties.getPropertyValue(key);
                 continue;
             }
-            Node propertyValue = properties.get(keyNode);
+            Node propertyValue = properties.getPropertyValue(key);
 
-            BeloClass value = propertyValue == null ? new Null() : res.register(interpreter.execute(propertyValue, newContext));
-            if (res.shouldReturn()) return res;
+            BeloClass value = propertyValue == null
+                    ? new Null()
+                    : res.register(interpreter.execute(propertyValue, context));
+            if (res.shouldReturn()) return null;
 
-            obj.put(key, value);
+            obj.put(BeloString.create(key), value);
         }
+        return constructor;
+    }
+    private void setConstructorValues(Obj obj, List<BeloClass> args) {
         for (int i = 0; i < this.parameters.size(); i++) {
             obj.put(BeloString.create(parameters.get(i)), args.get(i));
         }
-        if (constructor != null) {
-            res.register(interpreter.execute(constructor, newContext));
-            if (res.shouldReturn()) return res;
-        }
-        return res.success(obj);
+    }
+    private void executeConstructor(RunTimeResult res, Node constructor,
+                                    Interpreter interpreter, Context context) {
+        if (constructor == null) return;
+        res.register(interpreter.execute(constructor, context));
     }
 
     @Override
     public BeloClass classValue(BeloClass name) {
-        BeloClass val = this.staticProperties.get(name);
-        return val == null ? new Null() : val;
+        return this.properties.getStaticProperty(name.toString());
     }
 
     @Override

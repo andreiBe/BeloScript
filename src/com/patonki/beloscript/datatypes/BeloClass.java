@@ -137,7 +137,6 @@ public abstract class BeloClass implements Comparable<BeloClass>{
      * @return virhe
      */
     protected BeloError throwError(String message, Position start, Position end) {
-        System.out.println(this.getClass().getSimpleName()+" " + this.context);
         return new BeloError(new RunTimeError(start,end
                 ,message + " (class:"+this.getClass().getSimpleName()+")"
                 ,this.context));

@@ -1,0 +1,4 @@
+Animal constructor
+Animal says: <noice>
+Dog constructor
+Golden retriever

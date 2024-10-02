@@ -1,0 +1,8 @@
+class Test {
+    static value = 5
+
+    test() {
+        print(Test.value)
+    }
+}
+Test().test()

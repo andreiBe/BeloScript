@@ -1,0 +1,31 @@
+class Animal(color, voice) {
+    private color
+    protected voice
+    Animal {
+        print("Animal constructor")
+    }
+    public makeNoice() {
+        print("Animal says: " + self.voice)
+    }
+    public func() {
+        print(self.voice)
+    }
+}
+class Dog(color, voice, breed) extends Animal {
+    private breed
+
+    Dog {
+        print("Dog constructor")
+        print(self.breed)
+    }
+    public makeNoice() {
+        super.makeNoice()
+        print("Dog says: " + self.voice)
+    }
+}
+animal = Animal("white", "<noice>")
+animal.makeNoice()
+
+dog = Dog("brown", "woof", "Golden retriever")
+dog.makeNoice()
+dog.func()

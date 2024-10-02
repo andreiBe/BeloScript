@@ -1,7 +1,7 @@
 package com.patonki.beloscript.parser;
 
 import com.patonki.beloscript.Position;
-import com.patonki.beloscript.datatypes.basicTypes.Null;
+import com.patonki.beloscript.datatypes.oop.AccessModifier;
 import com.patonki.beloscript.errors.InvalidSyntaxError;
 import com.patonki.beloscript.lexer.Token;
 import com.patonki.beloscript.lexer.TokenType;
@@ -9,8 +9,6 @@ import com.patonki.beloscript.parser.nodes.*;
 import com.patonki.datatypes.Pair;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -697,28 +695,25 @@ public class Parser {
         } else {
             arguments = new ArrayList<>();
         }
-        LinkedHashMap<Node, Node> properties = new LinkedHashMap<>();
-        LinkedHashMap<Node, Node> staticProperties = new LinkedHashMap<>();
-        //TODO CHECK IF WORKS
+        ArrayList<ClassDefNode.ClassProperty> properties = new ArrayList<>();
+        Node parent = null;
+
+        if (curToken.matches(KEYWORD, "extends")) {
+            res.registerAdvancement();
+            advance();
+
+            parent = res.register(this.expression());
+            if (res.hasError()) return res;
+        }
         if (curToken.getType() == NEWLINE) {
-            while (curToken.getType() == NEWLINE) {
-                res.registerAdvancement();
-                advance();
-            }
+            this.skipNewlines(res);
             return res.success(new ClassDefNode(className, arguments,
-                    properties,staticProperties, start, curToken.getEnd()));
+                    properties, parent, start, curToken.getEnd()));
         }
-        if (curToken.getType() != OPENING_BRACKET) {
-            return res.failure(new InvalidSyntaxError(
-                    curToken.getStart(), curToken.getEnd(),
-                    "Expected {"
-            ));
-        }
-        res.registerAdvancement();
-        advance();
+        this.expect(res, OPENING_BRACKET);
+        if (res.hasError()) return res;
 
         boolean constructorFound = false;
-
         while (curToken.typeInList(IDENTIFIER, NEWLINE) || curToken.matches(KEYWORD, "static")) {
             while (curToken.getType() == NEWLINE) {
                 res.registerAdvancement();
@@ -730,14 +725,30 @@ public class Parser {
                 break;
             }
             boolean isStatic = false;
-            if (curToken.getType() == KEYWORD) {
-                //static
+            AccessModifier accessModifier = AccessModifier.PUBLIC;
+            if (curToken.matches(KEYWORD, "static")) {
                 isStatic = true;
+            }
+            else if (curToken.matches(KEYWORD, "private")) {
+                accessModifier = AccessModifier.PRIVATE;
+            }
+            else if (curToken.matches(KEYWORD, "protected")) {
+                accessModifier = AccessModifier.PROTECTED;
+            }
+            else if (curToken.getType() == KEYWORD && !curToken.matches(KEYWORD, "public")) {
+                return res.failure(new InvalidSyntaxError(
+                        curToken.getStart(), curToken.getEnd(),
+                        "Did not expect keyword of type: " + curToken.getValue()
+                ));
+            }
+            if (curToken.getType() == KEYWORD) {
                 res.registerAdvancement();
                 advance();
             }
-            //TODO might not be identifier
-            Token nameOfProperty = curToken;
+
+            Token nameOfProperty = this.expect(res, IDENTIFIER);
+            if (res.hasError()) return res;
+
             if (nameOfProperty.getValue().equals(className)) {
                 if (constructorFound) {
                     return res.failure(new InvalidSyntaxError(
@@ -745,18 +756,14 @@ public class Parser {
                             "Only one constructor allowed!"
                     ));
                 }
-                res.registerAdvancement();
-                advance();
 
                 constructorFound = true;
                 Node constructor = res.register(functionBlock());
                 if (res.hasError()) return res;
-
-                properties.put(new StringNode(nameOfProperty), constructor);
+                properties.add(new ClassDefNode.ClassProperty(isStatic, accessModifier, nameOfProperty.getValue(), constructor));
+                //properties.put(new StringNode(nameOfProperty), constructor);
                 continue;
             }
-            res.registerAdvancement();
-            advance();
             if (curToken.getType() == EQ) {
                 //variable
                 res.registerAdvancement();
@@ -764,8 +771,7 @@ public class Parser {
                 Node value = res.register(comp());
                 if (res.hasError()) return res;
 
-                if (isStatic) staticProperties.put(new StringNode(nameOfProperty), value);
-                else properties.put(new StringNode(nameOfProperty), value);
+                properties.add(new ClassDefNode.ClassProperty(isStatic, accessModifier, nameOfProperty.getValue(),value));
                 res.registerAdvancement();
                 advance();
             }
@@ -774,12 +780,10 @@ public class Parser {
                 Node func = res.register(functionDefinition(true, true));
                 if (res.hasError()) return res;
 
-                if (isStatic) staticProperties.put(new StringNode(nameOfProperty), func);
-                else properties.put(new StringNode(nameOfProperty), func);
+                properties.add(new ClassDefNode.ClassProperty(isStatic, accessModifier, nameOfProperty.getValue(),func));
             }
             else if (curToken.getType() == NEWLINE) {
-                if (isStatic) staticProperties.put(new StringNode(nameOfProperty), null);
-                else properties.put(new StringNode(nameOfProperty), null);
+                properties.add(new ClassDefNode.ClassProperty(isStatic, accessModifier, nameOfProperty.getValue(),null));
             }
             else {
                 return res.failure(new InvalidSyntaxError(
@@ -789,7 +793,7 @@ public class Parser {
         }
 
         return res.success(new ClassDefNode(className, arguments,
-                properties,staticProperties, start, curToken.getEnd()));
+                properties, parent, start, curToken.getEnd()));
     }
     private ParseResult functionDefinition() {
         return functionDefinition(false, false);

@@ -49,30 +49,29 @@ class Token(type, value, start, end) {
         return false;
     }
     static SETTERS = [EQ, PLUSEQ, MINUSEQ, DIVEQ,INTDIVEQ, MULEQ, POWEQ, REMEQ]
-    #TODO switch statement
     static getMatchingCalculation(type) {
             switch (type) {
                 case PLUS:
                 case PLUSEQ:
-                    return BeloClass::add;
+                    return (a,b) => a.add(b)
                 case MINUS:
                 case MINUSEQ:
-                    return BeloClass::substract;
+                    return (a,b) => a.substract(b)
                 case MUL:
                 case MULEQ:
-                    return BeloClass::multiply;
+                    return (a,b) => a.multiply(b)
                 case DIV:
                 case DIVEQ:
-                    return BeloClass::divide;
+                    return (a,b) => a.divide(b)
                 case INTDIV:
                 case INTDIVEQ:
-                    return BeloClass::intdiv;
+                    return (a,b) => a.intdiv(b);
                 case REMAINDER:
                 case REMEQ:
-                    return BeloClass::remainder;
+                    return (a,b) => a.remainder(b);
                 case POW:
                 case POWEQ:
-                    return BeloClass::power;
+                    return (a,b) => a.power(b);
                 case EE:
                     return (first, second) -> new BeloDouble(first.compare(second) == 0);
                 case LTE:
