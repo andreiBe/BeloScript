@@ -1,1 +1,8 @@
-#ignore
+Animal constructor
+Animal says: <noice>
+Animal constructor
+Dog constructor
+Golden retriever
+Animal says: woof
+Dog says: woof
+woof

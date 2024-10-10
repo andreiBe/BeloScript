@@ -2,6 +2,7 @@ package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.Calculation;
 import com.patonki.beloscript.datatypes.BeloClass;
+import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
@@ -26,12 +27,32 @@ public class VarAssignNode extends Node {
 
         //normaali arvon asetus. Esim: muuttuja = 9
         if (var instanceof VarAccessNode) {
-            setter = (value, context,interpreter,res) -> {
-                VarAccessNode variableName = (VarAccessNode) var;
-                if (calculation != null) context.getSymboltable().change(variableName.getVarName(),value);
-                else context.getSymboltable().set(variableName.getVarName(),value);
-                return res.success(value, getStart(), getEnd());
-            };
+            VarAccessNode variableName = (VarAccessNode) var;
+            if (variableName.isFinal()) {
+                setter = (value, context, interpreter, res) -> {
+                    if (context.getSymboltable().isFinal(variableName.getVarName())) {
+                        return res.failure(new RunTimeError(
+                                getStart(), getEnd(), "Can't assign again to a final variable",
+                                context
+                        ));
+                    }
+                    context.getSymboltable().set(variableName.getVarName(), value);
+                    context.getSymboltable().makeFinal(variableName.getVarName());
+                    return res.success(value, getStart(), getEnd());
+                };
+            } else {
+                setter = (value, context,interpreter,res) -> {
+                    if (context.getSymboltable().isFinal(variableName.getVarName())) {
+                        return res.failure(new RunTimeError(
+                                getStart(), getEnd(), "Can't assign to a final variable",
+                                context
+                        ));
+                    }
+                    if (calculation != null) context.getSymboltable().change(variableName.getVarName(),value);
+                    else context.getSymboltable().set(variableName.getVarName(),value);
+                    return res.success(value, getStart(), getEnd());
+                };
+            }
         }
         //arvon asettaminen indeksissä n. Esim: muuttuja[8] = 9
         else if (var instanceof IndexAccessNode) {

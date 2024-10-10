@@ -346,13 +346,31 @@ public class Parser {
         Token token = curToken;
         if (token.typeInList(TokenType.FLOAT, TokenType.INT)) {
             res.registerAdvancement();
-            advance(); //TODO register
+            advance();
             return res.success(new NumberNode(token));
+        }
+        else if (token.matches(KEYWORD, "final")) {
+            res.registerAdvancement();
+            advance();
+            if (curToken.getType() != IDENTIFIER) {
+                return res.failure(new InvalidSyntaxError(
+                        curToken.getStart(), curToken.getEnd(), "Expected identifier"
+                ));
+            }
+            Token varName = curToken;
+            res.registerAdvancement();
+            advance();
+            if (curToken.getType() != EQ) {
+                return res.failure(new InvalidSyntaxError(
+                        curToken.getStart(), curToken.getEnd(), "Expected ="
+                ));
+            }
+            return res.success(new VarAccessNode(varName, true));
         }
         else if (token.getType() == IDENTIFIER) {
             res.registerAdvancement();
             advance();
-            return res.success(new VarAccessNode(token));
+            return res.success(new VarAccessNode(token, false));
         }
         else if (token.matches(KEYWORD, "if")) {
             return handleErrors(res, this::ifExpr);
@@ -714,7 +732,10 @@ public class Parser {
         if (res.hasError()) return res;
 
         boolean constructorFound = false;
-        while (curToken.typeInList(IDENTIFIER, NEWLINE) || curToken.matches(KEYWORD, "static")) {
+        while (curToken.typeInList(IDENTIFIER, NEWLINE)
+                || curToken.matches(KEYWORD, "static")
+                || curToken.getType() == KEYWORD
+                || curToken.getType() == CLOSING_BRACKET) {
             while (curToken.getType() == NEWLINE) {
                 res.registerAdvancement();
                 advance();
@@ -724,26 +745,39 @@ public class Parser {
                 advance();
                 break;
             }
-            boolean isStatic = false;
             AccessModifier accessModifier = AccessModifier.PUBLIC;
-            if (curToken.matches(KEYWORD, "static")) {
-                isStatic = true;
-            }
-            else if (curToken.matches(KEYWORD, "private")) {
+            if (curToken.matches(KEYWORD, "private")) {
                 accessModifier = AccessModifier.PRIVATE;
+                res.registerAdvancement();
+                advance();
             }
             else if (curToken.matches(KEYWORD, "protected")) {
                 accessModifier = AccessModifier.PROTECTED;
+                res.registerAdvancement();
+                advance();
             }
-            else if (curToken.getType() == KEYWORD && !curToken.matches(KEYWORD, "public")) {
+            else if (curToken.matches(KEYWORD, "public")) {
+                res.registerAdvancement();
+                advance();
+            }
+            boolean isStatic = false;
+            if (curToken.matches(KEYWORD, "static")) {
+                isStatic = true;
+                res.registerAdvancement();
+                advance();
+            }
+            boolean isFinal = false;
+            if (curToken.matches(KEYWORD, "final")) {
+                isFinal = true;
+                res.registerAdvancement();
+                advance();
+            }
+
+            if (curToken.getType() == KEYWORD) {
                 return res.failure(new InvalidSyntaxError(
                         curToken.getStart(), curToken.getEnd(),
                         "Did not expect keyword of type: " + curToken.getValue()
                 ));
-            }
-            if (curToken.getType() == KEYWORD) {
-                res.registerAdvancement();
-                advance();
             }
 
             Token nameOfProperty = this.expect(res, IDENTIFIER);
@@ -760,7 +794,7 @@ public class Parser {
                 constructorFound = true;
                 Node constructor = res.register(functionBlock());
                 if (res.hasError()) return res;
-                properties.add(new ClassDefNode.ClassProperty(isStatic, accessModifier, nameOfProperty.getValue(), constructor));
+                properties.add(new ClassDefNode.ClassProperty(isFinal, isStatic, accessModifier, nameOfProperty.getValue(), constructor));
                 //properties.put(new StringNode(nameOfProperty), constructor);
                 continue;
             }
@@ -771,7 +805,7 @@ public class Parser {
                 Node value = res.register(comp());
                 if (res.hasError()) return res;
 
-                properties.add(new ClassDefNode.ClassProperty(isStatic, accessModifier, nameOfProperty.getValue(),value));
+                properties.add(new ClassDefNode.ClassProperty(isFinal, isStatic, accessModifier, nameOfProperty.getValue(),value));
                 res.registerAdvancement();
                 advance();
             }
@@ -780,10 +814,10 @@ public class Parser {
                 Node func = res.register(functionDefinition(true, true));
                 if (res.hasError()) return res;
 
-                properties.add(new ClassDefNode.ClassProperty(isStatic, accessModifier, nameOfProperty.getValue(),func));
+                properties.add(new ClassDefNode.ClassProperty(isFinal, isStatic, accessModifier, nameOfProperty.getValue(),func));
             }
             else if (curToken.getType() == NEWLINE) {
-                properties.add(new ClassDefNode.ClassProperty(isStatic, accessModifier, nameOfProperty.getValue(),null));
+                properties.add(new ClassDefNode.ClassProperty(isFinal, isStatic, accessModifier, nameOfProperty.getValue(),null));
             }
             else {
                 return res.failure(new InvalidSyntaxError(

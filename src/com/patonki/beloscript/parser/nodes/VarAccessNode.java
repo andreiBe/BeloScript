@@ -9,10 +9,12 @@ import com.patonki.beloscript.lexer.Token;
 
 public class VarAccessNode extends Node {
     private final Token token;
+    private final boolean isFinal;
     private final String varName;
 
-    public VarAccessNode(Token varName) {
+    public VarAccessNode(Token varName, boolean isFinal) {
         this.token = varName;
+        this.isFinal = isFinal;
         this.start = token.getStart().copy();
         this.end = token.getEnd().copy();
         this.varName = token.getValue();
@@ -36,6 +38,9 @@ public class VarAccessNode extends Node {
         return varName;
     }
 
+    public boolean isFinal() {
+        return isFinal;
+    }
 
     @Override
     public String toString() {

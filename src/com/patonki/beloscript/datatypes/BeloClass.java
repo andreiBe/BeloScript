@@ -152,7 +152,7 @@ public abstract class BeloClass implements Comparable<BeloClass>{
     }
 
     /**
-     * Apu metodi virheen luomiseksi. Luo virheen, joka kertoo, että luokalla ei ole kyseistä muuttujaa.
+     * Apumetodi virheen luomiseksi. Luo virheen, joka kertoo, että luokalla ei ole kyseistä muuttujaa.
      * <br> Virhe saattaisi ilmaantua esim. seuraavassa tilanteessa: <code>[].eiolemassa = 9</code>
      * @param name Muuttujan nimi mihin yritettiin päästä käsiksi
      * @return virhe

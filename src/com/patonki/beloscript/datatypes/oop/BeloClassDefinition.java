@@ -1,6 +1,7 @@
 package com.patonki.beloscript.datatypes.oop;
 
 import com.patonki.beloscript.datatypes.BeloClass;
+import com.patonki.beloscript.datatypes.basicTypes.BeloError;
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
 import com.patonki.beloscript.datatypes.basicTypes.Null;
 import com.patonki.beloscript.datatypes.basicTypes.Obj;
@@ -18,58 +19,77 @@ public class BeloClassDefinition extends BeloClass {
     private final PropertiesAccess properties;
     private final String className;
     private final BeloClassDefinition parent;
+    private final AccessModifier accessModifier;
+
     public BeloClassDefinition(List<String> parameters,
                                PropertiesAccess properties,
                                String className,
-                               BeloClassDefinition parent) {
+                               BeloClassDefinition parent,
+                               AccessModifier accessModifier) {
         this.parameters = parameters;
         this.properties = properties;
         this.className = className;
         this.parent = parent;
+        this.accessModifier = accessModifier;
     }
-
-    private RunTimeResult createObject(RunTimeResult res, List<BeloClass> args) {
-        Obj obj = Obj.create();
-
+    private RunTimeResult createObject(RunTimeResult res, List<BeloClass> args, AccessModifier accessModifier) {
         Interpreter interpreter = new Interpreter();
         Context newContext = new Context(className, getContext(), this.getStart());
         newContext.setSymboltable(new SymbolTable(getContext().getSymboltable()));
-        newContext.getSymboltable().set("self", obj);
 
-        Node constructor = this.findConstructorAndSetDefaultValuesOfProperties(
-                res, interpreter, newContext, obj
+
+        RuntimeProperties runtimeProperties = this.properties.getRuntimeProperties(
+                res, interpreter, newContext, className
         );
-        if (res.shouldReturn()) return res;
 
-        this.setConstructorValues(obj, args);
+        Node constructor = this.properties.getPropertyValue(this.className);
+        this.setConstructorValues(runtimeProperties, args);
+        BeloClassObject parent = null;
+        if (this.parent != null) {
+            parent = (BeloClassObject) res.register(
+                    this.parent.getAsParent(res, args.subList(0, this.parent.parameters.size()))
+            );
+            if (res.hasError()) return res;
+            newContext.getSymboltable().set("super", parent);
+            BeloClassDefinition parentCopy = this.parent;
+            while (parentCopy != null) {
+                newContext.getSymboltable().set(
+                        parentCopy.className,
+                        parentCopy.copyWithAccessModifier(AccessModifier.PROTECTED)
+                );
+                parentCopy = parentCopy.parent;
+            }
+        }
+
+        BeloClassObject obj = new BeloClassObject(
+                runtimeProperties, accessModifier ,parent, className
+        );
+        BeloClassObject privateObj = new BeloClassObject(
+                runtimeProperties, AccessModifier.PRIVATE, parent, className
+        );
+
+        newContext.getSymboltable().set(className, this.copyWithAccessModifier(AccessModifier.PRIVATE));
+        newContext.getSymboltable().set("self", privateObj);
+
         this.executeConstructor(res, constructor, interpreter, newContext);
         if (res.shouldReturn()) return res;
 
         return res.success(obj);
     }
-    private Node findConstructorAndSetDefaultValuesOfProperties(
-            RunTimeResult res, Interpreter interpreter, Context context, Obj obj
-    ) {
-        Node constructor = null;
-        for (String key : properties.getPropertyKeys()) {
-            if (key.equals(className)) {
-                constructor = properties.getPropertyValue(key);
-                continue;
-            }
-            Node propertyValue = properties.getPropertyValue(key);
 
-            BeloClass value = propertyValue == null
-                    ? new Null()
-                    : res.register(interpreter.execute(propertyValue, context));
-            if (res.shouldReturn()) return null;
-
-            obj.put(BeloString.create(key), value);
-        }
-        return constructor;
+    private BeloClassDefinition copyWithAccessModifier(AccessModifier modifier) {
+        return new BeloClassDefinition(
+                this.parameters,
+                this.properties,
+                this.className,
+                this.parent,
+                modifier
+        );
     }
-    private void setConstructorValues(Obj obj, List<BeloClass> args) {
+
+    private void setConstructorValues(RuntimeProperties obj, List<BeloClass> args) {
         for (int i = 0; i < this.parameters.size(); i++) {
-            obj.put(BeloString.create(parameters.get(i)), args.get(i));
+            obj.setProperty(parameters.get(i), args.get(i));
         }
     }
     private void executeConstructor(RunTimeResult res, Node constructor,
@@ -77,12 +97,52 @@ public class BeloClassDefinition extends BeloClass {
         if (constructor == null) return;
         res.register(interpreter.execute(constructor, context));
     }
-
+    //TODO DUPLICATE CODE: SAME AS IN BeloClassObject
+    private BeloClass tryToFindFromParent(BeloClass name) {
+        if (this.parent == null) return createNotAMemberOfClassError(name);
+        BeloClass resultOfParent = this.parent.classValue(name);
+        if (resultOfParent instanceof NotMemberOfClassError) {
+            return createNotAMemberOfClassError(name);
+        }
+        return resultOfParent;
+    }
+    private BeloClass tryToSetInParent(BeloClass name, BeloClass value) {
+        if (this.parent == null) return createNotAMemberOfClassError(name);
+        BeloClass resultOfParent = this.parent.setClassValue(name.toString(), value);
+        if (resultOfParent instanceof NotMemberOfClassError) {
+            return createNotAMemberOfClassError(name);
+        }
+        return resultOfParent;
+    }
     @Override
     public BeloClass classValue(BeloClass name) {
+        if (!this.properties.hasStaticProperty(name.toString())) {
+            return this.tryToFindFromParent(name);
+        }
+        AccessModifier target = this.properties.getAccessModifierOfStaticProperty(name.toString());
+        if (!this.accessModifier.canAccess(target))
+            return createCannotAccessError(name, target);
         return this.properties.getStaticProperty(name.toString());
     }
 
+    @Override
+    public BeloClass setClassValue(String name, BeloClass newValue) {
+        if (!this.properties.hasStaticProperty(name)) {
+            return tryToSetInParent(BeloString.create(name), newValue);
+        }
+        AccessModifier target = this.properties.getAccessModifierOfStaticProperty(name);
+        if (!this.accessModifier.canAccess(target))
+            return createCannotAccessError(BeloString.create(name), target);
+        if (this.properties.staticPropertyIsFinal(name)) {
+            return createCannotAssignToFinalVariableError(name);
+        }
+        this.properties.setStaticProperty(name, newValue);
+        return newValue;
+    }
+
+    private RunTimeResult getAsParent(RunTimeResult res, List<BeloClass> args) {
+        return createObject(res, args, AccessModifier.PROTECTED);
+    }
     @Override
     public RunTimeResult execute(List<BeloClass> args) {
         RunTimeResult res = new RunTimeResult();
@@ -93,6 +153,35 @@ public class BeloClassDefinition extends BeloClass {
                     , this.getContext()));
         }
 
-        return createObject(res, args);
+        return createObject(res, args, AccessModifier.PUBLIC);
+    }
+    private BeloError createCannotAccessError(BeloClass name, AccessModifier target) {
+        return new CannotAccessError(new RunTimeError(name.getStart(),name.getEnd(),
+                "Cannot access class member: '"+ name+"' class: "+this.getClass().getSimpleName()
+                        + " because it is " + target,this.context));
+    }
+    @Override
+    protected BeloError createNotAMemberOfClassError(BeloClass name) {
+        return new NotMemberOfClassError(new RunTimeError(name.getStart(),name.getEnd(),
+                "Not a member of class: '"+ name+"' class: "+this.className,this.context));
+    }
+    private BeloError createCannotAssignToFinalVariableError(String name) {
+        return new BeloError(new RunTimeError(getStart(), getEnd(),
+                "Cannot asign to final variable: " + name, this.context));
+    }
+
+    @Override
+    public String toString() {
+        return this.properties.toString();
+    }
+    private static class CannotAccessError extends BeloError {
+        public CannotAccessError(RunTimeError e) {
+            super(e);
+        }
+    }
+    private static class NotMemberOfClassError extends BeloError {
+        public NotMemberOfClassError(RunTimeError e) {
+            super(e);
+        }
     }
 }

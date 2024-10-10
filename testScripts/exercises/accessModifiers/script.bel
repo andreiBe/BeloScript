@@ -1,0 +1,76 @@
+class Test {
+    private one = "One"
+    protected two = "TWO"
+    public three = "THREE"
+
+    private static staticOne = "staticOne"
+    protected static staticTwo = "staticTwo"
+    public static staticThree = "staticThree"
+
+    func() {
+        print(self.one)
+        print(self.two)
+        print(self.three)
+
+        print(Test.staticOne)
+        print(Test.staticTwo)
+        print(Test.staticThree)
+    }
+}
+
+print("Accessing attributes")
+test = Test()
+try {
+    print(test.one)
+} catch (e) {
+    print(e.details)
+}
+try {
+    print(test.two)
+} catch (e) {
+    print(e.details)
+}
+print(test.three)
+
+print("\nAccessing static attributes")
+try {
+    print(Test.staticOne)
+} catch (e) {
+    print(e.details)
+}
+try {
+    print(Test.staticTwo)
+} catch (e) {
+    print(e.details)
+}
+print(Test.staticThree)
+
+
+print("\nSelf calling")
+test.func()
+
+class Child extends Test {
+    func2() {
+        try {
+            print(self.one)
+        } catch (e) {
+            print(e.details)
+        }
+
+        print(self.two)
+        print(self.three)
+
+        try {
+            print(Test.staticOne)
+        } catch (e) {
+            print(e.details)
+        }
+        print(Test.staticTwo)
+        print(Test.staticThree)
+    }
+}
+child = Child()
+print("\nChild calling parrent")
+child.func()
+print("\nChild calling self")
+child.func2()

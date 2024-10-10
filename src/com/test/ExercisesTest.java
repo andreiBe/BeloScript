@@ -52,4 +52,17 @@ public class ExercisesTest {
     void staticProperties() {
         TestUtil.testFile(ROOT+"/staticProperties");
     }
+    @Test
+    void accessModifiers() {
+        TestUtil.testFile(ROOT+"/accessModifiers");
+    }
+    @Test
+    void finalVariables() {
+        TestUtil.testFile(ROOT+"/finalVariables");
+    }
+    @Test
+    void finalClassProperties() {
+        TestUtil.testFile(ROOT+"/finalClassProperties");
+    }
 }
+

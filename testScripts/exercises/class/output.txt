@@ -1,5 +1,5 @@
 Parent is null
-Parent is {parent=null, setVar=Func([name, value]), getVar=Func([name]), symbols={}}
+Parent is {symbols:{}, parent:null, getVar:Func([name]), setVar:Func([name, value])}
 null
 5
 Static func lol

@@ -1,0 +1,14 @@
+Normal test
+Cannot asign to final variable: var
+Cannot asign to final variable: var2
+Cannot asign to final variable: var3
+
+Records
+Cannot asign to final variable: one
+
+Duplicate set in definition
+Cannot asign to final variable: one
+5
+
+Duplicate set in definition but final
+Cannot asign to final variable: two

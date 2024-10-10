@@ -6,3 +6,5 @@ class Test {
     }
 }
 Test().test()
+Test.value = 9
+Test().test()

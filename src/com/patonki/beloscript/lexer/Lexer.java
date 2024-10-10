@@ -20,7 +20,7 @@ public class Lexer {
             "and", "or", "not", "if","else","elif",
             "for", "while","function","return","continue",
             "break","in","try", "catch","import","export", "class","enum", "static",
-            "switch", "case", "default", "private", "public", "protected", "extends"
+            "switch", "case", "default", "private", "public", "protected", "extends", "final"
     };
     //käsiteltävä teksti
     private final String text;

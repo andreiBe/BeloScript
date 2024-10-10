@@ -1,0 +1,59 @@
+print("Normal test")
+class Test {
+    final var = 1
+    static final var2 = 2
+    public static final var3 = 3
+}
+test = Test()
+
+try {
+    test.var = 10
+} catch (e) {
+    print(e.details)
+}
+
+try {
+    Test.var2 = 20
+} catch (e) {
+    print(e.details)
+}
+
+try {
+    Test.var3 = 30
+} catch (e) {
+    print(e.details)
+}
+
+print("\nRecords")
+class Test2(one, two, three)
+
+test2 = Test2(1,2,3)
+try {
+    test2.one = 5
+} catch (e) {
+    print(e.details)
+}
+
+print("\nDuplicate set in definition")
+class Test3(one, two) {
+    two = 3
+}
+test3 = Test3(1,2)
+try {
+    test3.one = 5
+} catch (e) {
+    print(e.details)
+}
+test3.two = 5
+print(test3.two)
+
+print("\nDuplicate set in definition but final")
+class Test4(one, two) {
+    final two = 3
+}
+test4 = Test4(1,2)
+try {
+      test4.two = 5
+} catch (e) {
+    print(e.details)
+}

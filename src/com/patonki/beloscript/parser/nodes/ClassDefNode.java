@@ -21,12 +21,14 @@ public class ClassDefNode extends Node {
     private final List<ClassProperty> staticProperties;
     private final Node parent;
     public static class ClassProperty {
+        private final boolean isFinal;
         private final boolean isStatic;
         private final AccessModifier accessModifier;
         private final String key;
         private final Node value;
 
-        public ClassProperty(boolean isStatic, AccessModifier accessModifier, String key, Node value) {
+        public ClassProperty(boolean isFinal, boolean isStatic, AccessModifier accessModifier, String key, Node value) {
+            this.isFinal = isFinal;
             this.isStatic = isStatic;
             this.accessModifier = accessModifier;
             this.key = key;
@@ -69,16 +71,27 @@ public class ClassDefNode extends Node {
             if (res.shouldReturn()) return res;
 
             properties.addStaticProperty(key,
-                    new Properties.Property<>(value, staticClassProperty.accessModifier)
+                    new Properties.Property<>(value, staticClassProperty.accessModifier, staticClassProperty.isFinal)
             );
         }
         for (ClassProperty property : this.properties) {
             properties.addProperty(property.key,
-                    new Properties.Property<>(property.value, property.accessModifier)
+                    new Properties.Property<>(property.value, property.accessModifier, property.isFinal)
             );
         }
+        for (String parameter : this.parametersAsString) {
+            if (properties.containsProperty(parameter)) continue;
+            properties.addProperty(parameter,
+                    new Properties.Property<>(new NullNode(), AccessModifier.PUBLIC, true));
+        }
 
-        BeloClassDefinition definition = new BeloClassDefinition(parametersAsString, properties, className, parentClass);
+        BeloClassDefinition definition = new BeloClassDefinition(
+                parametersAsString,
+                properties,
+                className,
+                parentClass,
+                AccessModifier.PUBLIC
+        );
 
         context.getSymboltable().set(className, definition);
         definition.setContext(context);

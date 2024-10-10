@@ -6,9 +6,12 @@ import com.patonki.beloscript.datatypes.function.BeloScriptFunction;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class SymbolTable {
     private final HashMap<String, BeloClass> symbols = new HashMap<>();
+    private final HashSet<String> finalVariables = new HashSet<>();
+
     private SymbolTable parent;
     public SymbolTable() {}
     public SymbolTable(SymbolTable parent) {
@@ -26,6 +29,15 @@ public class SymbolTable {
     }
     public void set(String name, BeloClass value) {
         symbols.put(name, value);
+    }
+    public void makeFinal(String name) {
+        finalVariables.add(name);
+    }
+    public boolean isFinal(String name) {
+        if (this.parent != null) {
+            return this.finalVariables.contains(name) || this.parent.isFinal(name);
+        }
+        return this.finalVariables.contains(name);
     }
     public void change(String name, BeloClass value) {
         if (symbols.get(name) == null && parent != null) parent.change(name,value);

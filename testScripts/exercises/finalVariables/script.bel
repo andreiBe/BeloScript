@@ -1,0 +1,8 @@
+final var = 5
+print(var)
+try {
+    var = 9
+} catch (e) {
+    print(e.details)
+}
+print(var)
