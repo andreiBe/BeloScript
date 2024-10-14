@@ -26,7 +26,6 @@ public class BeloFunction extends BaseFunction{
         RunTimeResult res = new RunTimeResult();
         Interpreter interpreter = new Interpreter();
         Context newContext = generateNewContext();
-
         res.register(checkAndPopulateArgs(argNames,args,newContext));
         if (res.shouldReturn()) return res;
         BeloClass value = res.register(interpreter.execute(body,newContext));

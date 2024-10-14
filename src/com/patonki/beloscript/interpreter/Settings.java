@@ -5,6 +5,7 @@ import com.patonki.beloscript.util.FileUtil;
 import com.patonki.beloscript.util.Reader;
 
 import java.io.*;
+import java.util.HashMap;
 
 public class Settings {
     private String jsondata;
@@ -14,6 +15,9 @@ public class Settings {
     private boolean logParseResult;
     private final String[] args;
     private final String rootPath;
+
+    private static final HashMap<File, PrintStream> printStreams = new HashMap<>();
+
     private Reader createInputReader(String arg, String rootPath) throws BeloException {
         //komento alkaa input:, joten se otetaan pois
         String inputFileName = arg.substring(6).trim();
@@ -29,10 +33,16 @@ public class Settings {
     private PrintStream createOutputPrinter(String arg, String rootPath) throws BeloException {
         String outputFileName = arg.substring(7).trim();
         File f = new File(outputFileName);
+        if (printStreams.containsKey(f)) {
+            return printStreams.get(f);
+        }
+
         if (! f.isAbsolute()) outputFileName = rootPath+outputFileName;
         FileUtil.writeToFile(outputFileName, "");
         try {
-            return new PrintStream(outputFileName);
+            PrintStream p = new PrintStream(outputFileName);
+            printStreams.put(f, p);
+            return p;
         } catch (FileNotFoundException e) {
            throw new BeloException("Failed to create outputstream from file:"+outputFileName);
         }
@@ -101,5 +111,12 @@ public class Settings {
 
     public String getRootPath() {
         return rootPath;
+    }
+
+    public static void close() {
+        for (PrintStream value : printStreams.values()) {
+            value.close();
+        }
+        printStreams.clear();
     }
 }

@@ -1,0 +1,5 @@
+BeloScriptError = import "BeloScriptError.bel"
+class IllegalCharError(posStart, posEnd, details) extends BeloScriptError {
+        super(posStart, posEnd, "Illegal Character", details)
+}
+export IllegalCharError

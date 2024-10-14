@@ -64,5 +64,9 @@ public class ExercisesTest {
     void finalClassProperties() {
         TestUtil.testFile(ROOT+"/finalClassProperties");
     }
+    @Test
+    void superConstructor() {
+        TestUtil.testFile(ROOT+"/superConstructor");
+    }
 }
 

@@ -1,0 +1,25 @@
+class BeloScriptError(posStart, posEnd, errorName, details) {
+    private final posStart
+    private final posEnd
+    private final errorName
+    private final details
+
+    BeloScriptError {
+        if (self.posStart == null or self.posEnd == null or self.errorName== null or self.details==null) {
+            print(
+                    "One of the values is null: pos-start: " + posStart
+                    + " pos-end: "+posEnd+" errorName: "+errorName+" details: "+details
+            )
+            return
+        }
+        print("HERE")
+        print(self.posStart)
+        print(self.posEnd)
+        print(self.errorName)
+        print(self.details)
+    }
+    public getDetails() {
+        return self.details
+    }
+}
+export BeloScriptError

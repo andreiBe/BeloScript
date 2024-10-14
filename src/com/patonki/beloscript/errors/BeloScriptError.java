@@ -10,7 +10,6 @@ public class BeloScriptError {
     protected final Position posEnd;
 
     public BeloScriptError(Position posStart, Position posEnd,String errorName, String details) {
-
         if (posStart == null || posEnd == null || errorName== null || details==null) {
             throw new NullPointerException(
                     "One of the values is null: pos-start: " + posStart

@@ -122,7 +122,7 @@ public abstract class BeloClass implements Comparable<BeloClass>{
      * @return negatiivinen, nolla tai positiivinen
      */
     public int compare(BeloClass another) {
-        return 0;
+        return this.getClass().isAssignableFrom(another.getClass()) ? 0 : -1;
     }
     @Override
     public int compareTo(BeloClass o) {

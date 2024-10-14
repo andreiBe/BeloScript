@@ -16,7 +16,10 @@ class Position(index, lineNumber, columnNumber, fileName, fileContent) {
     }
 
     copy() {
+        print("OMG IT MUST BE THIS")
+        print(self.index)
         return Position(self.index,self.lineNumber,self.columnNumber,self.fileName,self.fileContent)
+        print("NO?")
     }
 }
 export Position

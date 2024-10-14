@@ -1,15 +1,35 @@
 class SymbolTable(parent) {
-    symbols = {}
-    parent
-    getVar(name) {
-        val = self.symbols.get(name)
+    private final symbols = {}
+    private final finalVariables = {}
+    private final parent
+
+    public get(name) {
+        val = self.symbols[name]
         if (val == null and self.parent != null) {
             return self.parent.get(name)
         }
         return val
     }
-    setVar(name, value) {
+    public set(name, value) {
         self.symbols[name] = value
+    }
+    public makeFinal(name) {
+        finalVariables.add(name)
+    }
+    public isFinal(name) {
+        if (self.parent != null) {
+            return (
+            self.finalVariables.contains(name)
+            or self.parent.isFinal(name)
+            )
+        }
+    }
+    public change(name, value) {
+        if (self.symbols[name] == null and self.parent != null) {
+            self.parent.change(name, value)
+        } else {
+            self.symbols[name] = value
+        }
     }
 }
 export SymbolTable

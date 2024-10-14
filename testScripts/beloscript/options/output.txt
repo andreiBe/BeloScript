@@ -1,1 +1,225 @@
 name?: 
+null
+0
+File script.bel, line 7, in <stdin>
+Runtime Error: Division by zero
+
+    8/0
+      ^
+98
+File script.bel, line 14, in <stdin>
+Runtime Error: For input string: "two"
+
+    to_num("two")
+    ^^^^^^
+Too few args
+Too many args
+5
+James
+17
+18
+Hello
+lol
+Peter 5
+jea
+lambdatest1
+return early
+jou
+10
+9
+8
+7
+6
+5
+4
+3
+2
+1
+0
+9
+98
+8
+9
+10
+8
+1
+5
+9
+12
+15
+16
+18
+21
+22
+5
+[6, 4, 2, 3, 54, 5]
+3
+[[a], [a, a, a], [a, b, b], [a, b, c]]
+9
+1000
+3
+2
+1
+3
+5
+[6, 5, 4, 6, 8]
+[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+[0, 1, 2, 3, 4, 6, 7]
+10
+20
+Hello!
+Hello!
+Hello world!
+Division by zero
+[null]
+Division by zero
+4
+WOW 9
+true
+null
+wow
+jou
+right
+8
+6
+4
+3
+81
+4
+3
+2.5
+3125
+-4
+-4
+24
+1
+0
+1
+1
+1
+1
+1
+1
+0
+0
+1
+1
+0
+Division by zero
+4294967296
+3hello
+hello3
+Can't add double to List
+Can't substract List from double
+kkk
+Can't multiply string with BeloString (class:BeloString)
+1
+0
+k
+Index must be a number (class:BeloString)
+3
+Not a member of class: 'lol' class: BeloString
+3
+2
+9
+{2=lol, 9=hello, 3=fuck}
+Animal constructor
+Animal says: <noice>
+Animal constructor
+Dog constructor
+Golden retriever
+Animal says: woof
+Dog says: woof
+woof
+Normal test
+Cannot asign to final variable: var
+Cannot asign to final variable: var2
+Cannot asign to final variable: var3
+
+Records
+Cannot asign to final variable: one
+
+Duplicate set in definition
+Cannot asign to final variable: one
+5
+
+Duplicate set in definition but final
+Cannot asign to final variable: two
+5
+9
+Et antanut nimeä
+Et ole vielä syntynyt!
+Kiitos!
+En usko!
+Kiitos!
+Kiitos!
+HERE
+1
+2
+Illegal Character
+Very scary error
+Details
+Very scary error
+Details ending
+[7, 6, 5, 4, 3, 2, 1]
+[7, 6, 5, 4, 3, 2, 1]
+[1, 2, 3, 4, 5, 6, 7]
+[1, 2, 3, 4, 5, 6, 7, 5, 4]
+8
+3
+9
+Animal says: Möö
+Dog says: "My breed is: Golden retriever" and my color: Yellow
+[23, 98]
+2
+[98]
+2
+3
+5
+Can't assign to a final variable
+5
+5040
+Parent is null
+Parent is {symbols:{}, parent:null, get:Func([name]), set:Func([name, value])}
+null
+5
+Static func lol
+55
+2
+Accessing attributes
+Cannot access class member: 'one' class: BeloClassObject because it is PRIVATE
+Cannot access class member: 'two' class: BeloClassObject because it is PROTECTED
+THREE
+
+Accessing static attributes
+Cannot access class member: 'staticOne' class: BeloClassDefinition because it is PRIVATE
+Cannot access class member: 'staticTwo' class: BeloClassDefinition because it is PROTECTED
+staticThree
+
+Self calling
+One
+TWO
+THREE
+staticOne
+staticTwo
+staticThree
+
+Child calling parrent
+One
+TWO
+THREE
+staticOne
+staticTwo
+staticThree
+
+Child calling self
+Cannot access class member: 'one' class: BeloClassObject because it is PRIVATE
+TWO
+THREE
+Cannot access class member: 'staticOne' class: BeloClassDefinition because it is PRIVATE
+staticTwo
+staticThree
+Now creating position
+Created position
+OMG IT MUST BE THIS
+0

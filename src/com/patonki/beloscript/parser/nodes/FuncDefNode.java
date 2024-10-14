@@ -13,20 +13,22 @@ import java.util.stream.Collectors;
 public class FuncDefNode extends Node {
     private final Token varName;
     private final Node body;
-    private final BeloFunction function;
+    private final String funcName;
+    private final List<String> argNames;
+    private final boolean shouldAutoReturn;
 
     public FuncDefNode(Token varName, List<Token> argumentNames, Node body, boolean shouldAutoReturn, Position start, Position end) {
         this.varName = varName;
         this.body = body;
         this.start = start;
         this.end = end;
-        List<String> argNames = argumentNames.stream().map(Token::getValue).collect(Collectors.toList());
-        String funcName = varName != null ? varName.getValue() : null;
-        function = new BeloFunction(funcName, body,argNames, shouldAutoReturn);
+        this.argNames = argumentNames.stream().map(Token::getValue).collect(Collectors.toList());
+        this.funcName = varName != null ? varName.getValue() : null;
+        this.shouldAutoReturn = shouldAutoReturn;
     }
     public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
-
+        BeloFunction function = new BeloFunction(funcName, body,argNames, shouldAutoReturn);
         if (varName != null) {
             context.getSymboltable().set(varName.getValue(), function);
         }

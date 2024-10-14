@@ -1,34 +1,38 @@
 Position = import "../Position.bel"
 LexResult = import "LexResult.bel"
+TokenType = import "TokenType.bel"
+IllegalCharError = import "../errors/IllegalCharError.bel"
 keywords = (["and", "or", "not", "if","else","elif",
                        "for", "while","function","return","continue",
                        "break","in","try", "catch","import","export", "class", "enum", "static"])
-TokenType = import "TokenType.bel"
+
 TokenType.spread()
 
 class Lexer(filename, text) {
     # käsiteltävä teksti
-    text
+    private final text
     # kohta tekstistä, jota käsitellään
-    pos
+    private pos
     # tiedosto, jota käsittellään
-    fileName
-    curChar
+    private fileName
+    private curChar
     #sisältää tiedon siitä kuinka syvällä suluissa ollaan. Eli kuinka monta avautuvaa suljetta "(" ollaan löydetty, joille
     #ei olla löydetty vastaavaa sulkevaa suljetta ")"
-    paramDeepness = 0
+    private paramDeepness = 0
 
     Lexer {
+        print("Now creating position")
         self.pos = Position(-1, 0, -1, self.fileName, self.text);
+        print("Created position")
         self.curChar = 0;
         self.advance();
     }
-   advance() {
+   private advance() {
         self.pos.advance(self.curChar);
         self.curChar = if (self.pos.index < self.text.size()) self.text[self.pos.index] else ""
     }
     # ainut public metodi, joka palauttaa LexResultin, joka sisältää token listan ja mahdolliset virheet suorituksessa
-    makeTokens() {
+    public makeTokens() {
         tokens = []
         # Käydään kaikki tiedoston merkit läpi.
         while (self.curChar != 0) { # ei olla käsitelty kaikkia merkkejä

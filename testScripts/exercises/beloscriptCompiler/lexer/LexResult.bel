@@ -1,14 +1,14 @@
 class LexResult(tokens, error) {
-    tokens
-    error
+    private final tokens
+    private final error
 
-    hasError() {
+    public hasError() {
         return self.error != null
     }
-    getTokens() {
+    public getTokens() {
         return self.tokens
     }
-    getError() {
+    public getError() {
         return self.error
     }
 }

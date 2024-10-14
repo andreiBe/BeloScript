@@ -42,6 +42,14 @@ public class CustomBeloClass extends BeloClass{
         addMethods(this, collectMethods(this.getClass()).classMethods);
         return (T) this;
     }
+
+    @Override
+    public String toString() {
+        return "CustomBeloClass{" +
+                "classValues=" + classValues +
+                '}';
+    }
+
     private static BeloScriptFunction createFunction(Method method, Object obj) {
         Class<?>[] parameterTypes = method.getParameterTypes();
         int settingsIndex = Arrays.asList(parameterTypes).indexOf(Settings.class);
@@ -215,6 +223,7 @@ public class CustomBeloClass extends BeloClass{
         }
         return new Overloading(overloadedConstructors,clazz.getSimpleName());
     }
+
     private static class Methods {
         ArrayList<Method> classMethods;
         ArrayList<Method> staticFunctions;

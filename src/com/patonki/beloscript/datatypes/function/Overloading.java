@@ -65,4 +65,12 @@ public class Overloading extends BeloScriptFunction{
         return throwError(res,context,"Didn't find a function with these parameters");
     }
 
+    @Override
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        for (Pair<BeloScriptFunction, List<Class<?>>> possibleFunction : possibleFunctions) {
+            builder.append(possibleFunction.first()).append("\n");
+        }
+        return builder.toString();
+    }
 }

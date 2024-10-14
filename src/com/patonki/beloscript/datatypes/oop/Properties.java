@@ -67,7 +67,6 @@ public class Properties implements PropertiesAccess {
                 continue;
             }
 
-
             BeloClass value = propertyValue == null
                     ? new Null()
                     : res.register(interpreter.execute(propertyValue, context));

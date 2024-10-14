@@ -53,7 +53,6 @@ public abstract class BaseFunction extends BeloClass{
         for (int i = 0; i < args.size(); i++) {
             String name = argNames.get(i);
             BeloClass value = args.get(i);
-            value.setContext(context);
             context.getSymboltable().set(name,value);
         }
     }

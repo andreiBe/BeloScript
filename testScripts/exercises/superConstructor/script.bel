@@ -1,0 +1,6 @@
+IllegalCharError = import "IllegalCharError.bel"
+
+error = IllegalCharError(1,2,"Very scary error")
+print("Details")
+print(error.getDetails())
+print("Details ending")

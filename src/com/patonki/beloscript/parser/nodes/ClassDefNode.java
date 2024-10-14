@@ -20,6 +20,8 @@ public class ClassDefNode extends Node {
     private final List<ClassProperty> properties;
     private final List<ClassProperty> staticProperties;
     private final Node parent;
+    private final List<Node> parentParameters;
+
     public static class ClassProperty {
         private final boolean isFinal;
         private final boolean isStatic;
@@ -38,11 +40,12 @@ public class ClassDefNode extends Node {
     public ClassDefNode(String className,
                         List<Token> parameters,
                         List<ClassProperty> properties,
-                        Node parent,
+                        Node parent, List<Node> parentParameters,
                         Position start, Position end) {
         this.start = start;
         this.end = end;
         this.parent = parent;
+        this.parentParameters = parentParameters;
         this.className = className;
         this.parametersAsString = parameters.stream().map(Token::getValue).collect(Collectors.toList());
         this.properties = properties.stream().filter(p -> !p.isStatic).collect(Collectors.toList());
@@ -81,6 +84,9 @@ public class ClassDefNode extends Node {
         }
         for (String parameter : this.parametersAsString) {
             if (properties.containsProperty(parameter)) continue;
+            if (parentClass != null && parentClass.getParameters().contains(parameter)) {
+                continue;
+            }
             properties.addProperty(parameter,
                     new Properties.Property<>(new NullNode(), AccessModifier.PUBLIC, true));
         }
@@ -90,6 +96,7 @@ public class ClassDefNode extends Node {
                 properties,
                 className,
                 parentClass,
+                parentParameters,
                 AccessModifier.PUBLIC
         );
 

@@ -11,8 +11,8 @@ import java.util.HashSet;
 public class SymbolTable {
     private final HashMap<String, BeloClass> symbols = new HashMap<>();
     private final HashSet<String> finalVariables = new HashSet<>();
-
     private SymbolTable parent;
+
     public SymbolTable() {}
     public SymbolTable(SymbolTable parent) {
         this.parent = parent;
@@ -23,9 +23,6 @@ public class SymbolTable {
             return parent.get(name);
         }
         return val;
-    }
-    public void create(String clazz) {
-        symbols.get(clazz).execute(new ArrayList<>());
     }
     public void set(String name, BeloClass value) {
         symbols.put(name, value);
@@ -40,7 +37,8 @@ public class SymbolTable {
         return this.finalVariables.contains(name);
     }
     public void change(String name, BeloClass value) {
-        if (symbols.get(name) == null && parent != null) parent.change(name,value);
+        if (symbols.get(name) == null && parent != null)
+            parent.change(name,value);
         else symbols.put(name,value);
     }
 
@@ -61,11 +59,5 @@ public class SymbolTable {
             res.append(parent).append("\n");
         }
         return res.toString();
-    }
-    public void keys() {
-        System.out.println("Printing keys:");
-        for (String key : symbols.keySet()) {
-            System.out.println(key);
-        }
     }
 }

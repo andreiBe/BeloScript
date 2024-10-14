@@ -11,7 +11,9 @@ import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
 import com.patonki.beloscript.interpreter.SymbolTable;
 import com.patonki.beloscript.parser.nodes.Node;
+import com.patonki.beloscript.parser.nodes.VarAccessNode;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class BeloClassDefinition extends BeloClass {
@@ -19,24 +21,51 @@ public class BeloClassDefinition extends BeloClass {
     private final PropertiesAccess properties;
     private final String className;
     private final BeloClassDefinition parent;
+    private final List<Node> parentParameters;
     private final AccessModifier accessModifier;
 
     public BeloClassDefinition(List<String> parameters,
                                PropertiesAccess properties,
                                String className,
                                BeloClassDefinition parent,
+                               List<Node> parentParameters,
                                AccessModifier accessModifier) {
         this.parameters = parameters;
         this.properties = properties;
         this.className = className;
         this.parent = parent;
+        this.parentParameters = parentParameters;
         this.accessModifier = accessModifier;
     }
+    private List<BeloClass> getParametersForSuperConstructor(List<BeloClass> args,
+                                                             RunTimeResult res,
+                                                             Context context,
+                                                             Interpreter interpreter) {
+        if (this.parentParameters == null) {
+            return args.subList(0, this.parent.parameters.size());
+        }
+        ArrayList<BeloClass> params = new ArrayList<>();
+
+        for (Node parentParameter : this.parentParameters) {
+            if (parentParameter instanceof VarAccessNode) {
+                String varName = ((VarAccessNode) parentParameter).getVarName();
+                int indexInParameters = parameters.indexOf(varName);
+                if (indexInParameters != -1) {
+                    params.add(args.get(indexInParameters));
+                    continue;
+                }
+            }
+            BeloClass value = res.register(parentParameter.execute(context, interpreter));
+            if (res.shouldReturn()) return null;
+            params.add(value);
+        }
+        return params;
+    }
+
     private RunTimeResult createObject(RunTimeResult res, List<BeloClass> args, AccessModifier accessModifier) {
         Interpreter interpreter = new Interpreter();
         Context newContext = new Context(className, getContext(), this.getStart());
         newContext.setSymboltable(new SymbolTable(getContext().getSymboltable()));
-
 
         RuntimeProperties runtimeProperties = this.properties.getRuntimeProperties(
                 res, interpreter, newContext, className
@@ -46,8 +75,10 @@ public class BeloClassDefinition extends BeloClass {
         this.setConstructorValues(runtimeProperties, args);
         BeloClassObject parent = null;
         if (this.parent != null) {
+            List<BeloClass> params = getParametersForSuperConstructor(args, res, getContext(), interpreter);
+            if (res.shouldReturn()) return res;
             parent = (BeloClassObject) res.register(
-                    this.parent.getAsParent(res, args.subList(0, this.parent.parameters.size()))
+                    this.parent.getAsParent(res, params)
             );
             if (res.hasError()) return res;
             newContext.getSymboltable().set("super", parent);
@@ -78,18 +109,25 @@ public class BeloClassDefinition extends BeloClass {
     }
 
     private BeloClassDefinition copyWithAccessModifier(AccessModifier modifier) {
-        return new BeloClassDefinition(
+        BeloClassDefinition definition =  new BeloClassDefinition(
                 this.parameters,
                 this.properties,
                 this.className,
                 this.parent,
+                this.parentParameters,
                 modifier
         );
+        definition.setContext(getContext());
+        return definition;
     }
 
     private void setConstructorValues(RuntimeProperties obj, List<BeloClass> args) {
         for (int i = 0; i < this.parameters.size(); i++) {
-            obj.setProperty(parameters.get(i), args.get(i));
+            String key = parameters.get(i);
+            if (this.parent != null && this.parent.parameters.contains(key)) {
+                continue;
+            }
+            obj.setProperty(key, args.get(i));
         }
     }
     private void executeConstructor(RunTimeResult res, Node constructor,
@@ -183,5 +221,9 @@ public class BeloClassDefinition extends BeloClass {
         public NotMemberOfClassError(RunTimeError e) {
             super(e);
         }
+    }
+
+    public List<String> getParameters() {
+        return parameters;
     }
 }

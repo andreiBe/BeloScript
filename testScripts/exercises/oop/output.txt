@@ -1,2 +1,2 @@
-Animal says: Vuh
+Animal says: Möö
 Dog says: "My breed is: Golden retriever" and my color: Yellow

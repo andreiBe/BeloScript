@@ -301,6 +301,31 @@ public class Parser {
         }
         return res.success(left);
     }
+    private List<Node> parseArgs(ParseResult res) {
+        List<Node> args = new ArrayList<>();
+        //etsitään parametrit, jos funktiolla on niitä
+        if (curToken.getType() != RPAREN) {
+            args.add(res.register(expression()));
+            if (res.hasError()) return args;
+
+            while (curToken.getType() == COMMA) {
+                res.registerAdvancement();
+                advance();
+
+                args.add(res.register(expression()));
+                if (res.hasError()) return args;
+            }
+
+            if (curToken.getType() != RPAREN) {
+                res.failure(new InvalidSyntaxError(curToken.getStart(), curToken.getEnd(),
+                        "Expected: ',' or ')'"));
+                return args;
+            }
+        }
+        res.registerAdvancement();
+        advance();
+        return args;
+    }
     /*
     Palauttaa callNoden, jolle on etsitty tarvittavat parametrit
      */
@@ -308,27 +333,9 @@ public class Parser {
         ParseResult res = new ParseResult();
         res.registerAdvancement();
         advance();
-        List<Node> args = new ArrayList<>();
-        //etsitään parametrit, jos funktiolla on niitä
-        if (curToken.getType() != RPAREN) {
-            args.add(res.register(expression()));
-            if (res.hasError()) return res;
+        List<Node> args = parseArgs(res);
+        if (res.hasError()) return res;
 
-            while (curToken.getType() == COMMA) {
-                res.registerAdvancement();
-                advance();
-
-                args.add(res.register(expression()));
-                if (res.hasError()) return res;
-            }
-
-            if (curToken.getType() != RPAREN) {
-                return res.failure(new InvalidSyntaxError(curToken.getStart(), curToken.getEnd(),
-                        "Expected: ',' or ')'"));
-            }
-        }
-        res.registerAdvancement();
-        advance();
         Node callNode = new CallNode(target,args,curToken.getEnd());
         if (curToken.getType() == LPAREN) {
             //kutsutaan recursiivisesti. Jos tilanne on esim. hello()()
@@ -714,6 +721,7 @@ public class Parser {
             arguments = new ArrayList<>();
         }
         ArrayList<ClassDefNode.ClassProperty> properties = new ArrayList<>();
+        List<Node> parentArguments = null;
         Node parent = null;
 
         if (curToken.matches(KEYWORD, "extends")) {
@@ -726,7 +734,7 @@ public class Parser {
         if (curToken.getType() == NEWLINE) {
             this.skipNewlines(res);
             return res.success(new ClassDefNode(className, arguments,
-                    properties, parent, start, curToken.getEnd()));
+                    properties, parent, parentArguments, start, curToken.getEnd()));
         }
         this.expect(res, OPENING_BRACKET);
         if (res.hasError()) return res;
@@ -783,6 +791,14 @@ public class Parser {
             Token nameOfProperty = this.expect(res, IDENTIFIER);
             if (res.hasError()) return res;
 
+            if (nameOfProperty.getValue().equals("super")) {
+                this.expect(res, LPAREN);
+                if (res.hasError()) return res;
+                List<Node> args = parseArgs(res);
+                if (res.hasError()) return res;
+                parentArguments = args;
+                continue;
+            }
             if (nameOfProperty.getValue().equals(className)) {
                 if (constructorFound) {
                     return res.failure(new InvalidSyntaxError(
@@ -827,7 +843,7 @@ public class Parser {
         }
 
         return res.success(new ClassDefNode(className, arguments,
-                properties, parent, start, curToken.getEnd()));
+                properties, parent, parentArguments, start, curToken.getEnd()));
     }
     private ParseResult functionDefinition() {
         return functionDefinition(false, false);
