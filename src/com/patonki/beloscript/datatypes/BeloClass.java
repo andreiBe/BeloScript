@@ -2,6 +2,7 @@ package com.patonki.beloscript.datatypes;
 
 import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.basicTypes.BeloError;
+import com.patonki.beloscript.datatypes.basicTypes.BeloString;
 import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.RunTimeResult;
@@ -162,6 +163,9 @@ public abstract class BeloClass implements Comparable<BeloClass>{
     protected BeloError createNotAMemberOfClassError(BeloClass name) {
         return new BeloError(new RunTimeError(name.getStart(),name.getEnd(),
                 "Not a member of class: '"+ name+"' class: "+this.getClass().getSimpleName(),this.context));
+    }
+    public BeloClass asString() {
+        return BeloString.create(toString());
     }
     public BeloClass add(BeloClass another) {
         return throwError("'+' operator not defined ");

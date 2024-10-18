@@ -1,0 +1,6 @@
+class A {
+    toString() {
+        return "A is the best"
+    }
+}
+print(A())

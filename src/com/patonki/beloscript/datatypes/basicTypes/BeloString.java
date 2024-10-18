@@ -38,7 +38,7 @@ public class BeloString extends CustomBeloClass implements Iterable<BeloClass>{
 
     @Override
     public BeloClass add(BeloClass another) {
-        return BeloString.create(this.value + another.toString());
+        return BeloString.create(this.value + another.asString());
     }
 
     @Override

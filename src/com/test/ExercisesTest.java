@@ -72,5 +72,9 @@ public class ExercisesTest {
     void instanceOfCheck() {
         TestUtil.testFile(ROOT+"/instanceOfCheck");
     }
+    @Test
+    void asString() {
+        TestUtil.testFile(ROOT+"/asString");
+    }
 }
 

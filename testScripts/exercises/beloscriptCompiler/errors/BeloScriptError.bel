@@ -4,17 +4,18 @@ class BeloScriptError(posStart, posEnd, errorName, details) {
     private final errorName
     private final details
 
-    BeloScriptError {
-        if (self.posStart == null or self.posEnd == null or self.errorName == null or self.details == null) {
-            print(self.posStart == null)
-            print(self.posEnd == null)
-            print(self.errorName == null)
-            print(self.details == null)
-            print(
-                    "One of the values is null: pos-start: " + self.posStart
-                    + " pos-end: "+self.posEnd+" errorName: "+self.errorName+" details: "+self.details
-            )
+    public getDetails() {
+        return self.details
+    }
+    public toString() {
+        if (self.posStart == null) {
+            return self.errorName+": "+self.details;
         }
+        return self.errorName+": "+self.details
+                +"\nFile "+self.posStart.fileName+", line "+(self.posStart.lineNumber+1)
+                +"\n" + StringWithArrows.stringWithArrows(
+            self.posStart.fileContent, self.posStart, self.posEnd
+        );
     }
 }
 export BeloScriptError

@@ -3,7 +3,11 @@ package com.patonki.beloscript.datatypes.oop;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloError;
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
+import com.patonki.beloscript.datatypes.function.BeloFunction;
 import com.patonki.beloscript.errors.RunTimeError;
+import com.patonki.beloscript.interpreter.RunTimeResult;
+
+import java.util.ArrayList;
 
 public class BeloClassObject extends BeloClass {
     private final RuntimeProperties properties;
@@ -107,6 +111,28 @@ public class BeloClassObject extends BeloClass {
         }
         return this.properties.toString();
     }
+
+    @Override
+    public BeloClass asString() {
+        if (getErrorRecursive() != null) {
+            return BeloString.create(getErrorRecursive().toString());
+        }
+        if (this.properties == null) {
+            return super.asString();
+        }
+        if (!this.properties.containsProperty("toString")) {
+            return super.asString();
+        }
+        BeloClass toString = this.properties.getPropertyValue("toString");
+        if (toString instanceof BeloFunction) {
+            RunTimeResult res = toString.execute(new ArrayList<>());
+            if (res.hasError()) return new BeloError(res.getError());
+            //lol
+            return res.register(res);
+        }
+        return super.asString();
+    }
+
     private static class CannotAccessError extends BeloError {
         public CannotAccessError(RunTimeError e) {
             super(e);

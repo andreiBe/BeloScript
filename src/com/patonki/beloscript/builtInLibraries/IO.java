@@ -44,6 +44,6 @@ public class IO extends CustomBeloClass {
     }
     @BeloScript
     public static void print(BeloClass b, Settings settings) {
-        settings.getOutput().println(b);
+        settings.getOutput().println(b.asString());
     }
 }
