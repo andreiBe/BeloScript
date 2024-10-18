@@ -1,0 +1,34 @@
+class CustomError(message) extends Error {
+    public eel = "3"
+}
+class CustomError2(message) extends Error {
+    public lol = 3
+}
+
+function error() {
+    throw CustomError("An error happened")
+    print("Should not print 1")
+}
+
+try {
+    print("Should print 1")
+    print(error())
+    print("Should not print 2")
+}
+catch CustomError2(e) {
+    print("Should not print 3")
+}
+catch CustomError(e) {
+    print("Should print 2")
+    print("Should print " + e.eel)
+    print(e)
+    print(e.details)
+}
+
+try {
+    error()
+} catch CustomError2(e) {
+    print("Should not print 3")
+} catch (e) {
+    print("Should print 4")
+}

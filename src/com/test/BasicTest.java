@@ -60,4 +60,8 @@ public class BasicTest {
     void switchStatement() {
         TestUtil.testFile(root+"/switch");
     }
+    @Test
+    void throwErrors() {
+        TestUtil.testFile(root+"/throwErrors");
+    }
 }

@@ -84,7 +84,9 @@ public class BeloDouble extends BeloClass {
                     "Can't add double to "+another.getClass().getSimpleName(),
                     context));
     }
-
+    public static BeloDouble createFromBoolean(boolean b) {
+        return b ? TRUE : FALSE;
+    }
     @Override
     public BeloClass substract(BeloClass another) {
         if (Double.isNaN(another.doubleValue())) {

@@ -21,6 +21,26 @@ public class BeloClassObject extends BeloClass {
         this.className = className;
     }
 
+    public String getClassName() {
+        return className;
+    }
+
+    public RunTimeError getErrorRecursive() {
+        if (this.parent != null) {
+            return this.parent.getError();
+        }
+        return null;
+    }
+    public boolean isErrorClass() {
+        return this.parent != null && this.parent.isErrorClass();
+    }
+    public void initError() {
+        if (this.parent != null) {
+            this.parent.setPos(this.getStart(), this.getEnd());
+            this.parent.initError();
+        }
+    }
+
     private BeloClass tryToFindFromParent(BeloClass name) {
         if (this.parent == null) return createNotAMemberOfClassError(name);
         BeloClass resultOfParent = this.parent.classValue(name);
@@ -82,6 +102,9 @@ public class BeloClassObject extends BeloClass {
 
     @Override
     public String toString() {
+        if (getErrorRecursive() != null) {
+            return getErrorRecursive().toString();
+        }
         return this.properties.toString();
     }
     private static class CannotAccessError extends BeloError {

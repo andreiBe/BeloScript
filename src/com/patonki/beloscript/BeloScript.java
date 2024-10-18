@@ -3,6 +3,7 @@ package com.patonki.beloscript;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
 import com.patonki.beloscript.datatypes.basicTypes.Null;
+import com.patonki.beloscript.datatypes.oop.BeloErrorClassDefinition;
 import com.patonki.beloscript.errors.BeloException;
 import com.patonki.beloscript.errors.BeloScriptError;
 import com.patonki.beloscript.errors.LocalizedBeloException;
@@ -27,6 +28,7 @@ public class BeloScript {
         } catch (BeloException | IOException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
             throw new LocalizedBeloException(new BeloScriptError("Import error",e.getMessage()));
         }
+        symbolTable.set("Error", new BeloErrorClassDefinition());
         symbolTable.set("true",new BeloDouble(1));
         symbolTable.set("false",new BeloDouble(0));
         symbolTable.set("null",new Null());

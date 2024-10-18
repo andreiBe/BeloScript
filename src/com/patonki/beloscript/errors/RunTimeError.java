@@ -2,15 +2,22 @@ package com.patonki.beloscript.errors;
 
 
 import com.patonki.beloscript.Position;
+import com.patonki.beloscript.datatypes.BeloClass;
+import com.patonki.beloscript.datatypes.oop.BeloClassExceptionObject;
 import com.patonki.beloscript.interpreter.Context;
 
 public class RunTimeError extends BeloScriptError {
     private Context context;
+    private BeloClass errorObject = null;
+
     public RunTimeError(Position posStart, Position posEnd, String details, Context context) {
         super(posStart, posEnd, "Runtime Error", details);
         this.context = context;
     }
-
+    public RunTimeError(Position posStart, Position posEnd, String details, Context context, String errorName) {
+        super(posStart, posEnd, errorName, details);
+        this.context = context;
+    }
     public RunTimeError(BeloScriptError error,Context context) {
         super(error.posStart,error.posEnd, error.errorName, error.details);
         this.context = context;
@@ -19,6 +26,13 @@ public class RunTimeError extends BeloScriptError {
     public RunTimeError setContext(Context context) {
         this.context = context;
         return this;
+    }
+    public void setErrorObject(BeloClass errorObject) {
+        this.errorObject = errorObject;
+    }
+
+    public BeloClass getErrorObject() {
+        return errorObject;
     }
 
     @Override

@@ -2,8 +2,11 @@ package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
+import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
+import com.patonki.beloscript.datatypes.function.BeloScriptFunction;
 import com.patonki.beloscript.datatypes.oop.AccessModifier;
 import com.patonki.beloscript.datatypes.oop.BeloClassDefinition;
+import com.patonki.beloscript.datatypes.oop.ClassDefinition;
 import com.patonki.beloscript.datatypes.oop.Properties;
 import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
@@ -21,7 +24,6 @@ public class ClassDefNode extends Node {
     private final List<ClassProperty> staticProperties;
     private final Node parent;
     private final List<Node> parentParameters;
-
     public static class ClassProperty {
         private final boolean isFinal;
         private final boolean isStatic;
@@ -55,17 +57,20 @@ public class ClassDefNode extends Node {
     public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         Properties properties = new Properties();
-        BeloClassDefinition parentClass = null;
+        ClassDefinition parentClass = null;
         if (parent != null) {
             BeloClass parentObj = res.register(parent.execute(context, interpreter));
             if (res.shouldReturn()) return res;
-            if (!(parentObj instanceof BeloClassDefinition)) {
+
+            if (parentObj instanceof ClassDefinition) {
+                parentClass = (ClassDefinition) parentObj;
+            }
+            else {
                 return res.failure(new RunTimeError(parent.getStart(), parent.getEnd(),
                         "Expected class but was " + parentObj.getClass().getSimpleName(),
                         context
                 ));
             }
-            parentClass = (BeloClassDefinition) parentObj;
         }
         for (ClassProperty staticClassProperty : this.staticProperties) {
             String key = staticClassProperty.key;
@@ -99,6 +104,15 @@ public class ClassDefNode extends Node {
                 parentParameters,
                 AccessModifier.PUBLIC
         );
+        properties.addStaticProperty("isInstanceOf", new Properties.Property<>(
+                new BeloScriptFunction("isInstanceOf") {
+                    @Override
+                    public RunTimeResult execute(Context context, List<BeloClass> args, RunTimeResult res) {
+                        BeloClass value = args.get(0);
+                        return res.success(BeloDouble.createFromBoolean(definition.isInstanceOf(value)));
+                    }
+                }, AccessModifier.PUBLIC, true
+        ));
 
         context.getSymboltable().set(className, definition);
         definition.setContext(context);

@@ -1,0 +1,9 @@
+Should print 1
+Should print 2
+Should print 3
+Error: An error happened
+
+    throw CustomError("An error happened")
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+An error happened
+Should print 4

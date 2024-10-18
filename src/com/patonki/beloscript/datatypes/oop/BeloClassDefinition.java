@@ -3,8 +3,6 @@ package com.patonki.beloscript.datatypes.oop;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloError;
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
-import com.patonki.beloscript.datatypes.basicTypes.Null;
-import com.patonki.beloscript.datatypes.basicTypes.Obj;
 import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
@@ -16,23 +14,24 @@ import com.patonki.beloscript.parser.nodes.VarAccessNode;
 import java.util.ArrayList;
 import java.util.List;
 
-public class BeloClassDefinition extends BeloClass {
+public class BeloClassDefinition extends BeloClass implements ClassDefinition{
     private final List<String> parameters;
     private final PropertiesAccess properties;
     private final String className;
-    private final BeloClassDefinition parent;
+    private final ClassDefinition parent;
     private final List<Node> parentParameters;
     private final AccessModifier accessModifier;
 
+    @SuppressWarnings("StringOperationCanBeSimplified")
     public BeloClassDefinition(List<String> parameters,
                                PropertiesAccess properties,
                                String className,
-                               BeloClassDefinition parent,
+                               ClassDefinition parent,
                                List<Node> parentParameters,
                                AccessModifier accessModifier) {
         this.parameters = parameters;
         this.properties = properties;
-        this.className = className;
+        this.className = new String(className);
         this.parent = parent;
         this.parentParameters = parentParameters;
         this.accessModifier = accessModifier;
@@ -42,7 +41,7 @@ public class BeloClassDefinition extends BeloClass {
                                                              Context context,
                                                              Interpreter interpreter) {
         if (this.parentParameters == null) {
-            return args.subList(0, this.parent.parameters.size());
+            return args.subList(0, this.parent.getParameters().size());
         }
         ArrayList<BeloClass> params = new ArrayList<>();
 
@@ -82,13 +81,13 @@ public class BeloClassDefinition extends BeloClass {
             );
             if (res.hasError()) return res;
             newContext.getSymboltable().set("super", parent);
-            BeloClassDefinition parentCopy = this.parent;
+            ClassDefinition parentCopy = this.parent;
             while (parentCopy != null) {
                 newContext.getSymboltable().set(
-                        parentCopy.className,
+                        parentCopy.getClassName(),
                         parentCopy.copyWithAccessModifier(AccessModifier.PROTECTED)
                 );
-                parentCopy = parentCopy.parent;
+                parentCopy = parentCopy.getParent();
             }
         }
 
@@ -108,7 +107,7 @@ public class BeloClassDefinition extends BeloClass {
         return res.success(obj);
     }
 
-    private BeloClassDefinition copyWithAccessModifier(AccessModifier modifier) {
+    public BeloClassDefinition copyWithAccessModifier(AccessModifier modifier) {
         BeloClassDefinition definition =  new BeloClassDefinition(
                 this.parameters,
                 this.properties,
@@ -121,10 +120,23 @@ public class BeloClassDefinition extends BeloClass {
         return definition;
     }
 
+    @Override
+    public ClassDefinition getParent() {
+        return this.parent;
+    }
+    @SuppressWarnings("StringEquality")
+    public boolean isInstanceOf(BeloClass beloClass) {
+        if (!(beloClass instanceof BeloClassObject)) {
+            return false;
+        }
+        //TODO kinda hacking!
+        return ((BeloClassObject) beloClass).getClassName() == this.className;
+    }
+
     private void setConstructorValues(RuntimeProperties obj, List<BeloClass> args) {
         for (int i = 0; i < this.parameters.size(); i++) {
             String key = parameters.get(i);
-            if (this.parent != null && this.parent.parameters.contains(key)) {
+            if (this.parent != null && this.parent.getParameters().contains(key)) {
                 continue;
             }
             obj.setProperty(key, args.get(i));
@@ -178,7 +190,7 @@ public class BeloClassDefinition extends BeloClass {
         return newValue;
     }
 
-    private RunTimeResult getAsParent(RunTimeResult res, List<BeloClass> args) {
+    public RunTimeResult getAsParent(RunTimeResult res, List<BeloClass> args) {
         return createObject(res, args, AccessModifier.PROTECTED);
     }
     @Override
@@ -225,5 +237,10 @@ public class BeloClassDefinition extends BeloClass {
 
     public List<String> getParameters() {
         return parameters;
+    }
+
+    @Override
+    public String getClassName() {
+        return this.className;
     }
 }

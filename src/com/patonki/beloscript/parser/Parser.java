@@ -93,12 +93,20 @@ public class Parser {
     private ParseResult statement() {
         ParseResult res = new ParseResult();
         Position start = curToken.getStart();
+        if (curToken.matches(KEYWORD, "throw")) {
+            res.registerAdvancement();
+            advance();
+            Node expr = res.register(expression());
+            if (res.hasError()) return res;
+            return res.success(new ThrowNode(expr, start, curToken.getEnd().copy()));
+        }
 
         if (curToken.matches(KEYWORD, "return")) {
             res.registerAdvancement();
             advance();
             // return lauseke ei välttämättä palauta mitään
-            if (curToken.getType() == NEWLINE) return res.success(new ReturnNode(null, start, curToken.getEnd().copy()));
+            if (curToken.getType() == NEWLINE)
+                return res.success(new ReturnNode(null, start, curToken.getEnd().copy()));
 
             Node expr = res.register(expression());
             if (res.hasError()) {
@@ -723,7 +731,6 @@ public class Parser {
         ArrayList<ClassDefNode.ClassProperty> properties = new ArrayList<>();
         List<Node> parentArguments = null;
         Node parent = null;
-
         if (curToken.matches(KEYWORD, "extends")) {
             res.registerAdvancement();
             advance();
@@ -1010,40 +1017,40 @@ public class Parser {
         if (res.hasError()) return res;
         while (curToken.getType() == NEWLINE) advance();
 
-        if (!curToken.matches(KEYWORD, "catch")) {
-            return res.success(new TryNode(null,body,null, start, curPos()));
-        }
-        res.registerAdvancement();
-        advance();
-        if (curToken.getType() != LPAREN) {
-            return res.failure(new InvalidSyntaxError(curToken.getStart(),curToken.getEnd(),
-                    "Expected '('"));
-        }
-        res.registerAdvancement();
-        advance();
-        if (curToken.getType() != IDENTIFIER) {
-            return res.failure(new InvalidSyntaxError(curToken.getStart(),curToken.getEnd(),
-                    "Expected identifier"));
-        }
-        String errorVariableName = curToken.getValue();
-        res.registerAdvancement();
-        advance();
-        if (curToken.getType() != RPAREN) {
-            return res.failure(new InvalidSyntaxError(curToken.getStart(),curToken.getEnd(),
-                    "Expected )"));
-        }
-        res.registerAdvancement();
-        advance();
+        ArrayList<TryNode.CatchBlock> catchBlocks = new ArrayList<>();
+        while (curToken.matches(KEYWORD, "catch")) {
+            res.registerAdvancement();
+            advance();
+            VarAccessNode errorType = null;
+            if (curToken.getType() == IDENTIFIER) {
+                errorType = new VarAccessNode(curToken, false);
+                res.registerAdvancement();
+                advance();
+            }
+            this.expect(res, LPAREN);
+            if (res.hasError()) return res;
 
-        Node catchBody;
-        if (curToken.getType() != OPENING_BRACKET) {
-            catchBody = res.register(expression());
-        } else {
-            catchBody = res.register(block());
-        }
-        if (res.hasError()) return res;
+            String errorVariableName = this.expect(res, IDENTIFIER).getValue();
+            if (res.hasError()) return res;
 
-        return res.success(new TryNode(errorVariableName,body,catchBody, start,curPos()));
+            this.expect(res, RPAREN);
+            if (res.hasError()) return res;
+
+            Node catchBody;
+            if (curToken.getType() != OPENING_BRACKET) {
+                catchBody = res.register(expression());
+            } else {
+                catchBody = res.register(block());
+            }
+            if (res.hasError()) return res;
+            this.skipNewlines(res);
+
+            catchBlocks.add(new TryNode.CatchBlock(errorVariableName, catchBody, errorType));
+        }
+        if (catchBlocks.isEmpty()) {
+            return res.success(new TryNode(body,null, start, curPos()));
+        }
+        return res.success(new TryNode(body, catchBlocks, start,curPos()));
     }
     private ParseResult forExpression() {
         ParseResult res = new ParseResult();

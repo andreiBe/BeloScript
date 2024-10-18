@@ -17,11 +17,11 @@ public abstract class BeloClass implements Comparable<BeloClass>{
     private RunTimeError error;
     protected Context context;
 
-    public BeloClass(RunTimeError error) {
-        this.error = error;
-    }
     public BeloClass() {
 
+    }
+    protected void setError(RunTimeError error) {
+        this.error = error;
     }
 
     /**

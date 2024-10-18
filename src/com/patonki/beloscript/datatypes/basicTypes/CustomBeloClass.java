@@ -224,6 +224,10 @@ public class CustomBeloClass extends BeloClass{
         return new Overloading(overloadedConstructors,clazz.getSimpleName());
     }
 
+    protected String getOwnClassName() {
+        return this.getClass().getSimpleName();
+    }
+
     private static class Methods {
         ArrayList<Method> classMethods;
         ArrayList<Method> staticFunctions;

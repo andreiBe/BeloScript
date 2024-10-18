@@ -5,9 +5,9 @@ created
 9
 11
 20
-[2, 6, 4, 7, 5, 1]
-1
-[1, 5, 2]
+[4, 2, 1, 5, 6, 7]
+6
+[4, 2, 6]
 omg
 File script.bel, line 17, in <stdin>
 Runtime Error: X is larger than collection size
