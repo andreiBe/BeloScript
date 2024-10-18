@@ -59,7 +59,9 @@ public abstract class BeloClass implements Comparable<BeloClass>{
     public final RunTimeError getError() {
         return error;
     }
-
+    public boolean parameterIsInstanceOfThis(BeloClass parameter) {
+        return this.getClass().isAssignableFrom(parameter.getClass());
+    }
     /**
      * @return Jos sisältää virheen palauttaa true
      */

@@ -17,5 +17,5 @@ public interface ClassDefinition {
 
     BeloClass setClassValue(String string, BeloClass value);
 
-    boolean isInstanceOf(BeloClass beloClass);
+    boolean parameterIsInstanceOfThis(BeloClass beloClass);
 }

@@ -1,0 +1,15 @@
+class One {
+
+}
+class Two {
+
+}
+
+one = One()
+two = Two()
+
+print(one instanceof One)
+print(two instanceof One)
+print(6 instanceof 0)
+print("kkk" instanceof "a")
+print(Set() instanceof Set) 

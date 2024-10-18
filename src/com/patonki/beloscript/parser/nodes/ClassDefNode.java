@@ -104,15 +104,6 @@ public class ClassDefNode extends Node {
                 parentParameters,
                 AccessModifier.PUBLIC
         );
-        properties.addStaticProperty("isInstanceOf", new Properties.Property<>(
-                new BeloScriptFunction("isInstanceOf") {
-                    @Override
-                    public RunTimeResult execute(Context context, List<BeloClass> args, RunTimeResult res) {
-                        BeloClass value = args.get(0);
-                        return res.success(BeloDouble.createFromBoolean(definition.isInstanceOf(value)));
-                    }
-                }, AccessModifier.PUBLIC, true
-        ));
 
         context.getSymboltable().set(className, definition);
         definition.setContext(context);

@@ -56,8 +56,7 @@ public class BeloErrorClassDefinition extends BeloClass implements ClassDefiniti
     }
 
     @SuppressWarnings("StringEquality")
-    @Override
-    public boolean isInstanceOf(BeloClass beloClass) {
+    public boolean parameterIsInstanceOfThis(BeloClass beloClass) {
         if (!(beloClass instanceof BeloClassExceptionObject)) {
             return false;
         }

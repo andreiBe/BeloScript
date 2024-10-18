@@ -71,7 +71,7 @@ public class TryNode extends Node{
                             catchBlock.start, catchBlock.end, "Expected class definition", newContext
                     ));
                 }
-                if (type == null || ((ClassDefinition) type).isInstanceOf(error)) {
+                if (type == null || ((ClassDefinition) type).parameterIsInstanceOfThis(error)) {
                     newContext.setSymboltable(new SymbolTable(newContext.getParent().getSymboltable()));
                     newContext.getSymboltable().set(catchBlock.errorVarName, error);
 

@@ -9,6 +9,7 @@ import com.patonki.beloscript.parser.nodes.*;
 import com.patonki.datatypes.Pair;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -146,6 +147,7 @@ public class Parser {
                     return res.success(new VarAssignNode(left,token,right));
                 },SETTERS));
     }
+
     /*
     Comp: compExpression() and? compExpression()?
      */
@@ -176,8 +178,19 @@ public class Parser {
             return res.success(new UnaryOperationNode(token,node));
         }
         return handleErrors(res, () -> binaryOperator(
-                this::arithmeticExpression, this::arithmeticExpression, EE,NE,LT,GT,LTE,GTE
+                this::keywordOperator, this::keywordOperator, EE,NE,LT,GT,LTE,GTE
         ));
+    }
+    private ParseResult keywordOperator() {
+        return handleErrors(new ParseResult(), () ->
+                anyOperatorPair(
+                        this::arithmeticExpression, this::arithmeticExpression,
+                        (left, token, right) -> {
+                            ParseResult res = new ParseResult();
+                            return res.success(new KeyWordOperatorNode(left, token, right));
+                        },
+                        new Pair<>(KEYWORD, "instanceof"))
+        );
     }
     /*
         ArithmeticExpression: term() +? term()?
@@ -284,6 +297,7 @@ public class Parser {
     private ParseResult power() {
         return binaryOperator(this::postAndPre, this::factor, TokenType.POW);
     }
+
 
     /*
         call() .? identifier()?
@@ -1170,7 +1184,24 @@ public class Parser {
     private interface NodeConstructor {
         ParseResult construct(Node left, Token token, Node right);
     }
-    private ParseResult anyOperator(Supplier<ParseResult> leftfunc, Supplier<ParseResult> rightfunc, NodeConstructor cons,TokenType... tokens) {
+    @SafeVarargs
+    private final ParseResult anyOperatorPair(Supplier<ParseResult> leftfunc, Supplier<ParseResult> rightfunc,
+                                              NodeConstructor cons, Pair<TokenType, String>... tokens) {
+        ParseResult res = new ParseResult();
+        Node left = res.register(leftfunc.get());
+        if (res.hasError()) return res;
+        while (Arrays.stream(tokens).anyMatch(p -> curToken.matches(p.first(), p.second()))) {
+            Token operatorToken = curToken;
+            res.registerAdvancement(); advance();
+            Node right = res.register(rightfunc.get());
+            if (res.hasError()) return res;
+            left = res.register(cons.construct(left,operatorToken,right));
+            if (res.hasError()) return res;
+        }
+        return res.success(left);
+    }
+    private ParseResult anyOperator(Supplier<ParseResult> leftfunc, Supplier<ParseResult> rightfunc,
+                                    NodeConstructor cons,TokenType... tokens) {
         ParseResult res = new ParseResult();
         Node left = res.register(leftfunc.get());
         if (res.hasError()) return res;

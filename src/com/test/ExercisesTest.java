@@ -68,5 +68,9 @@ public class ExercisesTest {
     void superConstructor() {
         TestUtil.testFile(ROOT+"/superConstructor");
     }
+    @Test
+    void instanceOfCheck() {
+        TestUtil.testFile(ROOT+"/instanceOfCheck");
+    }
 }
 

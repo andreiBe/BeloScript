@@ -125,7 +125,7 @@ public class BeloClassDefinition extends BeloClass implements ClassDefinition{
         return this.parent;
     }
     @SuppressWarnings("StringEquality")
-    public boolean isInstanceOf(BeloClass beloClass) {
+    public boolean parameterIsInstanceOfThis(BeloClass beloClass) {
         if (!(beloClass instanceof BeloClassObject)) {
             return false;
         }
