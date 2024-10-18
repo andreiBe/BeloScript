@@ -1,5 +1,6 @@
 package com.patonki.beloscript.datatypes.basicTypes;
 
+import com.patonki.beloscript.datatypes.function.OverloadingConstructor;
 import com.patonki.beloscript.errors.LocalizedBeloException;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.function.BeloScript;
@@ -221,7 +222,7 @@ public class CustomBeloClass extends BeloClass{
             BeloScriptFunction cons = createConstructor(clazz,constructor,settingsIndex,parameterTypes,classMethods);
             overloadedConstructors.add(new Pair<>(cons,parameterTypes));
         }
-        return new Overloading(overloadedConstructors,clazz.getSimpleName());
+        return new OverloadingConstructor(overloadedConstructors,clazz.getSimpleName(), clazz);
     }
 
     protected String getOwnClassName() {
