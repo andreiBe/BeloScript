@@ -1,4 +1,4 @@
-import TokenType
+TokenType = import "TokenType.bel"
 TokenType.spread()
 
 class Token(type, value, start, end) {
@@ -44,7 +44,7 @@ class Token(type, value, start, end) {
     }
     typeAndValueMatches(pairsOfTokenTypeAndValue) {
         for (token in pairsOfTokenTypeAndValue) {
-            if (self.type == token.first() && self.value == token.second()) return true;
+            if (self.type == token.first() and self.value == token.second()) return true;
         }
         return false;
     }
@@ -53,37 +53,37 @@ class Token(type, value, start, end) {
             switch (type) {
                 case PLUS:
                 case PLUSEQ:
-                    return (a,b) => a.add(b)
+                    return function(a,b) -> a.add(b)
                 case MINUS:
                 case MINUSEQ:
-                    return (a,b) => a.substract(b)
+                    return function(a,b) -> a.substract(b)
                 case MUL:
                 case MULEQ:
-                    return (a,b) => a.multiply(b)
+                    return function(a,b) -> a.multiply(b)
                 case DIV:
                 case DIVEQ:
-                    return (a,b) => a.divide(b)
+                    return function(a,b) -> a.divide(b)
                 case INTDIV:
                 case INTDIVEQ:
-                    return (a,b) => a.intdiv(b);
+                    return function(a,b) -> a.intdiv(b);
                 case REMAINDER:
                 case REMEQ:
-                    return (a,b) => a.remainder(b);
+                    return function(a,b) -> a.remainder(b);
                 case POW:
                 case POWEQ:
-                    return (a,b) => a.power(b);
+                    return function(a,b) -> a.power(b);
                 case EE:
-                    return (first, second) -> new BeloDouble(first.compare(second) == 0);
+                    return function(first, second) -> BeloDouble(first.compare(second) == 0);
                 case LTE:
-                    return ((first, second) -> new BeloDouble(first.compare(second) <= 0));
+                    return function(first, second) -> BeloDouble(first.compare(second) <= 0);
                 case GTE:
-                    return ((first, second) -> new BeloDouble(first.compare(second) >= 0));
+                    return function(first, second) -> BeloDouble(first.compare(second) >= 0);
                 case LT:
-                    return ((first, second) -> new BeloDouble(first.compare(second) < 0));
+                    return function(first, second) -> BeloDouble(first.compare(second) < 0);
                 case GT:
-                    return ((first, second) -> new BeloDouble(first.compare(second) > 0));
+                    return function(first, second) -> BeloDouble(first.compare(second) > 0);
                 case NE:
-                    return ((first, second) -> new BeloDouble(first.compare(second) != 0));
+                    return function(first, second) -> BeloDouble(first.compare(second) != 0);
             }
             return null;
         }

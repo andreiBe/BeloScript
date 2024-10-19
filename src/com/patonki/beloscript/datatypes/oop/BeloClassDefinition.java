@@ -21,6 +21,7 @@ public class BeloClassDefinition extends BeloClass implements ClassDefinition{
     private final ClassDefinition parent;
     private final List<Node> parentParameters;
     private final AccessModifier accessModifier;
+    private final AccessModifier classMethodAccessModifier;
 
     @SuppressWarnings("StringOperationCanBeSimplified")
     public BeloClassDefinition(List<String> parameters,
@@ -28,13 +29,23 @@ public class BeloClassDefinition extends BeloClass implements ClassDefinition{
                                String className,
                                ClassDefinition parent,
                                List<Node> parentParameters,
-                               AccessModifier accessModifier) {
+                               AccessModifier accessModifier,
+                               AccessModifier classMethodAccessModifier) {
         this.parameters = parameters;
         this.properties = properties;
         this.className = new String(className);
         this.parent = parent;
         this.parentParameters = parentParameters;
         this.accessModifier = accessModifier;
+        this.classMethodAccessModifier = classMethodAccessModifier;
+    }
+    public BeloClassDefinition(List<String> parameters,
+                               PropertiesAccess properties,
+                               String className,
+                               ClassDefinition parent,
+                               List<Node> parentParameters,
+                               AccessModifier accessModifier) {
+        this(parameters, properties, className, parent, parentParameters, accessModifier, AccessModifier.PUBLIC);
     }
     private List<BeloClass> getParametersForSuperConstructor(List<BeloClass> args,
                                                              RunTimeResult res,
@@ -44,17 +55,15 @@ public class BeloClassDefinition extends BeloClass implements ClassDefinition{
             return args.subList(0, this.parent.getParameters().size());
         }
         ArrayList<BeloClass> params = new ArrayList<>();
+        Context newContext = new Context(className, context, this.getStart());
+        newContext.setSymboltable(new SymbolTable(context.getSymboltable()));
+        for (int i = 0; i < parameters.size(); i++) {
+            String parameterName = parameters.get(i);
+            newContext.getSymboltable().set(parameterName, args.get(i));
+        }
 
         for (Node parentParameter : this.parentParameters) {
-            if (parentParameter instanceof VarAccessNode) {
-                String varName = ((VarAccessNode) parentParameter).getVarName();
-                int indexInParameters = parameters.indexOf(varName);
-                if (indexInParameters != -1) {
-                    params.add(args.get(indexInParameters));
-                    continue;
-                }
-            }
-            BeloClass value = res.register(parentParameter.execute(context, interpreter));
+            BeloClass value = res.register(parentParameter.execute(newContext, interpreter));
             if (res.shouldReturn()) return null;
             params.add(value);
         }
@@ -114,6 +123,7 @@ public class BeloClassDefinition extends BeloClass implements ClassDefinition{
                 this.className,
                 this.parent,
                 this.parentParameters,
+                modifier,
                 modifier
         );
         definition.setContext(getContext());
@@ -172,7 +182,15 @@ public class BeloClassDefinition extends BeloClass implements ClassDefinition{
         AccessModifier target = this.properties.getAccessModifierOfStaticProperty(name.toString());
         if (!this.accessModifier.canAccess(target))
             return createCannotAccessError(name, target);
-        return this.properties.getStaticProperty(name.toString());
+        BeloClass staticProperty = this.properties.getStaticProperty(name.toString());
+
+        Context newContext = new Context(this.context.getDisplayName(), this.context, this.context.getParentEntyPosition());
+        SymbolTable newSymbolTable = new SymbolTable(this.context.getSymboltable());
+        newSymbolTable.set(className, this.copyWithAccessModifier(AccessModifier.PRIVATE));
+        newContext.setSymboltable(newSymbolTable);
+        staticProperty.setContext(newContext);
+
+        return staticProperty;
     }
 
     @Override
@@ -203,7 +221,7 @@ public class BeloClassDefinition extends BeloClass implements ClassDefinition{
                     , this.getContext()));
         }
 
-        return createObject(res, args, AccessModifier.PUBLIC);
+        return createObject(res, args, this.classMethodAccessModifier);
     }
     private BeloError createCannotAccessError(BeloClass name, AccessModifier target) {
         return new CannotAccessError(new RunTimeError(name.getStart(),name.getEnd(),

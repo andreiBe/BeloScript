@@ -31,7 +31,6 @@ public abstract class BeloClass implements Comparable<BeloClass>{
      * @return palauttaa itsensä
      */
     public BeloClass setContext(Context context) {
-        //TODO CHANGED
         this.context = context;
         return this;
     }

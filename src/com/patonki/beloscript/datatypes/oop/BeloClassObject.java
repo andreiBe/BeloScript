@@ -31,7 +31,7 @@ public class BeloClassObject extends BeloClass {
 
     public RunTimeError getErrorRecursive() {
         if (this.parent != null) {
-            return this.parent.getError();
+            return this.parent.getErrorRecursive();
         }
         return null;
     }
@@ -71,6 +71,18 @@ public class BeloClassObject extends BeloClass {
         if (!this.accessModifier.canAccess(target))
             return createCannotAccessError(name, target);
         return this.properties.getPropertyValue(name.toString());
+    }
+
+    public String getErrorString() {
+        BeloClass toString = this.classValue(BeloString.create("toString"));
+        if (toString.hasError()) return null;
+        if (toString instanceof BeloFunction) {
+            RunTimeResult res = toString.execute(new ArrayList<>());
+            if (res.hasError()) return res.getError().toString();
+            //lol
+            return res.register(res).toString();
+        }
+        return null;
     }
 
     @Override

@@ -49,6 +49,10 @@ public class Import {
         addMarkedFieldsFromClass(Util.class);
 
         addAllFieldsFromClass(StringBuilder.class);
+        addAllFieldsFromClass(Thread.class);
+        addAllFieldsFromClass(URL.class);
+        addAllFieldsFromClass(File.class);
+        addAllFieldsFromClass(Character.class);
 
         LibJson json = new LibJson();
         Import.libraries.add(json);

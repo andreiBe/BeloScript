@@ -4,6 +4,7 @@ package com.patonki.beloscript.errors;
 import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.oop.BeloClassExceptionObject;
+import com.patonki.beloscript.datatypes.oop.BeloClassObject;
 import com.patonki.beloscript.interpreter.Context;
 
 public class RunTimeError extends BeloScriptError {
@@ -37,6 +38,12 @@ public class RunTimeError extends BeloScriptError {
 
     @Override
     public String toString() {
+        if (errorObject != null && errorObject instanceof BeloClassObject) {
+            String errorString = ((BeloClassObject) errorObject).getErrorString();
+            if (errorString != null) {
+                return errorString;
+            }
+        }
         String result = generateTraceback();
         assert posStart != null; //ei pitäisi tapahtua
         result += errorName+": "+details

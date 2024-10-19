@@ -1,0 +1,40 @@
+5
+CustomBeloClass{classValues={setName=com.patonki.beloscript.ClassImporter$1@3891771e
+, getClass=com.patonki.beloscript.ClassImporter$1@78ac1102
+, wait=com.patonki.beloscript.ClassImporter$1@2de8284b
+com.patonki.beloscript.ClassImporter$1@396e2f39
+com.patonki.beloscript.ClassImporter$1@a74868d
+, getName=com.patonki.beloscript.ClassImporter$1@12c8a2c0
+, getThreadGroup=com.patonki.beloscript.ClassImporter$1@7e0e6aa2
+, notifyAll=com.patonki.beloscript.ClassImporter$1@365185bd
+, getId=com.patonki.beloscript.ClassImporter$1@18bf3d14
+, run=com.patonki.beloscript.ClassImporter$1@4fb64261
+, notify=com.patonki.beloscript.ClassImporter$1@42607a4f
+, setContextClassLoader=com.patonki.beloscript.ClassImporter$1@782663d3
+, getStackTrace=com.patonki.beloscript.ClassImporter$1@1990a65e
+, hashCode=com.patonki.beloscript.ClassImporter$1@64485a47
+, isDaemon=com.patonki.beloscript.ClassImporter$1@25bbf683
+, interrupt=com.patonki.beloscript.ClassImporter$1@6ec8211c
+, join=com.patonki.beloscript.ClassImporter$1@7276c8cd
+com.patonki.beloscript.ClassImporter$1@544a2ea6
+com.patonki.beloscript.ClassImporter$1@2e3fc542
+, resume=com.patonki.beloscript.ClassImporter$1@150c158
+, suspend=com.patonki.beloscript.ClassImporter$1@4524411f
+, isInterrupted=com.patonki.beloscript.ClassImporter$1@401e7803
+, setUncaughtExceptionHandler=com.patonki.beloscript.ClassImporter$1@10dba097
+, start=com.patonki.beloscript.ClassImporter$1@1786f9d5
+, destroy=com.patonki.beloscript.ClassImporter$1@704d6e83
+, getUncaughtExceptionHandler=com.patonki.beloscript.ClassImporter$1@43a0cee9
+, checkAccess=com.patonki.beloscript.ClassImporter$1@eb21112
+, isAlive=com.patonki.beloscript.ClassImporter$1@2eda0940
+, setDaemon=com.patonki.beloscript.ClassImporter$1@3578436e
+, getState=com.patonki.beloscript.ClassImporter$1@706a04ae
+, stop=com.patonki.beloscript.ClassImporter$1@6eceb130
+com.patonki.beloscript.ClassImporter$1@10a035a0
+, getContextClassLoader=com.patonki.beloscript.ClassImporter$1@67b467e9
+, equals=com.patonki.beloscript.ClassImporter$1@47db50c5
+, getPriority=com.patonki.beloscript.ClassImporter$1@5c072e3f
+, countStackFrames=com.patonki.beloscript.ClassImporter$1@4d1b0d2a
+, toString=com.patonki.beloscript.ClassImporter$1@954b04f
+, setPriority=com.patonki.beloscript.ClassImporter$1@149494d8
+}}

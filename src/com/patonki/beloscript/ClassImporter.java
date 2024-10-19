@@ -3,6 +3,7 @@ package com.patonki.beloscript;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
 import com.patonki.beloscript.datatypes.basicTypes.CustomBeloClass;
+import com.patonki.beloscript.datatypes.basicTypes.JavaClassWrapper;
 import com.patonki.beloscript.datatypes.function.BeloScript;
 import com.patonki.beloscript.datatypes.function.BeloScriptFunction;
 import com.patonki.beloscript.datatypes.function.Overloading;
@@ -192,7 +193,7 @@ public class ClassImporter {
     }
 
     public static CustomBeloClass copyMethodsToCustom(Object o, List<Method> classMethods) {
-        CustomBeloClass customBeloClass = new CustomBeloClass();
+        JavaClassWrapper customBeloClass = new JavaClassWrapper(o);
         List<Overloading> overloads = collectOverloads(classMethods, o);
         for (Overloading overload : overloads) {
             customBeloClass.classValues.put(BeloString.create_dont_use_optimized_version(overload.getTypeName()),overload);
@@ -254,6 +255,9 @@ public class ClassImporter {
                         o = constructor.newInstance(input);
                     }
                 } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+                    if (e instanceof InvocationTargetException) {
+                        return throwError(res, context, e.getCause().getMessage());
+                    }
                     return throwError(res, context, e.getMessage());
                 }
                 try {

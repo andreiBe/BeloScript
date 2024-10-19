@@ -2,25 +2,31 @@ SymbolTable = import "SymbolTable.bel"
 Interpreter = import "Interpreter.bel"
 Settings = import "Settings.bel"
 Lexer = import "lexer/Lexer.bel"
+LocalizedBeloException = import "errors/LocalizedBeloException.bel"
+
 class BeloScript {
-    interpreter
-    createGlobalSymbolTable() {
+    private interpreter
+    private createGlobalSymbolTable() {
         symbolTable = SymbolTable()
-        symbolTable.setVar("true",1);
-        symbolTable.setVar("false",0);
-        symbolTable.setVar("null",null);
+        symbolTable.setVar("true",BeloDouble(1));
+        symbolTable.setVar("false",BeloDouble(0));
+        symbolTable.setVar("null",Null());
         return symbolTable
     }
-    reset() {
+    private reset() {
         self.interpreter = Interpreter()
     }
-    execute(script, rootPath, fileName, args) {
+    private execute(script, rootPath, fileName, args) {
         settings = Settings(args, rootPath)
+
+        lexer = Lexer(if (fileName == null) "<anynymous>" else fileName, script)
+        lexResult = lexer.makeTokens()
+        if (lexResult.hasError()) {
+            throw LocalizedBeloException(lexResult.getError())
+        }
+    }
+    public static run(script, fileName, rootPath, args) {
+            BeloScript().execute(script,rootPath,fileName,args)
     }
 }
-function run(script, fileName, rootPath, args) {
-    BeloScript().execute(script,rootPath,fileName,args)
-    lexer = Lexer(if (fileName == null) "<anynymous>" else fileName, script)
-    lexResult = lexer.makeTokens()
-}
-export run
+export BeloScript

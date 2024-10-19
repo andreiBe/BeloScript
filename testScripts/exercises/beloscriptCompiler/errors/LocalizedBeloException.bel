@@ -1,0 +1,13 @@
+class LocalizedBeloException(error) extends Error {
+    private final error
+    super(error.getDetails())
+
+    public getError() {
+        return error
+    }
+
+    public toString() {
+        return self.error.toString()
+    }
+}
+export LocalizedBeloException

@@ -2,6 +2,7 @@ package com.patonki.beloscript;
 
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
+import com.patonki.beloscript.datatypes.basicTypes.JavaClassWrapper;
 import com.patonki.beloscript.datatypes.basicTypes.Null;
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
 
@@ -54,6 +55,9 @@ public class ImportUtil {
                 return object.toString().charAt(0);
             }
             return object.toString();
+        }
+        if (object instanceof JavaClassWrapper) {
+            return ((JavaClassWrapper) object).getWrappedObject();
         }
         return null;
     }

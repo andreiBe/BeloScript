@@ -1,0 +1,5 @@
+url = URL("http", "", 4, "")
+print(url.toURI())
+file = File(url.toURI())
+
+print(file.getPath())

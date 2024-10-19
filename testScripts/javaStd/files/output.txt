@@ -1,0 +1,36 @@
+CustomBeloClass{classValues={getClass=com.patonki.beloscript.ClassImporter$1@2de8284b
+, toASCIIString=com.patonki.beloscript.ClassImporter$1@396e2f39
+, wait=com.patonki.beloscript.ClassImporter$1@a74868d
+com.patonki.beloscript.ClassImporter$1@12c8a2c0
+com.patonki.beloscript.ClassImporter$1@7e0e6aa2
+, resolve=com.patonki.beloscript.ClassImporter$1@365185bd
+com.patonki.beloscript.ClassImporter$1@18bf3d14
+, isOpaque=com.patonki.beloscript.ClassImporter$1@4fb64261
+, notifyAll=com.patonki.beloscript.ClassImporter$1@42607a4f
+, compareTo=com.patonki.beloscript.ClassImporter$1@782663d3
+com.patonki.beloscript.ClassImporter$1@1990a65e
+, getRawAuthority=com.patonki.beloscript.ClassImporter$1@64485a47
+, notify=com.patonki.beloscript.ClassImporter$1@25bbf683
+, hashCode=com.patonki.beloscript.ClassImporter$1@6ec8211c
+, normalize=com.patonki.beloscript.ClassImporter$1@7276c8cd
+, getPath=com.patonki.beloscript.ClassImporter$1@544a2ea6
+, relativize=com.patonki.beloscript.ClassImporter$1@2e3fc542
+, getHost=com.patonki.beloscript.ClassImporter$1@150c158
+, getQuery=com.patonki.beloscript.ClassImporter$1@4524411f
+, toURL=com.patonki.beloscript.ClassImporter$1@401e7803
+, getScheme=com.patonki.beloscript.ClassImporter$1@10dba097
+, getAuthority=com.patonki.beloscript.ClassImporter$1@1786f9d5
+, getRawFragment=com.patonki.beloscript.ClassImporter$1@704d6e83
+, getRawQuery=com.patonki.beloscript.ClassImporter$1@43a0cee9
+, getRawSchemeSpecificPart=com.patonki.beloscript.ClassImporter$1@eb21112
+, getRawUserInfo=com.patonki.beloscript.ClassImporter$1@2eda0940
+, parseServerAuthority=com.patonki.beloscript.ClassImporter$1@3578436e
+, getPort=com.patonki.beloscript.ClassImporter$1@706a04ae
+, equals=com.patonki.beloscript.ClassImporter$1@6eceb130
+, isAbsolute=com.patonki.beloscript.ClassImporter$1@10a035a0
+, toString=com.patonki.beloscript.ClassImporter$1@67b467e9
+, getFragment=com.patonki.beloscript.ClassImporter$1@47db50c5
+, getRawPath=com.patonki.beloscript.ClassImporter$1@5c072e3f
+, getUserInfo=com.patonki.beloscript.ClassImporter$1@4d1b0d2a
+, getSchemeSpecificPart=com.patonki.beloscript.ClassImporter$1@954b04f
+}}

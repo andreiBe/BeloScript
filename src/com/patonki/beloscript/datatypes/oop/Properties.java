@@ -8,7 +8,6 @@ import com.patonki.beloscript.interpreter.RunTimeResult;
 import com.patonki.beloscript.parser.nodes.Node;
 
 import java.util.LinkedHashMap;
-import java.util.Set;
 
 public class Properties implements PropertiesAccess {
     private final LinkedHashMap<String, Property<Node>> properties = new LinkedHashMap<>();

@@ -129,7 +129,6 @@ public class BeloString extends CustomBeloClass implements Iterable<BeloClass>{
         for (int i = 0; i < this.value.length(); i++) {
             if (!Character.isLetter(this.value.charAt(i))) return false;
         }
-        System.out.println("WTF " + value);
         return !this.value.isEmpty();
     }
     @BeloScript

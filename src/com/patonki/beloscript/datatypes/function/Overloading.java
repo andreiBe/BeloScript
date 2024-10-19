@@ -3,6 +3,7 @@ package com.patonki.beloscript.datatypes.function;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
+import com.patonki.beloscript.datatypes.basicTypes.JavaClassWrapper;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.RunTimeResult;
 import com.patonki.beloscript.interpreter.Settings;
@@ -63,6 +64,9 @@ public class Overloading extends BeloScriptFunction{
     }
     private BeloClass isMatching(Class<?> expected, BeloClass value) {
         if (expected.isAssignableFrom(value.getClass())) {
+            return value;
+        }
+        if (value instanceof JavaClassWrapper && expected == ((JavaClassWrapper) value).getWrappedObject().getClass()) {
             return value;
         }
         if (expected == Character.class || expected == char.class

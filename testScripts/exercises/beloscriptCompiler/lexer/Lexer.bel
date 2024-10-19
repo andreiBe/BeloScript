@@ -1,11 +1,17 @@
 Position = import "../Position.bel"
 LexResult = import "LexResult.bel"
 TokenType = import "TokenType.bel"
+Token = import "Token.bel"
+
 IllegalCharError = import "../errors/IllegalCharError.bel"
 keywords = (["and", "or", "not", "if","else","elif",
                        "for", "while","function","return","continue",
                        "break","in","try", "catch","import","export", "class", "enum", "static"])
 
+escapeCharacters = {
+    "n": "\n",
+    "t": "\t"
+}
 TokenType.spread()
 
 class Lexer(filename, text) {
@@ -21,15 +27,13 @@ class Lexer(filename, text) {
     private paramDeepness = 0
 
     Lexer {
-        print("Now creating position")
         self.pos = Position(-1, 0, -1, self.fileName, self.text);
-        print("Created position")
         self.curChar = 0;
         self.advance();
     }
    private advance() {
         self.pos.advance(self.curChar);
-        self.curChar = if (self.pos.index < self.text.size()) self.text[self.pos.index] else ""
+        self.curChar = if (self.pos.index < self.text.size()) self.text[self.pos.index] else 0
     }
     # ainut public metodi, joka palauttaa LexResultin, joka sisältää token listan ja mahdolliset virheet suorituksessa
     public makeTokens() {
@@ -101,12 +105,12 @@ class Lexer(filename, text) {
             }
             else if (self.curChar == "(") {
                 self.paramDeepness+=1;
-                tokens.push(Token(TokenType.LPAREN,self.pos));
+                tokens.push(Token(TokenType.LPAREN,null,self.pos, null));
                self.advance();
             }
             else if (self.curChar == ")") {
                 self.paramDeepness-=1;
-                tokens.push(Token(TokenType.RPAREN,self.pos));
+                tokens.push(Token(TokenType.RPAREN,null,self.pos,null));
                self.advance();
             }
             else if (self.curChar == "!") {
@@ -140,8 +144,43 @@ class Lexer(filename, text) {
                 return LexResult([], IllegalCharError(start,self.pos, ch + " " + "at file: "+self.fileName));
             }
         }
-        tokens.push(Token(EOF,self.pos)); # EOF = end of file
+        tokens.push(Token(EOF,null,self.pos,null)); # EOF = end of file
         return LexResult(tokens, null);
+    }
+    private make_identifier() {
+            bu = StringBuilder();
+            pos_start = self.pos.copy();
+
+            while (self.curChar != 0 and (isLetterOrDigit(self.curChar) or self.curChar == "_")) {
+                bu.append(self.curChar);
+                self.advance();
+            }
+            str = bu.toString();
+            type = if (keywords.contains(str)) KEYWORD else IDENTIFIER;
+            return Token(type, str, pos_start, self.pos);
+    }
+    private makeString() {
+            start = self.pos.copy();
+            sb = StringBuilder();
+            escapeCharacter = false;
+            self.advance();
+            while (self.curChar != 0 and (self.curChar != "\"" or escapeCharacter)) {
+                if (escapeCharacter) {
+                    sb.append(escapeCharacters.getOrDefault(self.curChar,self.curChar));
+                    escapeCharacter = false;
+                } else {
+                    if (self.curChar == "\\") {
+                        escapeCharacter = true;
+                    }
+                    else {
+                        sb.append(self.curChar);
+                    }
+                }
+                self.advance();
+            }
+            self.advance();
+
+            return Token(STRING, sb.toString(), start, self.pos);
     }
 }
 export Lexer

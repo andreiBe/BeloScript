@@ -1,0 +1,4 @@
+current = currentThread()
+
+print(current.getPriority())
+sleep(1)
