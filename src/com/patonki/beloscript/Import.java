@@ -2,6 +2,7 @@ package com.patonki.beloscript;
 
 import com.patonki.beloscript.builtInLibraries.*;
 import com.patonki.beloscript.datatypes.BeloClass;
+import com.patonki.beloscript.datatypes.basicTypes.BeloError;
 import com.patonki.beloscript.datatypes.basicTypes.CustomBeloClass;
 import com.patonki.beloscript.datatypes.function.BeloScript;
 import com.patonki.beloscript.datatypes.structures.Set;
@@ -11,10 +12,13 @@ import com.patonki.datatypes.Pair;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.AccessibleObject;
+import java.lang.reflect.AnnotatedElement;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
@@ -43,6 +47,8 @@ public class Import {
         addMarkedFieldsFromClass(RangeCommand.class);
         addMarkedFieldsFromClass(IO.class);
         addMarkedFieldsFromClass(Util.class);
+
+        addAllFieldsFromClass(StringBuilder.class);
 
         LibJson json = new LibJson();
         Import.libraries.add(json);
@@ -98,10 +104,16 @@ public class Import {
     }
 
     public static void addMarkedFieldsFromClass(Class<?> clazz) throws IllegalAccessException, BeloException {
+        Predicate<AccessibleObject> filter = CustomBeloClass.filter;
         if (clazz.getAnnotation(BeloScript.class) == null) return;
+
         if (!CustomBeloClass.class.isAssignableFrom(clazz)) {
             throw new BeloException("Class should inherit CustomBeloClass class");
         }
-        CustomBeloClass.addMethodsAndFields(clazz, imported);
+        ClassImporter.addMethodsAndFields(clazz, imported, filter);
+    }
+
+    private static void addAllFieldsFromClass(Class<?> clazz) throws IllegalAccessException {
+        ClassImporter.addMethodsAndFields(clazz, imported, a -> true);
     }
 }

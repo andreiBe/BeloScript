@@ -1,0 +1,5 @@
+builder = StringBuilder()
+
+builder.append("Hello").append(43)
+
+print(builder.toString())

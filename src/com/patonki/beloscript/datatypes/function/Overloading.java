@@ -33,11 +33,9 @@ public class Overloading extends BeloScriptFunction{
         || clazz == Byte.class || clazz == byte.class
         || clazz == Long.class || clazz == long.class
         || clazz == Float.class || clazz == float.class
-        || clazz == Short.class || clazz == short.class
-        || clazz == Boolean.class || clazz == boolean.class)
+        || clazz == Short.class || clazz == short.class)
             return BeloDouble.class;
-        if (clazz == Character.class || clazz == char.class
-        || clazz == String.class) return BeloString.class;
+        if (clazz == String.class) return BeloString.class;
         return clazz;
     }
     @Override
@@ -50,8 +48,7 @@ public class Overloading extends BeloScriptFunction{
             boolean fail = false;
             for (int i = 0; i < expectedClasses.size(); i++) {
                 Class<?> expected = expectedClasses.get(i);
-                Class<?> argClass = args.get(i).getClass();
-                if (!expected.isAssignableFrom(argClass)) {
+                if (isMatching(expected, args.get(i)) == null) {
                     fail = true;
                     break;
                 }
@@ -63,6 +60,21 @@ public class Overloading extends BeloScriptFunction{
             }
         }
         return throwError(res,context,"Didn't find a function with these parameters");
+    }
+    private BeloClass isMatching(Class<?> expected, BeloClass value) {
+        if (expected.isAssignableFrom(value.getClass())) {
+            return value;
+        }
+        if (expected == Character.class || expected == char.class
+        && value instanceof BeloString && ((BeloString) value).size() == 1) {
+            return value;
+        }
+
+        if (expected == Boolean.class || expected == boolean.class
+        && value instanceof BeloDouble && (value.intValue() == 0 || value.intValue() == 1)) {
+            return value;
+        }
+        return null;
     }
 
     @Override
