@@ -1,0 +1,23 @@
+class TestUtil {
+    public static testFile(root, extraArgs) {
+        args = []
+        args.add("output: output.txt")
+
+        args.addAll(extraArgs)
+        script = BeloScript()
+
+        now = System.currentTimeMillis()
+        script.executeFile(root+"\\script.bel", args)
+        print("Execution took: " + (System.currentTimeMillis() - now) + " milliseconds")
+        output = FileHandler(root+"/output.txt")
+        correctOutput = FileHandler(root+"/accepted.txt")
+        if (correctOutput.exists()) {
+            correct = correctOutput.currentContent()
+            if (correct == "#ignore") return
+            assertEquals(correct, output.currentContent)
+        } else {
+            correctOutput.write("#ignore")
+        }
+    }
+}
+export TestUtil
