@@ -46,4 +46,9 @@ public class VarAccessNode extends Node {
     public String toString() {
         return "{var " + this.token + "}";
     }
+
+    @Override
+    public String convertToJavaCode() {
+        return String.format("context.getSymbolTable().get(%s)", varName);
+    }
 }

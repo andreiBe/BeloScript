@@ -9,6 +9,7 @@ import com.patonki.beloscript.interpreter.RunTimeResult;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CallNode extends Node {
     private final Node atom;
@@ -49,5 +50,13 @@ public class CallNode extends Node {
         if (res.shouldReturn()) return res;
 
         return res.success(returnValue, getStart(), getEnd(), context);
+    }
+
+    @Override
+    public String convertToJavaCode() {
+        String funcToCall = "("+this.atom.convertToJavaCode()+")";
+        String parameters =
+                this.args.stream().map(Node::convertToJavaCode).collect(Collectors.joining(","));
+        return String.format("%s.execute(%s)", funcToCall, parameters);
     }
 }

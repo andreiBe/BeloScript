@@ -82,7 +82,7 @@ public class Parser {
             if (res.hasError()) return res;
             statements.add(statement);
         }
-        return res.success(new ListNode(statements,start, curToken.getEnd().copy()));
+        return res.success(new StatementsNode(statements,start, curToken.getEnd().copy()));
     }
     /*
     Käy läpi rivin. Rivi voi koostua seuraavista asioista:

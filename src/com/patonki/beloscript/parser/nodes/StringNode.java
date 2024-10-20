@@ -31,4 +31,9 @@ public class StringNode extends Node {
     public String toString() {
         return "{"+token.toString()+"}";
     }
+
+    @Override
+    public String convertToJavaCode() {
+        return String.format("\"%s\"", token.getValue());
+    }
 }

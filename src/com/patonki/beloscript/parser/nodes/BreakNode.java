@@ -17,6 +17,11 @@ public class BreakNode extends Node {
     }
 
     @Override
+    public String convertToJavaCode() {
+        return "break;";
+    }
+
+    @Override
     public String toString() {
         return "{break}";
     }

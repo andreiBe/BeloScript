@@ -45,6 +45,9 @@ public class BeloScript {
     public static BeloClass run(String script, String fileName,String rootPath, String... args) throws BeloException {
         return new BeloScript().execute(script,rootPath,fileName,args);
     }
+    public static String convertToJavaCode(String script, String fileName) {
+        return new BeloScript().toJavaCode(script, fileName);
+    }
     public BeloClass executeFile(String path,String... args) throws BeloException {
         File file = new File(path);
         String name = file.getName();
@@ -58,16 +61,14 @@ public class BeloScript {
         }
         return execute(content, rootPath,name,args);
     }
-    private BeloClass execute(String script, String rootPath, String fileName, String... args) throws BeloException{
-        Settings settings = new Settings(args,rootPath);
-
+    private Node parse(boolean logLexResult, boolean logParseResult, String fileName, String script) {
         Lexer lexer = new Lexer(fileName == null ? "<anynymous>" : fileName, script);
         //long now = System.currentTimeMillis();
         LexResult lexResult = lexer.makeTokens();
         if (lexResult.hasError()) {
             throw new LocalizedBeloException(lexResult.getError());
         }
-        if (settings.logLexResult()) {
+        if (logLexResult) {
             System.out.println(lexResult);
         }
         // -------- Parser -----------
@@ -76,12 +77,22 @@ public class BeloScript {
         if (parseResult.hasError()) {
             throw new LocalizedBeloException(parseResult.getError());
         }
-        if (settings.logParseResult()) {
+        if (logParseResult) {
             System.out.println(parseResult.getNode());
         }
+        return parseResult.getNode();
+    }
+    private String toJavaCode(String script, String fileName) {
+        Node parsed = parse(false, false, fileName, script);
+        return "";
+    }
+    private BeloClass execute(String script, String rootPath, String fileName, String... args) throws BeloException{
+        Settings settings = new Settings(args,rootPath);
+        Node parsed = parse(settings.logLexResult(), settings.logParseResult(), fileName, script);
+
         //System.out.println("Compiling took: "+(System.currentTimeMillis()-now)+" milliseconds file:"+fileName);
         // ------- Interpreter -----------
-        return run(settings, rootPath,parseResult.getNode());
+        return run(settings, rootPath,parsed);
     }
 
     private BeloClass run(Settings settings, String rootPath, Node rootNode) throws LocalizedBeloException {

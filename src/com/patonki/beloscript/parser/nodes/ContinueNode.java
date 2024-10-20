@@ -20,4 +20,9 @@ public class ContinueNode extends Node {
     public String toString() {
         return "{continue}";
     }
+
+    @Override
+    public String convertToJavaCode() {
+        return "continue;";
+    }
 }

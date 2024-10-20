@@ -61,4 +61,21 @@ public class IfNode extends Node {
     public ElseNode getElseCase() {
         return elseCase;
     }
+
+    @Override
+    public String convertToJavaCode() {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < cases.size(); i++) {
+            Case c = cases.get(i);
+            result.append(i == 0 ? "if" : "else if");
+            String condition = c.getCondition().convertToJavaCode();
+            String content = c.getStatements().convertToJavaCode();
+            result.append(String.format("(%s) {%s}", condition, content));
+        }
+        if (elseCase != null) {
+            String content = elseCase.getStatements().convertToJavaCode();
+            result.append(String.format("else {%s}", content));
+        }
+        return result.toString();
+    }
 }

@@ -53,4 +53,11 @@ public class ForEachNode extends Node {
     public String toString() {
         return "{foreach var:"+varName+" body: "+body+" list: "+list+"}";
     }
+
+    @Override
+    public String convertToJavaCode() {
+        String list = "(" + this.list.convertToJavaCode() + ")";
+        String loopContent = this.body.convertToJavaCode();
+        return String.format("for (BeloClass %s : (Iterable<BeloClass>)%s) {%s}", varName, list, loopContent);
+    }
 }

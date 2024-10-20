@@ -12,7 +12,7 @@ import com.patonki.beloscript.interpreter.RunTimeResult;
 import java.util.ArrayList;
 
 public class ListNode extends Node {
-    private final java.util.List<Node> statements;
+    protected final java.util.List<Node> statements;
     public ListNode(java.util.List<Node> statements, Position start, Position end) {
         this.statements = statements;
         this.start = start;

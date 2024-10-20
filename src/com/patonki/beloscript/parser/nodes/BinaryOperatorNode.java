@@ -81,4 +81,73 @@ public class BinaryOperatorNode extends Node{
         return "{"+left.toString()+"," + token.toString()+"," + right.toString()+"}";
     }
 
+    @Override
+    public String convertToJavaCode() {
+        String left = "(" + this.left.convertToJavaCode() + ")";
+        String right = "(" + this.right.convertToJavaCode() + ")";
+
+        if (token.matches(KEYWORD, "and")) {
+            return String.format("%s.isTrue() && %s.isTrue()", left, right);
+        }
+        if (token.matches(KEYWORD, "or")) {
+            return String.format("%s.isTrue() || %s.isTrue()", left, right);
+        }
+        String command = null;
+        String compareCommand = null;
+        switch (token.getType()) {
+            case PLUS:
+            case PLUSEQ:
+                command = "add";
+                break;
+            case MINUS:
+            case MINUSEQ:
+                command = "substract";
+                break;
+            case MUL:
+            case MULEQ:
+                command = "multiply";
+                break;
+            case DIV:
+            case DIVEQ:
+                command = "divide";
+                break;
+            case INTDIV:
+            case INTDIVEQ:
+                command = "intdiv";
+                break;
+            case REMAINDER:
+            case REMEQ:
+                command = "remainder";
+                break;
+            case POW:
+            case POWEQ:
+                command = "power";
+                break;
+            case EE:
+                compareCommand = "==";
+                break;
+            case LTE:
+                compareCommand = "<=";
+                break;
+            case GTE:
+                compareCommand = ">=";
+                break;
+            case LT:
+                compareCommand = "<";
+                break;
+            case GT:
+                compareCommand = ">";
+                break;
+            case NE:
+                compareCommand = "!=";
+                break;
+        }
+        if (command != null) {
+            return String.format("%s.%s(%s)", left, command, right);
+        }
+        if (compareCommand != null) {
+            return String.format("%s.compare(%s)%s0", left, right, compareCommand);
+        }
+        throw new IllegalStateException("Unknown tokentype " + token.getType());
+    }
 }

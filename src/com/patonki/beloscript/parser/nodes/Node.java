@@ -27,4 +27,8 @@ public abstract class Node {
     public final Position getEnd() {
         return end;
     }
+
+    public String convertToJavaCode() {
+        return "Not implemented " + this.getClass().getSimpleName();
+    }
 }

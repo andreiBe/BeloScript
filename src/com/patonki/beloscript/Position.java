@@ -24,7 +24,6 @@ public class Position {
         }
         return this;
     }
-
     @Override
     public String toString() {
         return "Position{" +

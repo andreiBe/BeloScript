@@ -63,4 +63,13 @@ public class ForNode extends Node {
     public String toString() {
         return "{fornode: "+body+" "+startValue+" "+condition+" "+change+"}";
     }
+
+    @Override
+    public String convertToJavaCode() {
+        String startValue = this.startValue.convertToJavaCode();
+        String condition = this.condition.convertToJavaCode();
+        String change = this.change.convertToJavaCode();
+        String loopContent = this.body.convertToJavaCode();
+        return String.format("for (%s;%s;%s) {%s}", startValue, condition, change, loopContent);
+    }
 }

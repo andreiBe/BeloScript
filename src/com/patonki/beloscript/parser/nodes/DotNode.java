@@ -43,4 +43,11 @@ public class DotNode extends Node{
     public String toString() {
         return "{"+left+"."+right+"}";
     }
+
+    @Override
+    public String convertToJavaCode() {
+        String left =  "(" + this.left.convertToJavaCode() + ")";
+        String right = this.right.getToken().getValue();
+        return String.format("%s.%s", left, right);
+    }
 }
