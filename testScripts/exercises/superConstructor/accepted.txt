@@ -1,0 +1,8 @@
+HERE
+1
+2
+Illegal Character
+Very scary error
+Details
+Very scary error
+Details ending

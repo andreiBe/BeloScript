@@ -1,0 +1,50 @@
+try {
+    7/0
+} catch (e) {
+    print(e)
+}
+
+try {
+    unknown
+} catch (e) {
+    print(e)
+
+    try {
+        e.nonexistent
+    } catch (e) {
+        print(e)
+    }
+}
+
+try {
+    "1"[1]
+} catch (e) {
+    print(e)
+}
+
+function tryAndFail(func) {
+    try {
+        func()
+    } catch (e) {
+        print(e)
+    }
+}
+tryAndFail(function() {not "5"})
+var = "5"
+tryAndFail(function() {--var})
+tryAndFail(function() {var--})
+tryAndFail(function() {++var})
+tryAndFail(function() {var++})
+tryAndFail(function() {"5"(1)})
+tryAndFail(function() {(5).lol = 3})
+tryAndFail(function() {(5).lol})
+tryAndFail(function() {5[1] = "lol"})
+tryAndFail(function() {5[1]})
+tryAndFail(function() {{}^2})
+tryAndFail(function() {{} // 2})
+tryAndFail(function() {{} / 2})
+tryAndFail(function() {{} * 2})
+tryAndFail(function() {{} + 2})
+tryAndFail(function() {{} - 2})
+tryAndFail(function() {{} % 2})
+tryAndFail(function() {"f" and true})

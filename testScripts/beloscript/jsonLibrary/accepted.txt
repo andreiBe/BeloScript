@@ -1,0 +1,6 @@
+{lo=999999999999, d=5.3, list=[3, 2, 3], l=null, value=string}
+File script.bel, line 5, in <stdin>
+Runtime Error: Expected 0 parameters, but got: 1
+
+    readJsonInput(1)
+    ^^^^^^^^^^^^^^^^^

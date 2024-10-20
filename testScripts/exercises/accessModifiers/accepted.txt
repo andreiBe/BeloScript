@@ -1,0 +1,33 @@
+Accessing attributes
+Cannot access class member: 'one' class: BeloClassObject because it is PRIVATE
+Cannot access class member: 'two' class: BeloClassObject because it is PROTECTED
+THREE
+
+Accessing static attributes
+Cannot access class member: 'staticOne' class: BeloClassDefinition because it is PRIVATE
+Cannot access class member: 'staticTwo' class: BeloClassDefinition because it is PROTECTED
+staticThree
+
+Self calling
+One
+TWO
+THREE
+staticOne
+staticTwo
+staticThree
+
+Child calling parrent
+One
+TWO
+THREE
+staticOne
+staticTwo
+staticThree
+
+Child calling self
+Cannot access class member: 'one' class: BeloClassObject because it is PRIVATE
+TWO
+THREE
+Cannot access class member: 'staticOne' class: BeloClassDefinition because it is PRIVATE
+staticTwo
+staticThree

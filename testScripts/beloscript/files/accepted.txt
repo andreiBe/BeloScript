@@ -1,0 +1,16 @@
+The contents of the file
+äöå
+one more row
+The contents of the file
+äöå
+one more row
+File script.bel, line 10, in <stdin>
+Runtime Error: Can't read file: testScripts\beloscript\files\testtt.txt
+
+    read_file("testtt.txt")
+    ^^^^^^^^^^^^^^^^^^^^^^^^
+File script.bel, line 16, in <stdin>
+Runtime Error: Can't write file: testScripts\beloscript\files (Access is denied)
+
+    write_file("", "test")
+    ^^^^^^^^^^^^^^^^^^^^^^^

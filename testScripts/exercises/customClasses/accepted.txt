@@ -1,0 +1,21 @@
+File script.bel, line 5, in <stdin>
+File script.bel, line 12, in <anonymous>
+Runtime Error: Didn't find a function with these parameters
+
+    test.test(1,2,3)
+ ^^^^^^^^^^^^^^^^^^^
+})
+^
+File script.bel, line 5, in <stdin>
+File script.bel, line 16, in <anonymous>
+Runtime Error: Didn't find a function with these parameters
+
+    test.test(1)
+ ^^^^^^^^^^^^^^^
+})
+^
+32
+Runtime Error: An error happened
+
+    test.error()
+    ^^^^

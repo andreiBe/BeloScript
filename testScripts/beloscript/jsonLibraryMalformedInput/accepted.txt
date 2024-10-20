@@ -1,0 +1,6 @@
+File script.bel, line 2, in <stdin>
+Json error: Can't read json string
+null
+
+    jsonData = readJsonInput()
+               ^^^^^^^^^^^^^^^^

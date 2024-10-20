@@ -1,0 +1,28 @@
+MYTESTTRING
+myteststring
+1
+0
+1
+0
+1
+0
+1
+0
+f fff ff
+mybettertring
+ttring
+yt
+File script.bel, line 27, in <stdin>
+Runtime Error: String index out of range: -89
+
+    string.substring(100)
+    ^^^^^^^^^^^^^^^^^^^^^^
+2
+myteestetering
+1
+0
+0
+1
+0
+0
+[1, 2, 3]
