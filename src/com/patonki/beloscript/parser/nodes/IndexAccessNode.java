@@ -31,7 +31,7 @@ public class IndexAccessNode extends Node {
         if (result.hasError()) {
             return res.failure(result.getError());
         }
-        return res.success(result, getStart(), getEnd(), context);
+        return res.success(result, getStart(), getEnd());
     }
     public Node getTarget() {
         return target;

@@ -1,4 +1,4 @@
 coverage
 out
 .idea
-**/accepted.txt
+**/output.txt

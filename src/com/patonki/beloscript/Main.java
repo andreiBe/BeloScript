@@ -11,6 +11,7 @@ public class Main {
             String filename = args[0];
             String[] otherParameters = Arrays.copyOfRange(args,1,args.length);
             BeloScript.runFile(filename, otherParameters);
+
             Settings.close();
         }
     }

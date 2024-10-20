@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class BeloScriptTest {
     private static final String ROOT = "testScripts/beloscript/";
+    @SuppressWarnings("CallToPrintStackTrace")
     @Test
     void imports() throws BeloException {
         //tyhjä jar tiedosto
@@ -56,11 +57,43 @@ class BeloScriptTest {
         Assertions.assertThrows(BeloException.class, ()-> BeloScript.run(script,null,"","jsonFile: json.json"));
     }
     @Test
-    void main() throws BeloException {
+    void testMain() throws BeloException {
         Main.main(new String[]{"input.belo","jsonfile:test.json"});
+        Main.main(new String[0]);
     }
     @Test
     void random() throws BeloException {
         TestUtil.testFile(ROOT+"random");
+    }
+    @Test
+    void errorMessages() {
+        TestUtil.testFile(ROOT+"errorMessages");
+    }
+    @Test
+    void jsonLibrary() {
+        TestUtil.testFile(ROOT+"jsonLibrary",
+                "json:{\"list\":[3,2,3], \"value\":\"string\", \"l\":null, \"d\": 5.3, \"lo\":999999999999}");
+    }
+    @Test
+    void jsonLibraryNoInput() {
+        TestUtil.testFile(ROOT+"jsonLibraryNoInput");
+    }
+    @Test
+    void jsonLibraryMalformedInput() {
+        TestUtil.testFile(ROOT+"jsonLibraryMalformedInput",
+                "json:{\"list\"3,2,3], \"value\":\"string\", \"l\":null}");
+    }
+    @Test
+    void importingLibrary() {
+        TestUtil.testFile(ROOT+"importingLibrary");
+    }
+
+    @Test
+    void files() {
+        TestUtil.testFile(ROOT+"files");
+    }
+    @Test
+    void buildInLibraries() {
+        TestUtil.testFile(ROOT+"buildInLibraries");
     }
 }

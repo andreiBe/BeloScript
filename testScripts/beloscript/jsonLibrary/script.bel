@@ -1,0 +1,8 @@
+jsonData = readJsonInput()
+print(jsonData)
+
+try {
+    readJsonInput(1)
+} catch (e) {
+    print(e)
+}

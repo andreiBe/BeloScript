@@ -1,0 +1,43 @@
+string = "mytesttring"
+string2 = "MyTestString"
+print(string.upper_case())
+
+print(string2.lower_case())
+
+print(string.contains("test"))
+print(string.contains("no"))
+
+print(string.matches("\\w*"))
+print(string.matches("\\d*"))
+
+print(string.starts_with("my"))
+print(string.starts_with("nj"))
+
+print(string.ends_with("ing"))
+print(string.ends_with("nof"))
+
+print("   f fff ff   ".trim())
+
+print(string.replace("test", "better"))
+
+print(string.substring(5))
+print(string.substring(1, 3))
+
+try {
+    string.substring(100)
+} catch (e) {
+    print(e)
+}
+
+print(string.index_of("test"))
+print(string.replace_all("t", "te"))
+
+print("43".isDigits())
+print("".isDigits())
+print("ad2".isDigits())
+
+print("abc".isLetters())
+print("".isLetters())
+print("123".isLetters())
+
+print("1-2-3".split("-"))

@@ -44,21 +44,21 @@ public class BinaryOperatorNode extends Node{
         RunTimeResult res = new RunTimeResult();
         BeloClass left = res.register(this.left.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-        if (left.isTrue()) return res.success(ONE, getStart(), getEnd(),context);
+        if (left.isTrue()) return res.success(ONE, getStart(), getEnd());
 
         BeloClass right = res.register(this.right.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-        return res.success(right.isTrue() ? ONE : ZERO, getStart(),getEnd(),context);
+        return res.success(right.isTrue() ? ONE : ZERO, getStart(),getEnd());
     }
     private RunTimeResult and(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
         BeloClass left = res.register(this.left.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-        if (!left.isTrue()) return res.success(ZERO, getStart(), getEnd(), context);
+        if (!left.isTrue()) return res.success(ZERO, getStart(), getEnd());
 
         BeloClass right = res.register(this.right.execute(context,interpreter));
         if (res.shouldReturn()) return res;
-        return res.success(right.isTrue() ? ONE : ZERO, getStart(),getEnd(),context);
+        return res.success(right.isTrue() ? ONE : ZERO, getStart(),getEnd());
     }
 
     private RunTimeResult visitBinOp(Context context, Interpreter interpreter) {
@@ -72,7 +72,7 @@ public class BinaryOperatorNode extends Node{
         if (result.hasError()) {
             return res.failure(result.getError().setContext(context));
         } else {
-            return res.success(result, getStart(), getEnd(), context);
+            return res.success(result, getStart(), getEnd());
         }
     }
 

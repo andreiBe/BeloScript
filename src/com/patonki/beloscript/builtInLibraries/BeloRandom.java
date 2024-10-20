@@ -45,7 +45,6 @@ public class BeloRandom extends CustomBeloClass {
             map.put(randomIndex, current);
             result.push(random);
         }
-        assert result.size() == x;
 
         return result;
     }

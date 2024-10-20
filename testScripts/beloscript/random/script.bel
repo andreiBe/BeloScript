@@ -8,6 +8,9 @@ print(lista)
 item = pick_random(lista)
 print(item)
 
+item2 = pick_random([])
+print(item2)
+
 #pick 3 random
 items = pick_random(lista, 3)
 print(items)

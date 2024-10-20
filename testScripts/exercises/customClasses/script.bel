@@ -1,0 +1,23 @@
+test = TestClass()
+
+function tryAndFail(func) {
+    try {
+        func()
+    } catch (e) {
+        print(e)
+    }
+}
+
+tryAndFail(function() {
+    test.test(1,2,3)
+})
+
+tryAndFail(function() {
+    test.test(1)
+})
+
+print(test.test("string"))
+
+tryAndFail(function() {
+    test.error()
+})

@@ -18,7 +18,7 @@ public class BeloString extends CustomBeloClass implements Iterable<BeloClass>{
         return new BeloString(c).init_self();
     }
 
-    public static BeloString create_dont_use_optimized_version(String s) {
+    public static BeloString create_optimized(String s) {
         return new BeloString(s);
     }
     private BeloString(String value) {

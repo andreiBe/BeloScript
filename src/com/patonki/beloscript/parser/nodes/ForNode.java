@@ -4,8 +4,6 @@ import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.List;
 import com.patonki.beloscript.datatypes.basicTypes.Null;
-import com.patonki.beloscript.errors.BeloException;
-import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
@@ -32,7 +30,6 @@ public class ForNode extends Node {
     @Override
     public RunTimeResult execute(Context context, Interpreter interpreter) {
         RunTimeResult res = new RunTimeResult();
-        ArrayList<BeloClass> elements = new ArrayList<>();
 
         res.register(startValue.execute(context,interpreter));
         if (res.shouldReturn()) return res;
@@ -40,6 +37,7 @@ public class ForNode extends Node {
             BeloClass b = res.register(condition.execute(context,interpreter));
             return b.isTrue();
         };
+        ArrayList<BeloClass> elements = new ArrayList<>();
         while (conditionFunc.get()) {
             BeloClass value = res.register(body.execute(context,interpreter));
             if (res.shouldReturn() && !res.isShouldContinue() && !res.isShouldBreak()) return res;
@@ -54,9 +52,14 @@ public class ForNode extends Node {
             }
             res.register(change.execute(context,interpreter));
             if (res.shouldReturn()) return res;
-            elements.add(value);
+            if (!this.shouldReturnNull) {
+                elements.add(value);
+            }
         }
-        return res.success(List.create(elements),getStart(),getEnd(), context);
+        if (this.shouldReturnNull) {
+            return res.success(Null.NULL);
+        }
+        return res.success(List.create(elements),getStart(),getEnd());
     }
 
     @Override

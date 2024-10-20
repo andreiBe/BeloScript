@@ -2,6 +2,7 @@ package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.Calculation;
 import com.patonki.beloscript.datatypes.BeloClass;
+import com.patonki.beloscript.datatypes.basicTypes.BeloString;
 import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
@@ -32,7 +33,7 @@ public class VarAssignNode extends Node {
                 setter = (value, context, interpreter, res) -> {
                     if (context.getSymboltable().isFinal(variableName.getVarName())) {
                         return res.failure(new RunTimeError(
-                                getStart(), getEnd(), "Can't assign again to a final variable",
+                                getStart(), getEnd(), "Can't assign to a final variable",
                                 context
                         ));
                     }
@@ -75,7 +76,9 @@ public class VarAssignNode extends Node {
         //objektin muuttujan asettaminen. Esim: muuttuja.ika = 9
         else if (var instanceof DotNode) {
             DotNode dotNode = (DotNode) var;
-            String member = dotNode.getMemberString();
+            StringNode memberNode = dotNode.getMemberString();
+            BeloString member = BeloString.create(memberNode.getToken().getValue());
+            member.setPos(memberNode.getStart(), memberNode.getEnd());
             this.setter = (value, context, interpreter, res) -> {
                 BeloClass object = res.register(dotNode.executeLeft(context,interpreter));
                 if (res.shouldReturn()) return res;
@@ -102,9 +105,7 @@ public class VarAssignNode extends Node {
             if (res.shouldReturn()) return res;
 
             value = calculation.calculate(orgVarValue,value);
-            if (value.hasError()) {
-                return res.failure(value.getError());
-            }
+            if (value.hasError()) return res.failure(value.getError());
         }
         value.setPos(getStart(),getEnd());
         //value.setContext(context);

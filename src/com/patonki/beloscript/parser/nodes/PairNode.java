@@ -1,10 +1,5 @@
 package com.patonki.beloscript.parser.nodes;
 
-import com.patonki.beloscript.lexer.Token;
-import com.patonki.beloscript.lexer.TokenType;
-
-import static com.patonki.beloscript.lexer.TokenType.*;
-
 public class PairNode extends Node {
     private final Node key;
     private final Node value;

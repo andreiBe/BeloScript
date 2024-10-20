@@ -3,7 +3,6 @@ package com.patonki.beloscript.errors;
 
 import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
-import com.patonki.beloscript.datatypes.oop.BeloClassExceptionObject;
 import com.patonki.beloscript.datatypes.oop.BeloClassObject;
 import com.patonki.beloscript.interpreter.Context;
 

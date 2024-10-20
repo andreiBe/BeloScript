@@ -4,5 +4,4 @@ import com.patonki.beloscript.interpreter.SymbolTable;
 
 public interface BeloLibrary {
     void addToSymbolTable(SymbolTable table);
-    void close();
 }

@@ -1,0 +1,19 @@
+fileContent = read_file("file.txt")
+print(fileContent)
+
+write_file("test.txt", fileContent)
+
+fileContent = read_file("test.txt")
+print(fileContent)
+
+try {
+    read_file("testtt.txt")
+} catch (e) {
+    print(e)
+}
+
+try {
+    write_file("", "test")
+} catch (e) {
+    print(e)
+}

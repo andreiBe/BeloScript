@@ -15,3 +15,91 @@ print(listOfLists)
 listOfLists[0] = 9
 print(listOfLists[0])
 
+list = [1,2,3,4]
+list.insert(1, 5)
+print(list)
+
+copy = list.shallow_copy()
+copy.push(5)
+
+print(copy)
+print(list)
+
+print(list.is_empty())
+print([].is_empty())
+
+print(list.index_of(3))
+
+print(list.contains(8))
+print(list.contains(2))
+
+print(list.sublist(1, 3))
+list.clear()
+print(list)
+
+list.push_all([1,2,3])
+print(list)
+
+list.remove_index(1)
+print(list)
+
+list.remove(3)
+print(list)
+
+print(list + [1,2])
+
+print(list * 3)
+try {
+    list.insert(34, 1)
+} catch (e) {
+    print(e)
+}
+
+try {
+    list.sublist(7,3)
+} catch (e) {
+    print(e)
+}
+
+try {
+    list + 5
+} catch (e) {
+    print(e)
+}
+
+try {
+    list * list
+} catch (e) {
+    print(e)
+}
+
+try {
+    list * -3
+} catch (e) {
+    print(e)
+}
+
+try {
+    list["5"]
+} catch (e) {
+    print(e)
+}
+
+try {
+    list[100]
+} catch (e) {
+    print(e)
+}
+
+try {
+    list["2"] = 4
+} catch (e) {
+    print(e)
+}
+try {
+    list[100] = 4
+} catch (e) {
+    print(e)
+}
+
+print(list == 5)

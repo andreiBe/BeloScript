@@ -101,6 +101,7 @@ public class BeloDouble extends BeloClass {
         return new BeloDouble(value % another.doubleValue());
     }
 
+    @SuppressWarnings("IntegerDivisionInFloatingPointContext")
     @Override
     public BeloClass intdiv(BeloClass another) {
         return new BeloDouble((int)value / (int)another.doubleValue());

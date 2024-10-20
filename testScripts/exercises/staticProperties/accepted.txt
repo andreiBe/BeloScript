@@ -1,2 +1,29 @@
 5
 9
+9
+14
+File script.bel, line 21, in <stdin>
+Runtime Error: Not a member of class: 'lol' class: Test
+
+    Test.lol
+         ^^^
+File script.bel, line 26, in <stdin>
+Runtime Error: Not a member of class: 'no' class: Child
+
+    Child.no
+          ^^
+File script.bel, line 32, in <stdin>
+Runtime Error: Not a member of class: 'lol' class: Test
+
+    Test.lol = 2
+         ^^^
+File script.bel, line 37, in <stdin>
+Runtime Error: Not a member of class: 'no' class: Child
+
+    Child.no = 2
+          ^^
+File script.bel, line 43, in <stdin>
+Runtime Error: Cannot access class member: 'doNotChange' class: BeloClassDefinition because it is PRIVATE
+
+    Child.doNotChange = 3
+          ^^^^^^^^^^^

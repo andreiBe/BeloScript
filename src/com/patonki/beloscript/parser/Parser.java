@@ -110,10 +110,7 @@ public class Parser {
                 return res.success(new ReturnNode(null, start, curToken.getEnd().copy()));
 
             Node expr = res.register(expression());
-            if (res.hasError()) {
-                return res;
-                //reverse(res.getToReverseCount());
-            }
+            if (res.hasError()) return res;
             return res.success(new ReturnNode(expr, start, curToken.getEnd().copy()));
         }
         if (curToken.matches(KEYWORD, "continue")) {
@@ -126,9 +123,7 @@ public class Parser {
             advance();
             return res.success(new BreakNode(start,curToken.getEnd().copy()));
         }
-        Node expr = res.register(expression());
-        if (res.hasError()) return res;
-        return res.success(expr);
+        return handleErrors(res, this::expression);
     }
     /*
      Expression: comp() =? comp()?
@@ -256,7 +251,8 @@ public class Parser {
                     return res.failure(new InvalidSyntaxError(curToken.getStart(),curToken.getEnd(),
                             "Unexpected token type: "+curToken.getType()+" expected either identifier or keyword"));
                 }
-                Token name = curToken; advance();
+                Token name = curToken;
+                advance();
                 if (res.hasError()) return res;
                 left = new DotNode(left,name);
             }
@@ -306,7 +302,6 @@ public class Parser {
         return binaryOperator(this::call, this::call, DOT);
     }
     */
-    //TODO move this somewhere else
     private ParseResult postAndPre() {
         ParseResult res = new ParseResult();
         Node left = res.register(atom());
@@ -325,6 +320,7 @@ public class Parser {
     }
     private List<Node> parseArgs(ParseResult res) {
         List<Node> args = new ArrayList<>();
+
         //etsitään parametrit, jos funktiolla on niitä
         if (curToken.getType() != RPAREN) {
             args.add(res.register(expression()));
@@ -365,7 +361,9 @@ public class Parser {
             if (res.hasError()) return res;
             return res.success(node);
         }
-        else return res.success(callNode);
+        else {
+            return res.success(callNode);
+        }
     }
     /*
     Ohjelmointikielen pienin yksikkö esim. numero, string, identifier tai myös monimutkaisemmat for-silmukat
@@ -381,14 +379,8 @@ public class Parser {
         else if (token.matches(KEYWORD, "final")) {
             res.registerAdvancement();
             advance();
-            if (curToken.getType() != IDENTIFIER) {
-                return res.failure(new InvalidSyntaxError(
-                        curToken.getStart(), curToken.getEnd(), "Expected identifier"
-                ));
-            }
-            Token varName = curToken;
-            res.registerAdvancement();
-            advance();
+            Token varName = this.expect(res, IDENTIFIER);
+            if (res.hasError()) return res;
             if (curToken.getType() != EQ) {
                 return res.failure(new InvalidSyntaxError(
                         curToken.getStart(), curToken.getEnd(), "Expected ="
@@ -436,14 +428,9 @@ public class Parser {
             advance();
             Node expression = res.register(expression());
             if (res.hasError()) return res;
-            if (curToken.getType() == TokenType.RPAREN) {
-                res.registerAdvancement();
-                advance();
-                return res.success(expression);
-            } else {
-                return res.failure(new InvalidSyntaxError(curToken.getStart(),curToken.getStart().copy().advance('a'),
-                        "Expected ) "));
-            }
+
+            this.expect(res, RPAREN);
+            return res.success(expression);
         }
         else if (token.getType() == OPENING_SQUARE) {
             return handleErrors(res, this::listExpression);
@@ -476,13 +463,9 @@ public class Parser {
         Position start = curPos();
         res.registerAdvancement();
         advance();
-        if (curToken.getType() != STRING) {
-            return res.failure(new InvalidSyntaxError(curToken.getStart(),
-                    curToken.getEnd(), "Expected string"));
-        }
-        Token path = curToken;
-        res.registerAdvancement();
-        advance();
+        Token path = this.expect(res, STRING);
+        if (res.hasError()) return res;
+
         return res.success(new ImportNode(path, start));
     }
 
@@ -492,34 +475,32 @@ public class Parser {
         Position start = curToken.getStart().copy();
         List<Node> pairs = new ArrayList<>();
 
-        res.registerAdvancement();
-        do {
-            advance();
-        } while (curToken.getType() == NEWLINE);
-
-        if (curToken.getType() != CLOSING_BRACKET) {
-            Node pair = res.register(getObjectPair());
-            if (res.hasError()) return res;
-            pairs.add(pair);
-            while (curToken.getType() == COMMA) {
-                res.registerAdvancement();
-                do advance();
-                while (curToken.getType() == NEWLINE);
-                pairs.add(res.register(getObjectPair()));
-                if (res.hasError()) return res;
-                while(curToken.getType()==NEWLINE) advance();
-            }
-            while (curToken.getType() == NEWLINE) advance();
-            if (curToken.getType() != CLOSING_BRACKET) {
-                //System.out.println("Bruh!");
-                return res.failure(new InvalidSyntaxError(
-                        curToken.getStart(),curToken.getEnd(),
-                        "Expected '}' or ','"
-                ));
-            }
-        }
-        res.registerAdvancement();
         advance();
+        res.registerAdvancement();
+        this.skipNewlines(res);
+
+        if (curToken.getType() == CLOSING_BRACKET) {
+            res.registerAdvancement();
+            advance();
+            return res.success(new ObjectNode(pairs, start, curPos()));
+        }
+
+        Node pair = res.register(getObjectPair());
+        if (res.hasError()) return res;
+        pairs.add(pair);
+        while (curToken.getType() == COMMA) {
+            res.registerAdvancement();
+            advance();
+            this.skipNewlines(res);
+
+            pairs.add(res.register(getObjectPair()));
+            if (res.hasError()) return res;
+            this.skipNewlines(res);
+        }
+        this.skipNewlines(res);
+        this.expect(res, CLOSING_BRACKET);
+        if (res.hasError()) return res;
+
         return res.success(new ObjectNode(pairs,start,curPos()));
     }
 
@@ -527,14 +508,10 @@ public class Parser {
         ParseResult res = new ParseResult();
         Node keyNode = res.register(expression());
         if (res.hasError()) return res;
-        if (curToken.getType() != DOUBLEDOT) {
-            return res.failure(new InvalidSyntaxError(
-                    curToken.getStart(),curToken.getEnd(),
-                    "Expected :"
-            ));
-        }
-        res.registerAdvancement();
-        advance();
+
+        this.expect(res, DOUBLEDOT);
+        if (res.hasError()) return res;
+
         Node value = res.register(expression());
         if (res.hasError()) return res;
         return res.success(new PairNode(keyNode,value));
@@ -547,26 +524,24 @@ public class Parser {
 
         res.registerAdvancement();
         advance();
+        if (curToken.getType() == CLOSING_SQUARE) {
+            res.registerAdvancement();
+            advance();
+            return res.success(new ListNode(elements, start,
+                    curToken.getEnd().copy()));
+        }
+        elements.add(res.register(expression()));
+        if (res.hasError()) return res;
+        while (curToken.getType() == COMMA) {
+            res.registerAdvancement();
+            advance();
 
-        if (curToken.getType() != CLOSING_SQUARE) {
             elements.add(res.register(expression()));
             if (res.hasError()) return res;
-            while (curToken.getType() == COMMA) {
-                res.registerAdvancement();
-                advance();
-
-                elements.add(res.register(expression()));
-                if (res.hasError()) return res;
-            }
-            if (curToken.getType() != CLOSING_SQUARE) {
-                return res.failure(new InvalidSyntaxError(
-                        curToken.getStart(), curToken.getEnd(),
-                        "Expected ]"
-                ));
-            }
         }
-        res.registerAdvancement();
-        advance();
+        this.expect(res, CLOSING_SQUARE);
+        if (res.hasError()) return res;
+
         return res.success(new ListNode(elements, start,
                 curToken.getEnd().copy()));
     }
@@ -581,29 +556,20 @@ public class Parser {
 
         res.registerAdvancement();
         advance();
-
-        if (curToken.getType() == OPENING_BRACKET) {
-            Node statements = res.register(block());
-            if (res.hasError()) return res;
-            elseCase = new ElseNode(true,statements);
-            return res.success(elseCase);
-        }
-        else {
-            Node expr = res.register(statement());
-            if (res.hasError()) return res;
-            elseCase = new ElseNode(false,expr);
-            return res.success(elseCase);
-        }
+        Node elseNodeBody = (curToken.getType() == OPENING_BRACKET) ?
+                res.register(block()) :
+                res.register(statement());
+        if (res.hasError()) return res;
+        elseCase = new ElseNode(curToken.getType() == OPENING_BRACKET,elseNodeBody);
+        return res.success(elseCase);
     }
 
     private ParseResult ifExprElifOrElse(Position start) {
         ParseResult res = new ParseResult();
         List<Case> cases = new ArrayList<>();
         ElseNode elseCase = null;
-        while (curToken.getType() == NEWLINE) {
-            res.registerAdvancement();
-            advance();
-        }
+        this.skipNewlines(res);
+
         if (curToken.matches(KEYWORD, "elif")) {
             IfNode allCases = (IfNode) res.register(ifExprElif());
             if (res.hasError()) return res;
@@ -681,34 +647,18 @@ public class Parser {
         res.registerAdvancement();
         advance();
 
-        if (curToken.getType() != IDENTIFIER) {
-            return res.failure(new InvalidSyntaxError(
-                    curToken.getStart(), curToken.getEnd(),
-                    "Expected identifier"
-            ));
-        }
-        String enumName = curToken.getValue();
-        res.registerAdvancement();
-        advance();
-        if (curToken.getType() != LPAREN) {
-            return res.failure(new InvalidSyntaxError(
-                    curToken.getStart(), curToken.getEnd(),
-                    "Expected ("
-            ));
-        }
-        res.registerAdvancement();
-        advance();
+        String enumName = this.expect(res, IDENTIFIER).getValue();
+        if (res.hasError()) return res;
+
+        this.expect(res,LPAREN);
+        if (res.hasError()) return res;
 
         ArrayList<Token> arguments = arguments(res);
         if (res.hasError()) return res;
-        if (curToken.getType() != RPAREN) {
-            return res.failure(new InvalidSyntaxError(
-                    curToken.getStart(), curToken.getEnd(),
-                    "Expected )"
-            ));
-        }
-        res.registerAdvancement();
-        advance();
+
+        this.expect(res, RPAREN);
+        if (res.hasError()) return res;
+
         return res.success(new EnumDefNode(enumName, arguments, start, curToken.getEnd()));
     }
     private ParseResult classDefinition() {
@@ -716,29 +666,17 @@ public class Parser {
         Position start = curPos();
         res.registerAdvancement();
         advance();
-        if (curToken.getType() != IDENTIFIER) {
-            return res.failure(new InvalidSyntaxError(
-                    curToken.getStart(), curToken.getEnd(),
-                    "Expected identifier"
-            ));
-        }
-        String className = curToken.getValue();
-        res.registerAdvancement();
-        advance();
+        String className = this.expect(res, IDENTIFIER).getValue();
+        if (res.hasError()) return res;
+
         ArrayList<Token> arguments;
         if (curToken.getType() == LPAREN) {
             res.registerAdvancement();
             advance();
             arguments = arguments(res);
             if (res.hasError()) return res;
-            if (curToken.getType() != RPAREN) {
-                return res.failure(new InvalidSyntaxError(
-                        curToken.getStart(), curToken.getEnd(),
-                        "Expected )"
-                        ));
-            }
-            res.registerAdvancement();
-            advance();
+            this.expect(res, RPAREN);
+            if (res.hasError()) return res;
         } else {
             arguments = new ArrayList<>();
         }
@@ -755,7 +693,7 @@ public class Parser {
         if (curToken.getType() == NEWLINE) {
             this.skipNewlines(res);
             return res.success(new ClassDefNode(className, arguments,
-                    properties, parent, parentArguments, start, curToken.getEnd()));
+                    properties, parent, null, start, curToken.getEnd()));
         }
         this.expect(res, OPENING_BRACKET);
         if (res.hasError()) return res;
@@ -765,10 +703,7 @@ public class Parser {
                 || curToken.matches(KEYWORD, "static")
                 || curToken.getType() == KEYWORD
                 || curToken.getType() == CLOSING_BRACKET) {
-            while (curToken.getType() == NEWLINE) {
-                res.registerAdvancement();
-                advance();
-            }
+            this.skipNewlines(res);
             if (curToken.getType() == CLOSING_BRACKET) {
                 res.registerAdvancement();
                 advance();
@@ -832,7 +767,6 @@ public class Parser {
                 Node constructor = res.register(functionBlock());
                 if (res.hasError()) return res;
                 properties.add(new ClassDefNode.ClassProperty(isFinal, isStatic, accessModifier, nameOfProperty.getValue(), constructor));
-                //properties.put(new StringNode(nameOfProperty), constructor);
                 continue;
             }
             if (curToken.getType() == EQ) {
@@ -898,14 +832,8 @@ public class Parser {
         List<Token> argumentNames = arguments(res);
         if (res.hasError()) return res;
 
-        if (curToken.getType() != RPAREN) {
-            return res.failure(new InvalidSyntaxError(
-                    curToken.getStart(),curToken.getEnd(),
-                    "Expected )"
-            ));
-        }
-        res.registerAdvancement();
-        advance();
+        this.expect(res, RPAREN);
+        if (res.hasError()) return res;
 
         boolean isAutoReturn = curToken.getType() == ARROW;
         Node body = res.register(functionBlock());
@@ -916,25 +844,19 @@ public class Parser {
     }
     private ArrayList<Token> arguments(ParseResult res) {
         ArrayList<Token> argumentNames = new ArrayList<>();
-        if (curToken.getType() == IDENTIFIER) {
-            argumentNames.add(curToken);
+        if (curToken.getType() != IDENTIFIER) return argumentNames;
+
+        argumentNames.add(curToken);
+        res.registerAdvancement();
+        advance();
+
+        while (curToken.getType() == COMMA) {
             res.registerAdvancement();
             advance();
 
-            while (curToken.getType() == COMMA) {
-                res.registerAdvancement();
-                advance();
-
-                if (curToken.getType() != IDENTIFIER) {
-                    res.failure(new InvalidSyntaxError(
-                            curToken.getStart(),curToken.getEnd(),
-                            "Expected identifier"
-                    ));
-                }
-                argumentNames.add(curToken);
-                res.registerAdvancement();
-                advance();
-            }
+            Token argumentName = this.expect(res, IDENTIFIER);
+            if (res.hasError()) return argumentNames;
+            argumentNames.add(argumentName);
         }
         return argumentNames;
     }
@@ -944,10 +866,7 @@ public class Parser {
             res.registerAdvancement();
             advance();
 
-            Node body = res.register(expression());
-            if (res.hasError()) return res;
-
-            return res.success(body);
+            return handleErrors(res, this::expression);
         }
 
         if (curToken.getType() != OPENING_BRACKET) {
@@ -956,9 +875,7 @@ public class Parser {
                     "Expected -> or {"
             ));
         }
-        Node body = res.register(block());
-        if (res.hasError()) return res;
-        return res.success(body);
+        return handleErrors(res, this::block);
     }
     private ParseResult switchExpression() {
         ParseResult res = new ParseResult();
@@ -1022,14 +939,11 @@ public class Parser {
         res.registerAdvancement();
         advance();
 
-        Node body;
-        if (curToken.getType() != OPENING_BRACKET) {
-            body = res.register(expression());
-        } else {
-            body = res.register(block());
-        }
+        Node body = curToken.getType() != OPENING_BRACKET ?
+                res.register(expression()) :
+                res.register(block());
         if (res.hasError()) return res;
-        while (curToken.getType() == NEWLINE) advance();
+        this.skipNewlines(res);
 
         ArrayList<TryNode.CatchBlock> catchBlocks = new ArrayList<>();
         while (curToken.matches(KEYWORD, "catch")) {
@@ -1050,12 +964,9 @@ public class Parser {
             this.expect(res, RPAREN);
             if (res.hasError()) return res;
 
-            Node catchBody;
-            if (curToken.getType() != OPENING_BRACKET) {
-                catchBody = res.register(expression());
-            } else {
-                catchBody = res.register(block());
-            }
+            Node catchBody = curToken.getType() != OPENING_BRACKET ?
+                    res.register(expression()) :
+                    res.register(block());
             if (res.hasError()) return res;
             this.skipNewlines(res);
 
@@ -1072,14 +983,8 @@ public class Parser {
         Position start = curPos();
         res.registerAdvancement();
         advance();
-        if (curToken.getType() != LPAREN) {
-            return res.failure(new InvalidSyntaxError(
-                    curToken.getStart(), curToken.getEnd(),
-                    "Expected ("
-            ));
-        }
-        res.registerAdvancement();
-        advance();
+        this.expect(res, LPAREN);
+        if (res.hasError()) return res;
 
         Node startValue = res.register(expression());
         if (res.hasError()) return res;
@@ -1095,66 +1000,39 @@ public class Parser {
 
             Node list = res.register(expression());
             if (res.hasError()) return res;
-            if (curToken.getType() != RPAREN) {
-                return res.failure(new InvalidSyntaxError(
-                        curToken.getStart(), curToken.getEnd(),
-                        "Expected )"
-                ));
-            }
-            res.registerAdvancement();
-            advance();
-            if (curToken.getType() == OPENING_BRACKET) {
-                Node body = res.register(block());
-                if (res.hasError()) return res;
-                return res.success(new ForEachNode(startVal, list, body, true, start, curPos()));
-            }
-            Node body = res.register(statement());
+
+            this.expect(res, RPAREN);
             if (res.hasError()) return res;
 
-            return res.success(new ForEachNode(startVal,list,body,false, start, curPos()));
+            boolean shouldReturnNull = curToken.getType() == OPENING_BRACKET;
+            Node body = shouldReturnNull ?
+                    res.register(block()) :
+                    res.register(statement());
+            if (res.hasError()) return res;
+
+            return res.success(new ForEachNode(startVal, list, body,shouldReturnNull,start, curPos() ));
         }
-        if (curToken.getType() != DOUBLEDOT) {
-            return res.failure(new InvalidSyntaxError(
-                    curToken.getStart(),curToken.getEnd(),
-                    "Expected :"
-            ));
-        }
-        res.registerAdvancement();
-        advance();
+        this.expect(res, DOUBLEDOT);
+        if (res.hasError()) return res;
 
         Node condition = res.register(expression());
         if (res.hasError()) return res;
 
-        if (curToken.getType() != DOUBLEDOT) {
-            return res.failure(new InvalidSyntaxError(
-                    curToken.getStart(),curToken.getEnd(),
-                    "Expected :"
-            ));
-        }
-        res.registerAdvancement();
-        advance();
+        this.expect(res, DOUBLEDOT);
+        if (res.hasError()) return res;
 
         Node change = res.register(expression());
         if (res.hasError()) return res;
 
-        if (curToken.getType() != RPAREN) {
-            return res.failure(new InvalidSyntaxError(
-                    curToken.getStart(), curToken.getEnd(),
-                    "Expected )"
-            ));
-        }
-        res.registerAdvancement();
-        advance();
-
-        if (curToken.getType() == OPENING_BRACKET) {
-            Node body = res.register(block());
-            if (res.hasError()) return res;
-            return res.success(new ForNode(startValue, condition, change, body, true,start,curPos()));
-        }
-        Node body = res.register(statement());
+        this.expect(res,RPAREN);
+        if (res.hasError()) return res;
+        boolean shouldReturnNull = curToken.getType() == OPENING_BRACKET;
+        Node body = shouldReturnNull ?
+                res.register(block()) :
+                res.register(statement());
         if (res.hasError()) return res;
 
-        return res.success(new ForNode(startValue,condition,change,body,false, start, curPos()));
+        return res.success(new ForNode(startValue, condition, change, body, shouldReturnNull, start, curPos()));
     }
 
     private ParseResult block() {
@@ -1163,15 +1041,9 @@ public class Parser {
         advance();
         Node statements = res.register(statements());
         if (res.hasError())return res;
+        this.expect(res, CLOSING_BRACKET);
+        if (res.hasError()) return res;
 
-        if (curToken.getType() != CLOSING_BRACKET) {
-            return res.failure(new InvalidSyntaxError(
-                    curToken.getStart(),curToken.getEnd(),
-                    "Expected }"
-            ));
-        }
-        res.registerAdvancement();
-        advance();
         return res.success(statements);
     }
 
@@ -1233,14 +1105,8 @@ public class Parser {
         return res.success(left);
     }
     private Token expect(ParseResult res, TokenType tokenType) {
-        return expect(res, tokenType, null);
-    }
-    private Token expect(ParseResult res, TokenType tokenType, String value) {
-        if (curToken.getType() != tokenType || (value != null && !curToken.getValue().equals(value))) {
+        if (curToken.getType() != tokenType) {
             String errorMsg = "Expected " + tokenType;
-            if (value != null) {
-                errorMsg += " of value " + value;
-            }
             errorMsg += " but got " + curToken;
             res.failure(new InvalidSyntaxError(curToken.getStart(), curToken.getEnd(),
                     errorMsg));

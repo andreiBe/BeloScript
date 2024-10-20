@@ -39,3 +39,16 @@ class RecordTest(one,two,three)
 r = RecordTest(1,2,3)
 print(r.two)
 
+try {
+    SymbolTable(1,2,3)
+} catch (e) {
+    print(e)
+}
+
+try {
+    class NotWorking(one) extends "Parent" {
+
+    }
+} catch (e) {
+    print(e)
+}

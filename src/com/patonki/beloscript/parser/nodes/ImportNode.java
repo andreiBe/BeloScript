@@ -21,7 +21,7 @@ public class ImportNode extends Node{
         RunTimeResult res = new RunTimeResult();
         BeloClass object = res.register(interpreter.importFile(this,context));
         if (res.shouldReturn()) return res;
-        return res.success(object, getStart(), getEnd(), context);
+        return res.success(object, getStart(), getEnd());
     }
 
     public String getPath() {

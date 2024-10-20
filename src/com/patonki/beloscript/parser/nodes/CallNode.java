@@ -45,11 +45,12 @@ public class CallNode extends Node {
         }
         if (funcToCall instanceof BeloScriptFunction) {
             funcToCall.setContext(context);
+            funcToCall.setPos(getStart(), getEnd());
         }
         BeloClass returnValue = res.register(funcToCall.execute(args));
         if (res.shouldReturn()) return res;
 
-        return res.success(returnValue, getStart(), getEnd(), context);
+        return res.success(returnValue, getStart(), getEnd());
     }
 
     @Override

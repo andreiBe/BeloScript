@@ -46,3 +46,9 @@ val2 = switch (val) {
         return "wrong2"
 }
 print(val2)
+
+val2 = switch (val) {
+    case 900:
+        return "f"
+}
+print(val2)

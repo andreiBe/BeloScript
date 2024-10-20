@@ -23,3 +23,15 @@ print(8 + --var2) #9
 try {
     notdefined
 }
+
+inParentScope = 1
+inParentScope2 = 2
+
+try {
+    5/0
+} catch (e) {
+    inParentScope = 5
+    inParentScope2 += 3
+}
+print(inParentScope)
+print(inParentScope2)

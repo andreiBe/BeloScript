@@ -2,7 +2,6 @@ package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
-import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
 import com.patonki.beloscript.datatypes.basicTypes.Null;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
@@ -34,16 +33,16 @@ public class IfNode extends Node {
                 BeloClass linesValue = res.register(cas.getStatements().execute(context,interpreter));
                 if (res.shouldReturn()) return res;
                 return res.success(cas.getShouldReturnNull() ? new Null() : linesValue,
-                        getStart(), getEnd(), context);
+                        getStart(), getEnd());
             }
         }
         if (elseCase != null) {
             BeloClass linesValue = res.register(elseCase.getStatements().execute(context,interpreter));
             if (res.shouldReturn()) return res;
             return res.success(elseCase.getShouldReturnNull() ? new Null(): linesValue,
-                    getStart(),getEnd(),context);
+                    getStart(),getEnd());
         }
-        return  res.success(new Null(),getStart(),getEnd(),context);
+        return  res.success(new Null(),getStart(),getEnd());
     }
 
     @Override

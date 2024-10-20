@@ -36,14 +36,7 @@ public class BeloFunction extends BaseFunction{
                 res.getFunctionReturnValue() != null ?
                 res.getFunctionReturnValue() :
                 new Null());
-        return res.success(returnValue, getStart(), getEnd(),context);
-    }
-
-    @Override
-    public BeloClass copy() {
-        BeloClass copy = new BeloFunction(this.name,this.body,this.argNames,this.shouldAutoReturn);
-        copy.setContext(context);
-        return copy;
+        return res.success(returnValue, getStart(), getEnd());
     }
 
     @Override

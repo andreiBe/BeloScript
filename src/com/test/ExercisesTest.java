@@ -1,5 +1,7 @@
 package com.test;
 
+import com.patonki.beloscript.errors.LocalizedBeloException;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class ExercisesTest {
@@ -61,6 +63,10 @@ public class ExercisesTest {
         TestUtil.testFile(ROOT+"/finalVariables");
     }
     @Test
+    void customClasses() {
+        TestUtil.testFile(ROOT+"/customClasses");
+    }
+    @Test
     void finalClassProperties() {
         TestUtil.testFile(ROOT+"/finalClassProperties");
     }
@@ -75,6 +81,20 @@ public class ExercisesTest {
     @Test
     void asString() {
         TestUtil.testFile(ROOT+"/asString");
+    }
+    @Test
+    void input() {
+        TestUtil.testFile(ROOT+"/input", "input:input.txt");
+    }
+    @Test
+    void customErrorMessage() {
+        try {
+            TestUtil.testFile(true, ROOT+"customErrorMessage");
+            Assertions.fail();
+        } catch (LocalizedBeloException e) {
+            Assertions.assertEquals("hello The message", e.getError().toString());
+        }
+
     }
 }
 

@@ -1,1 +1,64 @@
+Before 0
+p
+0
 1
+Before p
+r
+0
+Before r
+i
+0
+Before i
+n
+0
+Before n
+t
+0
+Before t
+(
+0
+Before (
+"
+0
+Before "
+H
+0
+Before H
+e
+0
+Before e
+l
+0
+Before l
+l
+0
+Before l
+o
+0
+Before o
+ 
+0
+Before  
+w
+0
+Before w
+o
+0
+Before o
+r
+0
+Before r
+l
+0
+Before l
+d
+0
+Before d
+"
+0
+Before "
+)
+0
+Before )
+0
+0

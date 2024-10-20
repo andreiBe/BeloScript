@@ -3,8 +3,6 @@ package com.patonki.beloscript.parser.nodes;
 import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.List;
-import com.patonki.beloscript.errors.BeloException;
-import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
@@ -28,7 +26,7 @@ public class ListNode extends Node {
             if (res.shouldReturn()) return res;
         }
         return res.success(
-                List.create(list),getStart(),getEnd(),context
+                List.create(list),getStart(),getEnd()
         );
     }
     @Override

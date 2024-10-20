@@ -15,8 +15,8 @@ public class DotNode extends Node{
         this.start = left.getStart();
         this.end = right.getEnd();
     }
-    protected String getMemberString() {
-        return right.getToken().getValue();
+    protected StringNode getMemberString() {
+        return right;
     }
 
     protected RunTimeResult executeLeft(Context context, Interpreter interpreter) {

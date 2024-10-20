@@ -1,7 +1,5 @@
 package com.test;
 
-import com.patonki.beloscript.BeloScript;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class BasicTest {
@@ -63,5 +61,9 @@ public class BasicTest {
     @Test
     void throwErrors() {
         TestUtil.testFile(root+"/throwErrors");
+    }
+    @Test
+    void string() {
+        TestUtil.testFile(root+"/string");
     }
 }

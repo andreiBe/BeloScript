@@ -7,3 +7,23 @@ Error: An error happened
     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 An error happened
 Should print 4
+File script.bel, line 37, in <stdin>
+Runtime Error: Throw value not an error
+
+    throw "NotError"
+    ^^^^^^^^^^^^^^^^^
+File script.bel, line 46, in <stdin>
+File script.bel, line 46, in catch block
+Runtime Error: Expected class definition
+
+    } catch NotValid(e) {
+     ^^^^^^^^^^^^^^^^^^^^
+
+
+    }
+^^^^^
+File script.bel, line 54, in <stdin>
+Error: mymessage
+
+    throw Error("mymessage")
+    ^^^^^^^^^^^^^^^^^^^^^^^^^

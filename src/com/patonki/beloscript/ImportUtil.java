@@ -37,7 +37,7 @@ public class ImportUtil {
         if (object instanceof BeloClass) return (BeloClass) object;
         return null;
     }
-    public static Object matchingPrimitive(Object object, Class<?> shouldBe) {
+    public static Object matchingJavaClass(Object object, Class<?> shouldBe) {
         if (object instanceof Null) return null;
         if (object instanceof BeloDouble) {
             double d = ((BeloDouble) object).doubleValue();

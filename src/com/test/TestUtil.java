@@ -13,10 +13,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestUtil {
     public static void testFile(String root, String... extraArgs) {
+        testFile(false, root, extraArgs);
+    }
+    @SuppressWarnings({"CallToPrintStackTrace", "ThrowableNotThrown"})
+    public static void testFile(boolean throwError, String root, String... extraArgs) {
         List<String> args = new ArrayList<>();
         args.add("output: output.txt");
-        //args.add("logParse");
-        //args.add("logLex");
         Collections.addAll(args,extraArgs);
 
         BeloScript script = new BeloScript();
@@ -24,6 +26,7 @@ public class TestUtil {
         try {
             script.executeFile(root+"\\script.bel", args.toArray(new String[0]));
         } catch (BeloException e) {
+            if (throwError) throw e;
             e.printStackTrace();
             Assertions.fail();
         }

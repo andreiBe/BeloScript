@@ -55,7 +55,7 @@ public class BeloClassObject extends BeloClass {
     }
     private BeloClass tryToSetInParent(BeloClass name, BeloClass value) {
         if (this.parent == null) return createNotAMemberOfClassError(name);
-        BeloClass resultOfParent = this.parent.setClassValue(name.toString(), value);
+        BeloClass resultOfParent = this.parent.setClassValue(name, value);
         if (resultOfParent instanceof NotMemberOfClassError) {
             return createNotAMemberOfClassError(name);
         }
@@ -86,14 +86,15 @@ public class BeloClassObject extends BeloClass {
     }
 
     @Override
-    public BeloClass setClassValue(String name, BeloClass newValue) {
+    public BeloClass setClassValue(BeloClass nameClass, BeloClass newValue) {
+        String name = nameClass.toString();
         if (!this.properties.containsProperty(name)) {
             return tryToSetInParent(BeloString.create(name), newValue);
         }
         AccessModifier target = this.properties.getAccessModifier(name);
 
         if (!this.accessModifier.canAccess(target))
-            return createCannotAccessError(BeloString.create(name), target);
+            return createCannotAccessError(nameClass, target);
         if (this.properties.isFinal(name)) {
             return createCannotAssignToFinalVariableError(name);
         }

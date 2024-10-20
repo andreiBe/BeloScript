@@ -2,11 +2,7 @@ package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
-import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
 import com.patonki.beloscript.datatypes.basicTypes.List;
-import com.patonki.beloscript.datatypes.basicTypes.Null;
-import com.patonki.beloscript.errors.BeloException;
-import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
@@ -40,7 +36,7 @@ public class WhileNode extends Node {
             if (res.isShouldBreak()) break;
             elements.add(value);
         }
-        return res.success(List.create(elements),getStart(),getEnd(), context);
+        return res.success(List.create(elements),getStart(),getEnd());
     }
 
     @Override

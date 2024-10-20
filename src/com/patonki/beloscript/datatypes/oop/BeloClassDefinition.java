@@ -2,14 +2,12 @@ package com.patonki.beloscript.datatypes.oop;
 
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloError;
-import com.patonki.beloscript.datatypes.basicTypes.BeloString;
 import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
 import com.patonki.beloscript.interpreter.Interpreter;
 import com.patonki.beloscript.interpreter.RunTimeResult;
 import com.patonki.beloscript.interpreter.SymbolTable;
 import com.patonki.beloscript.parser.nodes.Node;
-import com.patonki.beloscript.parser.nodes.VarAccessNode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -136,9 +134,7 @@ public class BeloClassDefinition extends BeloClass implements ClassDefinition{
     }
     @SuppressWarnings("StringEquality")
     public boolean parameterIsInstanceOfThis(BeloClass beloClass) {
-        if (!(beloClass instanceof BeloClassObject)) {
-            return false;
-        }
+        if (!(beloClass instanceof BeloClassObject)) return false;
         //TODO kinda hacking!
         return ((BeloClassObject) beloClass).getClassName() == this.className;
     }
@@ -168,7 +164,7 @@ public class BeloClassDefinition extends BeloClass implements ClassDefinition{
     }
     private BeloClass tryToSetInParent(BeloClass name, BeloClass value) {
         if (this.parent == null) return createNotAMemberOfClassError(name);
-        BeloClass resultOfParent = this.parent.setClassValue(name.toString(), value);
+        BeloClass resultOfParent = this.parent.setClassValue(name, value);
         if (resultOfParent instanceof NotMemberOfClassError) {
             return createNotAMemberOfClassError(name);
         }
@@ -194,13 +190,14 @@ public class BeloClassDefinition extends BeloClass implements ClassDefinition{
     }
 
     @Override
-    public BeloClass setClassValue(String name, BeloClass newValue) {
+    public BeloClass setClassValue(BeloClass nameClass, BeloClass newValue) {
+        String name = nameClass.toString();
         if (!this.properties.hasStaticProperty(name)) {
-            return tryToSetInParent(BeloString.create(name), newValue);
+            return tryToSetInParent(nameClass, newValue);
         }
         AccessModifier target = this.properties.getAccessModifierOfStaticProperty(name);
         if (!this.accessModifier.canAccess(target))
-            return createCannotAccessError(BeloString.create(name), target);
+            return createCannotAccessError(nameClass, target);
         if (this.properties.staticPropertyIsFinal(name)) {
             return createCannotAssignToFinalVariableError(name);
         }
@@ -238,10 +235,6 @@ public class BeloClassDefinition extends BeloClass implements ClassDefinition{
                 "Cannot asign to final variable: " + name, this.context));
     }
 
-    @Override
-    public String toString() {
-        return this.properties.toString();
-    }
     private static class CannotAccessError extends BeloError {
         public CannotAccessError(RunTimeError e) {
             super(e);

@@ -2,9 +2,6 @@ package com.patonki.beloscript;
 
 import com.patonki.beloscript.builtInLibraries.*;
 import com.patonki.beloscript.datatypes.BeloClass;
-import com.patonki.beloscript.datatypes.basicTypes.BeloError;
-import com.patonki.beloscript.datatypes.basicTypes.CustomBeloClass;
-import com.patonki.beloscript.datatypes.function.BeloScript;
 import com.patonki.beloscript.datatypes.structures.Set;
 import com.patonki.beloscript.errors.BeloException;
 import com.patonki.beloscript.interpreter.SymbolTable;
@@ -12,15 +9,15 @@ import com.patonki.datatypes.Pair;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.AnnotatedElement;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.function.Predicate;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+
+import static com.patonki.beloscript.ClassImporter.addAllFieldsFromClass;
+import static com.patonki.beloscript.ClassImporter.addMarkedFieldsFromClass;
 
 public class Import {
     private static final ArrayList<BeloLibrary> libraries = new ArrayList<>();
@@ -41,45 +38,44 @@ public class Import {
     }
 
     private static void importBuiltInLibraries() throws IllegalAccessException, BeloException {
-        addMarkedFieldsFromClass(BeloRandom.class);
-        addMarkedFieldsFromClass(com.patonki.beloscript.datatypes.basicTypes.List.class);
-        addMarkedFieldsFromClass(Set.class);
-        addMarkedFieldsFromClass(RangeCommand.class);
-        addMarkedFieldsFromClass(IO.class);
-        addMarkedFieldsFromClass(Util.class);
+        addMarkedFieldsFromClass(BeloRandom.class, imported);
+        addMarkedFieldsFromClass(com.patonki.beloscript.datatypes.basicTypes.List.class, imported);
+        addMarkedFieldsFromClass(Set.class, imported);
+        addMarkedFieldsFromClass(RangeCommand.class, imported);
+        addMarkedFieldsFromClass(IO.class, imported);
+        addMarkedFieldsFromClass(Util.class, imported);
 
-        addAllFieldsFromClass(StringBuilder.class);
-        addAllFieldsFromClass(Thread.class);
-        addAllFieldsFromClass(URL.class);
-        addAllFieldsFromClass(File.class);
-        addAllFieldsFromClass(Character.class);
+        addAllFieldsFromClass(StringBuilder.class, imported);
+        addAllFieldsFromClass(Thread.class, imported);
+        addAllFieldsFromClass(URL.class, imported);
+        addAllFieldsFromClass(File.class, imported);
+        addAllFieldsFromClass(Character.class, imported);
 
         LibJson json = new LibJson();
         Import.libraries.add(json);
     }
 
     private static void importJarFile(File jar, ClassLoader urc) throws IllegalAccessException, InstantiationException, IOException, ClassNotFoundException, BeloException {
-        JarFile jarFile = new JarFile(jar);
-        Enumeration<JarEntry> e = jarFile.entries();
+        try (JarFile jarFile = new JarFile(jar)) {
+            Enumeration<JarEntry> e = jarFile.entries();
 
-        while (e.hasMoreElements()) {
-            JarEntry je = e.nextElement();
-            if (je.isDirectory()) {
-                continue;
-            }
-            if (je.getName().endsWith(".class")) {
-                //.class pois
-                String className = je.getName().substring(0, je.getName().length() - 6);
-                className = className.replace('/', '.');
-                if (!className.contains("$")) {
-                    Class<?> clazz = urc.loadClass(className);
-                    if (clazz.isInstance(BeloLibrary.class)) {
-                        BeloLibrary newClass = (BeloLibrary) clazz.newInstance();
-                        if (!Import.libraries.contains(newClass)) {
+            while (e.hasMoreElements()) {
+                JarEntry je = e.nextElement();
+                if (je.isDirectory()) {
+                    continue;
+                }
+                if (je.getName().endsWith(".class")) {
+                    //.class pois
+                    String className = je.getName().substring(0, je.getName().length() - 6);
+                    className = className.replace('/', '.');
+                    if (!className.contains("$")) {
+                        Class<?> clazz = urc.loadClass(className);
+                        if (BeloLibrary.class.isAssignableFrom(clazz)) {
+                            BeloLibrary newClass = (BeloLibrary) clazz.newInstance();
                             Import.libraries.add(newClass);
+                        } else {
+                            addMarkedFieldsFromClass(clazz,imported);
                         }
-                    } else {
-                        addMarkedFieldsFromClass(clazz);
                     }
                 }
             }
@@ -107,17 +103,5 @@ public class Import {
         importJarFiles(jars);
     }
 
-    public static void addMarkedFieldsFromClass(Class<?> clazz) throws IllegalAccessException, BeloException {
-        Predicate<AccessibleObject> filter = CustomBeloClass.filter;
-        if (clazz.getAnnotation(BeloScript.class) == null) return;
 
-        if (!CustomBeloClass.class.isAssignableFrom(clazz)) {
-            throw new BeloException("Class should inherit CustomBeloClass class");
-        }
-        ClassImporter.addMethodsAndFields(clazz, imported, filter);
-    }
-
-    private static void addAllFieldsFromClass(Class<?> clazz) throws IllegalAccessException {
-        ClassImporter.addMethodsAndFields(clazz, imported, a -> true);
-    }
 }

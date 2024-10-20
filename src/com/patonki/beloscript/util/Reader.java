@@ -1,8 +1,9 @@
 package com.patonki.beloscript.util;
 
 import java.io.DataInputStream;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 public class Reader {
     final private int BUFFER_SIZE = 1 << 16;
@@ -18,7 +19,7 @@ public class Reader {
 
     public Reader(String file_name) throws IOException {
         din = new DataInputStream(
-                new FileInputStream(file_name));
+                Files.newInputStream(Paths.get(file_name)));
         buffer = new byte[BUFFER_SIZE];
         bufferPointer = bytesRead = 0;
     }
@@ -52,36 +53,15 @@ public class Reader {
         do {
             ret = ret * 10 + c - '0';
         } while ((c = read()) >= '0' && c <= '9');
-
+        bufferPointer--;
         if (neg)
             return -ret;
         return ret;
     }
-
-    public long nextLong() throws IOException {
-        long ret = 0;
-        byte c = read();
-        while (c <= ' ')
-            c = read();
-        boolean neg = (c == '-');
-        if (neg)
-            c = read();
-        do {
-            ret = ret * 10 + c - '0';
-        } while ((c = read()) >= '0' && c <= '9');
-        if (neg)
-            return -ret;
-        return ret;
+    public double nextDouble() throws IOException {
+        return nextDoubleBase();
     }
-    public double nextDouble() {
-        try {
-            return nextDoubleBase();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new IllegalArgumentException("NIFASFHj");
-        }
-    }
-    public double nextDoubleBase() throws IOException{
+    private double nextDoubleBase() throws IOException{
         double ret = 0, div = 1;
         byte c = read();
         while (c <= ' ')
@@ -124,8 +104,6 @@ public class Reader {
     }
 
     public void close() throws IOException {
-        if (din == null)
-            return;
         din.close();
     }
 }

@@ -8,3 +8,39 @@ class Test {
 Test().test()
 Test.value = 9
 Test().test()
+
+
+class Child extends Test {
+    private static doNotChange = 9
+}
+print(Child.value)
+Child.value = 14
+print(Child.value)
+
+try {
+    Test.lol
+} catch (e) {
+    print(e)
+}
+try {
+    Child.no
+} catch (e) {
+    print(e)
+}
+
+try {
+    Test.lol = 2
+} catch (e) {
+    print(e)
+}
+try {
+    Child.no = 2
+} catch (e) {
+    print(e)
+}
+
+try {
+    Child.doNotChange = 3
+} catch (e) {
+    print(e)
+}

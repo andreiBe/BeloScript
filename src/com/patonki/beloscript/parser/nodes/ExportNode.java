@@ -20,7 +20,7 @@ public class ExportNode extends Node{
         BeloClass obj = res.register(object.execute(context,interpreter));
         if (res.shouldReturn()) return res;
         interpreter.setExported(obj);
-        return res.success(obj, getStart(),getEnd(),context);
+        return res.success(obj, getStart(),getEnd());
     }
 
     @Override

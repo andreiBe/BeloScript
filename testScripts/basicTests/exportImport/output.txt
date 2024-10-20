@@ -1,1 +1,7 @@
 5
+Hello
+File error.bel, line 2, in <stdin>
+Runtime Error: Division by zero
+
+5/0
+  ^

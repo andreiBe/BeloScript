@@ -39,15 +39,18 @@ public class BeloScript {
     }
 
 
+    @SuppressWarnings("UnusedReturnValue")
     public static BeloClass runFile(String path, String... args) throws BeloException {
         return new BeloScript().executeFile(path,args);
     }
+    @SuppressWarnings("UnusedReturnValue")
     public static BeloClass run(String script, String fileName,String rootPath, String... args) throws BeloException {
         return new BeloScript().execute(script,rootPath,fileName,args);
     }
-    public static String convertToJavaCode(String script, String fileName) {
-        return new BeloScript().toJavaCode(script, fileName);
+    public static String convertFileToJavaCode(String path) {
+        return new BeloScript().fileToJavaCode(path);
     }
+
     public BeloClass executeFile(String path,String... args) throws BeloException {
         File file = new File(path);
         String name = file.getName();
@@ -82,9 +85,21 @@ public class BeloScript {
         }
         return parseResult.getNode();
     }
+    private String fileToJavaCode(String path) {
+        File file = new File(path);
+        String name = file.getName();
+        FileHandler fileHandler = new FileHandler(path);
+        String content = fileHandler.currentContent();
+        IOException possibleError = fileHandler.close();
+        if (possibleError != null) {
+            throw new BeloException("Can't close file stream");
+        }
+        return toJavaCode(content, name);
+    }
+
     private String toJavaCode(String script, String fileName) {
         Node parsed = parse(false, false, fileName, script);
-        return "";
+        return parsed.convertToJavaCode();
     }
     private BeloClass execute(String script, String rootPath, String fileName, String... args) throws BeloException{
         Settings settings = new Settings(args,rootPath);

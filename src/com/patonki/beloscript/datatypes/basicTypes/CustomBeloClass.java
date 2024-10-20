@@ -10,7 +10,7 @@ import java.util.*;
 import java.util.function.Predicate;
 
 public class CustomBeloClass extends BeloClass{
-    public HashMap<BeloClass,BeloClass> classValues = new HashMap<>();
+    public final HashMap<BeloClass,BeloClass> classValues = new HashMap<>();
 
     @Override
     public BeloClass classValue(BeloClass name) {
@@ -21,14 +21,10 @@ public class CustomBeloClass extends BeloClass{
         return b;
     }
 
-    @Override
-    public BeloClass setClassValue(String name, BeloClass newValue) {
-        classValues.put(BeloString.create_dont_use_optimized_version(name),newValue);
-        return newValue;
-    }
     public static final Predicate<AccessibleObject> filter = accessibleObject ->
             accessibleObject.getAnnotation(BeloScript.class) != null;
 
+    @SuppressWarnings("unchecked")
     public<T extends CustomBeloClass> T init_self() throws BeloException {
         ClassImporter.addMethods(this,
                 ClassImporter.collectMethods(this.getClass(), filter).getClassMethods());
@@ -41,9 +37,4 @@ public class CustomBeloClass extends BeloClass{
                 "classValues=" + classValues +
                 '}';
     }
-
-    protected String getOwnClassName() {
-        return this.getClass().getSimpleName();
-    }
-
 }

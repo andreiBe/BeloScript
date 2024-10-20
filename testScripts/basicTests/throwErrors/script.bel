@@ -32,3 +32,26 @@ try {
 } catch (e) {
     print("Should print 4")
 }
+
+try {
+    throw "NotError"
+} catch (e) {
+    print(e)
+}
+
+NotValid = "NotValid"
+try {
+    try {
+        5/0
+    } catch NotValid(e) {
+
+    }
+} catch (e) {
+    print(e)
+}
+
+try {
+    throw Error("mymessage")
+} catch Error(e) {
+    print(e)
+}

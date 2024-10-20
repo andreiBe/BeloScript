@@ -35,9 +35,8 @@ public class Properties implements PropertiesAccess {
     }
 
     @Override
-    public BeloClass setStaticProperty(String key, BeloClass value) {
+    public void setStaticProperty(String key, BeloClass value) {
         this.staticProperties.get(key).value = value;
-        return value;
     }
 
     @Override

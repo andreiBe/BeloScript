@@ -1,6 +1,7 @@
 class Animal(color, voice) {
     private color
     protected voice
+    public toChange
     Animal {
         print("Animal constructor")
     }
@@ -29,3 +30,11 @@ animal.makeNoice()
 dog = Dog("brown", "woof", "Golden retriever")
 dog.makeNoice()
 dog.func()
+dog.toChange = "43"
+print(dog.toChange)
+
+try {
+    dog.breed = "53"
+} catch (e) {
+    print(e)
+}

@@ -4,8 +4,8 @@ public class Position {
     public int index;
     public int lineNumber;
     public int columnNumber;
-    public String fileName;
-    public String fileContent;
+    public final String fileName;
+    public final String fileContent;
 
     public Position(int index, int lineNumber, int columnNumber, String fileName, String fileContent) {
         this.index = index;
@@ -23,15 +23,6 @@ public class Position {
             columnNumber = 0;
         }
         return this;
-    }
-    @Override
-    public String toString() {
-        return "Position{" +
-                "index=" + index +
-                ", lineNumber=" + lineNumber +
-                ", columnNumber=" + columnNumber +
-                ", fileName='" + fileName + '\'' +
-                '}';
     }
 
     public Position copy() {

@@ -2,8 +2,6 @@ package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
-import com.patonki.beloscript.datatypes.basicTypes.BeloError;
-import com.patonki.beloscript.datatypes.oop.BeloClassExceptionObject;
 import com.patonki.beloscript.datatypes.oop.BeloClassObject;
 import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;

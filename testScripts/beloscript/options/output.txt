@@ -128,10 +128,48 @@ k
 Index must be a number (class:BeloString)
 3
 Not a member of class: 'lol' class: BeloString
+CustomBeloClass{classValues={getClass=com.patonki.beloscript.ClassImporter$1@74518890
+, toASCIIString=com.patonki.beloscript.ClassImporter$1@4c5204af
+, wait=com.patonki.beloscript.ClassImporter$1@3f3ddbd9
+com.patonki.beloscript.ClassImporter$1@14c053c6
+com.patonki.beloscript.ClassImporter$1@6c2d4cc6
+, resolve=com.patonki.beloscript.ClassImporter$1@30865a90
+com.patonki.beloscript.ClassImporter$1@6134ac4a
+, isOpaque=com.patonki.beloscript.ClassImporter$1@777c9dc9
+, notifyAll=com.patonki.beloscript.ClassImporter$1@71b1a49c
+, compareTo=com.patonki.beloscript.ClassImporter$1@73e132e0
+com.patonki.beloscript.ClassImporter$1@3773862a
+, getRawAuthority=com.patonki.beloscript.ClassImporter$1@2472c7d8
+, notify=com.patonki.beloscript.ClassImporter$1@589b028e
+, hashCode=com.patonki.beloscript.ClassImporter$1@22175d4f
+, normalize=com.patonki.beloscript.ClassImporter$1@9fecdf1
+, getPath=com.patonki.beloscript.ClassImporter$1@3b809711
+, relativize=com.patonki.beloscript.ClassImporter$1@3b0f7d9d
+, getHost=com.patonki.beloscript.ClassImporter$1@236ab296
+, getQuery=com.patonki.beloscript.ClassImporter$1@5c84624f
+, toURL=com.patonki.beloscript.ClassImporter$1@63034ed1
+, getScheme=com.patonki.beloscript.ClassImporter$1@232024b9
+, getAuthority=com.patonki.beloscript.ClassImporter$1@55a8dc49
+, getRawFragment=com.patonki.beloscript.ClassImporter$1@2a415aa9
+, getRawQuery=com.patonki.beloscript.ClassImporter$1@53cdecf6
+, getRawSchemeSpecificPart=com.patonki.beloscript.ClassImporter$1@71ea1fda
+, getRawUserInfo=com.patonki.beloscript.ClassImporter$1@62b3df3a
+, parseServerAuthority=com.patonki.beloscript.ClassImporter$1@420745d7
+, getPort=com.patonki.beloscript.ClassImporter$1@7e11ab3d
+, equals=com.patonki.beloscript.ClassImporter$1@5fa47fea
+, isAbsolute=com.patonki.beloscript.ClassImporter$1@2392212b
+, toString=com.patonki.beloscript.ClassImporter$1@5b43e173
+, getFragment=com.patonki.beloscript.ClassImporter$1@28f8e165
+, getRawPath=com.patonki.beloscript.ClassImporter$1@545f80bf
+, getUserInfo=com.patonki.beloscript.ClassImporter$1@66f66866
+, getSchemeSpecificPart=com.patonki.beloscript.ClassImporter$1@22fa55b2
+}}
+Hello43
+5
 3
 2
 9
-{9=hello, 3=fuck, 2=lol}
+{2=lol, 3=fuck, 9=hello}
 Animal constructor
 Animal says: <noice>
 Animal constructor
@@ -162,6 +200,7 @@ Kiitos!
 En usko!
 Kiitos!
 Kiitos!
+A is the best
 HERE
 1
 2
@@ -195,6 +234,11 @@ null
 Static func lol
 55
 2
+1
+0
+1
+1
+1
 Accessing attributes
 Cannot access class member: 'one' class: BeloClassObject because it is PRIVATE
 Cannot access class member: 'two' class: BeloClassObject because it is PROTECTED
@@ -228,7 +272,4 @@ THREE
 Cannot access class member: 'staticOne' class: BeloClassDefinition because it is PRIVATE
 staticTwo
 staticThree
-Now creating position
-Created position
-OMG IT MUST BE THIS
-0
+1

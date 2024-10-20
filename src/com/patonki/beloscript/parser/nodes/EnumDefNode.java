@@ -26,11 +26,6 @@ public class EnumDefNode extends Node{
         BeloEnumDefinition enumDefinition = new BeloEnumDefinition(this.enums);
         context.getSymboltable().set(enumName, enumDefinition);
         enumDefinition.setContext(context);
-        return res.success(enumDefinition,getStart(),getEnd(), context);
-    }
-
-    @Override
-    public String toString() {
-        return "{enumdef}";
+        return res.success(enumDefinition,getStart(),getEnd());
     }
 }

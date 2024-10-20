@@ -1,7 +1,6 @@
 package com.patonki.beloscript.errors;
 
 import java.io.PrintStream;
-import java.io.PrintWriter;
 
 public class LocalizedBeloException extends BeloException {
     private final BeloScriptError error;
@@ -17,11 +16,6 @@ public class LocalizedBeloException extends BeloException {
 
     @Override
     public void printStackTrace(PrintStream s) {
-        s.println(error.toString());
-    }
-
-    @Override
-    public void printStackTrace(PrintWriter s) {
         s.println(error.toString());
     }
 

@@ -2,8 +2,6 @@ package com.patonki.beloscript.parser.nodes;
 
 import com.patonki.beloscript.Position;
 import com.patonki.beloscript.datatypes.BeloClass;
-import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
-import com.patonki.beloscript.datatypes.function.BeloScriptFunction;
 import com.patonki.beloscript.datatypes.oop.AccessModifier;
 import com.patonki.beloscript.datatypes.oop.BeloClassDefinition;
 import com.patonki.beloscript.datatypes.oop.ClassDefinition;
@@ -107,12 +105,7 @@ public class ClassDefNode extends Node {
 
         context.getSymboltable().set(className, definition);
         definition.setContext(context);
-        return res.success(definition,getStart(),getEnd(), context);
-    }
-
-    @Override
-    public String toString() {
-        return "{classdef}";
+        return res.success(definition,getStart(),getEnd());
     }
 
 }

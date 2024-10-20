@@ -1,10 +1,8 @@
 package com.patonki.beloscript.interpreter;
 
 import com.patonki.beloscript.datatypes.BeloClass;
-import com.patonki.beloscript.datatypes.function.BaseFunction;
 import com.patonki.beloscript.datatypes.function.BeloScriptFunction;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
@@ -44,20 +42,5 @@ public class SymbolTable {
 
     public void defineFunction(String name, BeloScriptFunction func) {
         set(name, func);
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder res = new StringBuilder("\nPrinting symboltable");
-        for (String key : symbols.keySet()) {
-            BeloClass value = symbols.get(key);
-            if (value instanceof BaseFunction) continue;
-            res.append("\n").append(key).append("=").append(value);
-        }
-        if (parent != null) {
-            res.append("\nPrinting parent");
-            res.append(parent).append("\n");
-        }
-        return res.toString();
     }
 }

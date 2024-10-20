@@ -4,7 +4,6 @@ import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.function.BeloScript;
 import com.patonki.beloscript.errors.BeloException;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -48,10 +47,9 @@ public class Obj extends CustomBeloClass implements Iterable<BeloClass> {
     }
 
     @Override
-    public BeloClass setClassValue(String name, BeloClass newValue) {
-        BeloString key = BeloString.create(name);
-        map.put(key, newValue);
-        classValues.put(key,newValue);
+    public BeloClass setClassValue(BeloClass name, BeloClass newValue) {
+        map.put(name, newValue);
+        classValues.put(name,newValue);
         return newValue;
     }
     // ------------BELOSCRIPT ANNOTATED METHODS::: -----------------

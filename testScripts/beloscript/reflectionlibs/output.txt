@@ -5,12 +5,111 @@ created
 9
 11
 20
-[4, 2, 1, 5, 6, 7]
-6
-[4, 2, 6]
-omg
-File script.bel, line 17, in <stdin>
-Runtime Error: X is larger than collection size
+File script.bel, line 2, in <stdin>
+Runtime Error: Division by zero
 
-    items = pick_random(lista, 10)
-            ^^^^^^^^^^^
+    7/0
+      ^
+File script.bel, line 8, in <stdin>
+Runtime Error: unknown is not defined
+
+    unknown
+    ^^^^^^^
+Runtime Error: Not a member of class: 'nonexistent' class: BeloError
+
+        e.nonexistent
+          ^^^^^^^^^^^
+Runtime Error: IndexOutOfBounds index:1 size:1 (class:BeloString)
+
+    "1"[1]
+    ^^^
+Runtime Error: 'not' operator not defined  (class:BeloString)
+
+tryAndFail(function() {not "5"})
+                           ^^^
+Runtime Error: '--' operator not defined  (class:BeloString)
+
+tryAndFail(function() {--var})
+                         ^^^
+Runtime Error: '--' operator not defined  (class:BeloString)
+
+tryAndFail(function() {--var})
+                         ^^^
+Runtime Error: '++' operator not defined  (class:BeloError)
+
+tryAndFail(function() {++var})
+                         ^^^
+Runtime Error: '++' operator not defined  (class:BeloError)
+
+tryAndFail(function() {++var})
+                         ^^^
+Runtime Error: This class isn't callable (class:BeloString)
+
+tryAndFail(function() {"5"(1)})
+                       ^^^
+File script.bel, line 27, in <stdin>
+File script.bel, line 39, in <anonymous>
+Runtime Error: Cannot set class member: 'lol'  (class:BeloDouble)
+
+tryAndFail(function() {(5).lol = 3})
+                        ^
+File script.bel, line 27, in <stdin>
+File script.bel, line 40, in <anonymous>
+Runtime Error: Cannot access class members (class:BeloDouble)
+
+tryAndFail(function() {(5).lol})
+                        ^
+File script.bel, line 27, in <stdin>
+File script.bel, line 41, in <anonymous>
+Runtime Error: Setting elements with '[]' not supported (class:BeloDouble)
+
+tryAndFail(function() {5[1] = "lol"})
+                       ^
+File script.bel, line 27, in <stdin>
+File script.bel, line 42, in <anonymous>
+Runtime Error: '[ ]' operator not defined  (class:BeloDouble)
+
+tryAndFail(function() {5[1]})
+                       ^
+File script.bel, line 27, in <stdin>
+File script.bel, line 43, in <anonymous>
+Runtime Error: '^' operator not defined  (class:Obj)
+
+tryAndFail(function() {{}^2})
+                       ^^^
+File script.bel, line 27, in <stdin>
+File script.bel, line 44, in <anonymous>
+Runtime Error: '//' operator not defined  (class:Obj)
+
+tryAndFail(function() {{} // 2})
+                       ^^^
+File script.bel, line 27, in <stdin>
+File script.bel, line 45, in <anonymous>
+Runtime Error: '/' operator not defined  (class:Obj)
+
+tryAndFail(function() {{} / 2})
+                       ^^^^
+File script.bel, line 27, in <stdin>
+File script.bel, line 46, in <anonymous>
+Runtime Error: '*' operator not defined  (class:Obj)
+
+tryAndFail(function() {{} * 2})
+                       ^^^^
+File script.bel, line 27, in <stdin>
+File script.bel, line 47, in <anonymous>
+Runtime Error: '+' operator not defined  (class:Obj)
+
+tryAndFail(function() {{} + 2})
+                       ^^^^
+File script.bel, line 27, in <stdin>
+File script.bel, line 48, in <anonymous>
+Runtime Error: '-' operator not defined  (class:Obj)
+
+tryAndFail(function() {{} - 2})
+                       ^^^
+File script.bel, line 27, in <stdin>
+File script.bel, line 49, in <anonymous>
+Runtime Error: '%' operator not defined  (class:Obj)
+
+tryAndFail(function() {{} % 2})
+                       ^^^^

@@ -1,0 +1,11 @@
+s = input()
+print(s)
+
+i = inputInt()
+print(i)
+
+c = inputChar()
+print(c)
+
+f = inputFloat()
+print(f)

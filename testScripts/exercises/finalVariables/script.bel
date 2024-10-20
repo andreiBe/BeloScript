@@ -6,3 +6,9 @@ try {
     print(e.details)
 }
 print(var)
+
+try {
+    final var = 10
+} catch (e) {
+    print(e.details)
+}

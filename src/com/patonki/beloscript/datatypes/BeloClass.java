@@ -86,7 +86,6 @@ public abstract class BeloClass implements Comparable<BeloClass>{
      * Käytetään kun arvoa vertaillaan yksin esim:<br>
      * <code>
      *     if (arvo) {
-     *
      *     }
      * </code>
      * @return true, jos tosi
@@ -225,11 +224,11 @@ public abstract class BeloClass implements Comparable<BeloClass>{
     /**
      * Kutsutaan, kun yritetään muuttaa luokan sisäistä muuttujaa '.' symboolin avulla esim:
      * <br><code>henkilo.nimi = "Aarne"</code>
-     * @param name muuttujan nimi. Voi olettaa, että kyseessä on merkkijono olio
+     * @param name muuttujan nimi
      * @param newValue uusi arvo
      * @return uusi arvo
      */
-    public BeloClass setClassValue(String name, BeloClass newValue) {
+    public BeloClass setClassValue(BeloClass name, BeloClass newValue) {
         return  throwError("Cannot set class member: '"+name+"' ");
     }
 

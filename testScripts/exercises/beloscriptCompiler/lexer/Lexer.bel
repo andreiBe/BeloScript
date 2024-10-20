@@ -33,7 +33,10 @@ class Lexer(filename, text) {
     }
    private advance() {
         self.pos.advance(self.curChar);
+        print("Before " + self.curChar)
         self.curChar = if (self.pos.index < self.text.size()) self.text[self.pos.index] else 0
+        print(self.curChar)
+        print(0)
     }
     # ainut public metodi, joka palauttaa LexResultin, joka sisältää token listan ja mahdolliset virheet suorituksessa
     public makeTokens() {
@@ -127,11 +130,9 @@ class Lexer(filename, text) {
             else if (self.curChar == ">") {
                 tokens.push(self.makeGreaterThan());
             }
-            #TODO do method
             else if (self.curChar.isDigits()) {
                 tokens.push(self.makeNumber());
             }
-            #TODO do method
             else if (self.curChar.isLetters()) {
                 print(self.curChar.isLetters())
                 tokens.push(self.make_identifier());

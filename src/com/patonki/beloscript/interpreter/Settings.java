@@ -5,6 +5,7 @@ import com.patonki.beloscript.util.FileUtil;
 import com.patonki.beloscript.util.Reader;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Settings {
@@ -16,6 +17,7 @@ public class Settings {
     private final String[] args;
     private final String rootPath;
 
+    private static final ArrayList<Reader> inputReaders = new ArrayList<>();
     private static final HashMap<File, PrintStream> printStreams = new HashMap<>();
 
     private Reader createInputReader(String arg, String rootPath) throws BeloException {
@@ -25,7 +27,9 @@ public class Settings {
             inputFileName = rootPath+inputFileName;
         }
         try {
-            return new Reader(inputFileName);
+            Reader reader = new Reader(inputFileName);
+            inputReaders.add(reader);
+            return reader;
         } catch (IOException e) {
             throw new BeloException("Input file not found:" + inputFileName);
         }
@@ -60,6 +64,7 @@ public class Settings {
     public Settings(String[] args, String root) throws BeloException {
         this.args = args;
         this.rootPath = root;
+        inputReaders.add(this.input);
         for (String arg : args) {
             if (arg.equals("logLex")) {
                 logLexResult = true;
@@ -118,5 +123,11 @@ public class Settings {
             value.close();
         }
         printStreams.clear();
+
+        for (Reader inputReader : inputReaders) {
+            try {
+                inputReader.close();
+            } catch (IOException ignored) {}
+        }
     }
 }

@@ -75,11 +75,8 @@ public class UnaryOperationNode extends Node{
         if (res.shouldReturn()) return res;
         number = command.calculate(number,context);
 
-        if (number.hasError()) {
-            return res.failure(number.getError());
-        } else {
-            return res.success(number,getStart(),getEnd());
-        }
+        if (number.hasError()) return res.failure(number.getError());
+        return res.success(number,getStart(),getEnd());
     }
 
     public Node getNode() {

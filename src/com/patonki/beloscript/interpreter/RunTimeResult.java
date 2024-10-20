@@ -46,13 +46,6 @@ public class RunTimeResult {
         this.value = value;
         return this;
     }
-    public RunTimeResult success(BeloClass value, Position start, Position end, Context context) {
-        this.reset();
-        this.value = value;
-        this.value.setPos(start,end);
-        //this.value.setContext(context);
-        return this;
-    }
     public RunTimeResult success(BeloClass value, Position start, Position end) {
         this.reset();
         this.value = value;

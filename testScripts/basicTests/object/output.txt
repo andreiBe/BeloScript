@@ -1,3 +1,16 @@
 James
 17
 18
+1
+0
+{age=2}
+[age]
+1
+Runtime Error: Key not in object: note (class:Obj)
+
+    obj["note"]
+        ^^^^^^
+Runtime Error: Not a member of class: 'note' class: Obj
+
+    obj.note
+        ^^^^

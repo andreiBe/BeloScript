@@ -5,7 +5,6 @@ import com.patonki.beloscript.lexer.Lexer;
 import com.patonki.beloscript.lexer.Token;
 import com.patonki.beloscript.parser.ParseResult;
 import com.patonki.beloscript.parser.Parser;
-import com.patonki.beloscript.parser.nodes.BinaryOperatorNode;
 import com.patonki.helper.FileHandler;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

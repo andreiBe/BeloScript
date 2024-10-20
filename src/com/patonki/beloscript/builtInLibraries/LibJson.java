@@ -1,13 +1,13 @@
 package com.patonki.beloscript.builtInLibraries;
 
 import com.patonki.beloscript.BeloLibrary;
+import com.patonki.beloscript.datatypes.basicTypes.Null;
 import com.patonki.beloscript.errors.LocalizedBeloException;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.BeloDouble;
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
 import com.patonki.beloscript.datatypes.basicTypes.Obj;
 import com.patonki.beloscript.datatypes.function.BeloScriptFunction;
-import com.patonki.beloscript.errors.BeloException;
 import com.patonki.beloscript.errors.BeloScriptError;
 import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.Context;
@@ -23,41 +23,42 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LibJson implements BeloLibrary {
-    public static Obj readJson(Settings settings) throws BeloException {
-        return ReadJsonCommand.readJson(settings);
-    }
     public static class ReadJsonCommand extends BeloScriptFunction {
         public ReadJsonCommand() {
             super("json.read");
         }
-        private static Obj readJson(Settings settings) throws BeloException {
+        private BeloClass readJson(Settings settings) {
             String json = settings.getJsondata();
+            if (json == null) {
+                return new Null();
+            }
             JSONParser jsonParser = new JSONParser();
 
             try {
                 Object obj = jsonParser.parse(json);
                 BeloClass value = readJsonData(obj);
 
-                if (value == null) throw new LocalizedBeloException(new BeloScriptError("Json error","Can't read json string"));
-                return (Obj) value;
+                if (value == null)
+                    throw new LocalizedBeloException(
+                            new BeloScriptError( getStart(), getEnd(), "Json error",
+                                    "Can't read json string"));
+                return value;
             } catch (ParseException e) {
-                e.printStackTrace();
-                throw new LocalizedBeloException(new BeloScriptError("Json error","Can't read json string\n"+e.getLocalizedMessage() ));
+                throw new LocalizedBeloException(
+                        new BeloScriptError(getStart(), getEnd(), "Json error","Can't read json string\n"+e.getLocalizedMessage() ));
             }
         }
         @Override
         public RunTimeResult execute(Context context, List<BeloClass> args, RunTimeResult res) {
-            if (args.size() != 0) return throwParameterSizeError(res,context,0,args.size());
+            if (!args.isEmpty()) return throwParameterSizeError(res,context,0,args.size());
             try {
-                Obj object = readJson(context.getSettings());
+                BeloClass object = readJson(context.getSettings());
                 return res.success(object);
             } catch (LocalizedBeloException e) {
                 return res.failure(new RunTimeError(e.getError(),context));
-            } catch (BeloException e) {
-                return res.failure(new RunTimeError(getStart(), getEnd(),e.getMessage(), context));
             }
         }
-        private static BeloClass readJsonData(Object obj) throws BeloException {
+        private static BeloClass readJsonData(Object obj) {
             if (obj instanceof JSONArray) {
                 return readJsonArray((JSONArray) obj);
             }
@@ -76,9 +77,12 @@ public class LibJson implements BeloLibrary {
             if (obj instanceof Long) {
                 return new BeloDouble((Long)obj);
             }
+            if (obj == null) {
+                return new Null();
+            }
             return null;
         }
-        private static com.patonki.beloscript.datatypes.basicTypes.List readJsonArray(JSONArray array) throws BeloException {
+        private static com.patonki.beloscript.datatypes.basicTypes.List readJsonArray(JSONArray array) {
             ArrayList<BeloClass> list = new ArrayList<>();
             for (Object o : array) {
                 BeloClass value = readJsonData(o);
@@ -88,12 +92,12 @@ public class LibJson implements BeloLibrary {
 
             return com.patonki.beloscript.datatypes.basicTypes.List.create(list);
         }
-        private static Obj readJsonObject(JSONObject object) throws BeloException {
+        private static Obj readJsonObject(JSONObject object) {
             Obj obj = Obj.create();
             for (Object o : object.keySet()) {
                 BeloClass value = readJsonData(object.get(o));
                 if (value == null)  return null;
-                obj.setClassValue(o.toString(),value);
+                obj.setClassValue(BeloString.create(o.toString()),value);
             }
             return obj;
         }
@@ -103,8 +107,4 @@ public class LibJson implements BeloLibrary {
         symbolTable.defineFunction("readJsonInput", new ReadJsonCommand());
     }
 
-    @Override
-    public void close() {
-
-    }
 }

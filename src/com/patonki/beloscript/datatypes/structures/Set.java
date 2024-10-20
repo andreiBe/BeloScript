@@ -3,7 +3,6 @@ package com.patonki.beloscript.datatypes.structures;
 import com.patonki.beloscript.datatypes.BeloClass;
 import com.patonki.beloscript.datatypes.basicTypes.CustomBeloClass;
 import com.patonki.beloscript.datatypes.function.BeloScript;
-import com.patonki.beloscript.errors.BeloException;
 
 import java.util.Iterator;
 import java.util.TreeSet;
@@ -11,10 +10,6 @@ import java.util.TreeSet;
 @BeloScript
 public class Set extends CustomBeloClass implements Iterable<BeloClass> {
     private final TreeSet<BeloClass> treeSet = new TreeSet<>();
-
-    public Set create() throws BeloException {
-        return new Set().init_self();
-    }
 
     @Override
     public Iterator<BeloClass> iterator() {

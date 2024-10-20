@@ -9,3 +9,22 @@ print(obj["age"])
 obj["age"] = 98
 obj["age"] += 1
 obj["age"] = 2
+
+print(obj.containsKey("age"))
+print(obj.containsKey("note"))
+obj.remove("name")
+print(obj)
+
+print(obj.keys())
+print(obj.size())
+try {
+    obj["note"]
+} catch (e) {
+    print(e)
+}
+
+try {
+    obj.note
+} catch (e) {
+    print(e)
+}

@@ -1,0 +1,6 @@
+class CustomError(details) extends Error {
+    public toString() {
+        return "hello " + self.details
+    }
+}
+throw CustomError("The message")

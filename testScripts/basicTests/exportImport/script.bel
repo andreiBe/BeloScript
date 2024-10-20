@@ -1,2 +1,8 @@
 list = import "import.bel"
 print(list[0])
+
+try {
+    import "error.bel"
+} catch (e) {
+    print(e)
+}

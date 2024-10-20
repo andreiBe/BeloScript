@@ -40,10 +40,8 @@ public class List extends CustomBeloClass implements RandomAccessCollection, Ite
 
     @BeloScript
     public void sort(BaseFunction f) {
-        System.out.println("OMG " + f);
         this.list.sort((o1, o2) -> {
             BeloClass c = f.run(new BeloClass[]{o1,o2});
-            System.out.println("Comparison result: " + c);
             return c.intValue();
         });
     }
@@ -58,7 +56,6 @@ public class List extends CustomBeloClass implements RandomAccessCollection, Ite
     @BeloScript
     public List shallow_copy() throws BeloException {
         return create(this.list);
-        //return new List(this.list);
     }
     @BeloScript
     @Override
@@ -82,7 +79,7 @@ public class List extends CustomBeloClass implements RandomAccessCollection, Ite
         return index_of(value) != -1;
     }
     @BeloScript
-    public List sub_list(int from, int to) throws BeloException {
+    public List sublist(int from, int to) throws BeloException {
         return handleIndexOutOfBounds(() -> create(this.list.subList(from,to)), from,to);
     }
     @BeloScript
@@ -130,6 +127,7 @@ public class List extends CustomBeloClass implements RandomAccessCollection, Ite
             throw new BeloException("ArrayIndexOutOfBounds indexes:"+ Arrays.toString(index) +" size:"+size());
         }
     }
+    @SuppressWarnings("unchecked")
     @Override
     public BeloClass add(BeloClass another) {
         try {
@@ -147,7 +145,8 @@ public class List extends CustomBeloClass implements RandomAccessCollection, Ite
             return throwError("Wrong type, should be number but was " + another.getTypeName());
         }
         int times = another.intValue();
-        if (times < 0) return throwError("Multiplying number should not be negative!");
+        if (times < 0)
+            return throwError("Multiplying number should not be negative!");
         List newlist = new List();
         while (times-- > 0) {
             for (BeloClass item : list) {

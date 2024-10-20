@@ -3,3 +3,60 @@
 3
 [[a], [a, a, a], [a, b, b], [a, b, c]]
 9
+[1, 5, 2, 3, 4]
+[1, 5, 2, 3, 4, 5]
+[1, 5, 2, 3, 4]
+0
+1
+3
+0
+1
+[5, 2]
+[]
+[1, 2, 3]
+[1, 3]
+[1]
+[1, 1, 2]
+[1, 1, 1]
+File script.bel, line 53, in <stdin>
+Runtime Error: Index: 34, Size: 1
+
+    list.insert(34, 1)
+    ^^^^^^^^^^^^^^^^^^^
+File script.bel, line 59, in <stdin>
+Runtime Error: toIndex = 3
+
+    list.sublist(7,3)
+    ^^^^^^^^^^^^^^^^^^
+File script.bel, line 65, in <stdin>
+Runtime Error: Can't add list with BeloDouble (class:List)
+
+    list + 5
+    ^^^^
+File script.bel, line 71, in <stdin>
+Runtime Error: Wrong type, should be number but was List (class:List)
+
+    list * list
+           ^^^^
+File script.bel, line 77, in <stdin>
+Runtime Error: Multiplying number should not be negative! (class:List)
+
+    list * -3
+    ^^^^
+Runtime Error: Index must be a number but was BeloString (class:List)
+
+    list["5"]
+    ^^^^
+Runtime Error: IndexOutOfBounds index:100 size:1 (class:List)
+
+    list[100]
+    ^^^^
+Runtime Error: Index must be a number but was BeloString (class:List)
+
+    list["2"] = 4
+    ^^^^
+Runtime Error: IndexOutOfBounds index:100 size:1 (class:List)
+
+    list[100] = 4
+    ^^^^
+0

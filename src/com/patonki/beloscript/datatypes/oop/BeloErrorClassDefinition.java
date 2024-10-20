@@ -5,7 +5,6 @@ import com.patonki.beloscript.errors.RunTimeError;
 import com.patonki.beloscript.interpreter.RunTimeResult;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 public class BeloErrorClassDefinition extends BeloClass implements ClassDefinition{
@@ -55,6 +54,7 @@ public class BeloErrorClassDefinition extends BeloClass implements ClassDefiniti
         return createObject(res, params, AccessModifier.PROTECTED);
     }
 
+    @Override
     @SuppressWarnings("StringEquality")
     public boolean parameterIsInstanceOfThis(BeloClass beloClass) {
         if (!(beloClass instanceof BeloClassExceptionObject)) {

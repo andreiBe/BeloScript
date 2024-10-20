@@ -45,10 +45,8 @@ public class PostOperatorNode extends Node {
         if (res.shouldReturn()) return res;
 
         BeloClass val2 = command.calculate(val,context);
-        if (val2.hasError()) {
-            return res.failure(val2.getError());
-        }
-        return res.success(val2, getStart(), getEnd(), context);
+        if (val2.hasError()) return res.failure(val2.getError());
+        return res.success(val2, getStart(), getEnd());
     }
 
     @Override
