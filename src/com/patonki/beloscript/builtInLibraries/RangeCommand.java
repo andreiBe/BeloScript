@@ -10,6 +10,9 @@ import java.util.Iterator;
 
 @BeloScript
 public class RangeCommand extends CustomBeloClass {
+    private RangeCommand() {
+
+    }
     public static class RangeIterable extends BeloClass implements Iterable<BeloClass> {
         final int start;
         final int end;

@@ -28,7 +28,9 @@ import java.util.stream.Collectors;
 import static com.patonki.beloscript.ImportUtil.*;
 
 public class ClassImporter {
+    private ClassImporter() {
 
+    }
     public static class Methods {
         private final ArrayList<Method> classMethods;
         private final ArrayList<Method> staticFunctions;

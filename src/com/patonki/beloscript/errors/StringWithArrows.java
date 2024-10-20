@@ -4,6 +4,9 @@ package com.patonki.beloscript.errors;
 import com.patonki.beloscript.Position;
 
 public class StringWithArrows {
+    private StringWithArrows() {
+
+    }
     public static String stringWithArrows(String text, Position start, Position end) {
         StringBuilder result = new StringBuilder();
         int idxStart = Math.max(text.lastIndexOf('\n',start.index-1),0);

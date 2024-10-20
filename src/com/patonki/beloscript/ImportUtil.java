@@ -7,6 +7,9 @@ import com.patonki.beloscript.datatypes.basicTypes.Null;
 import com.patonki.beloscript.datatypes.basicTypes.BeloString;
 
 public class ImportUtil {
+    private ImportUtil() {
+
+    }
     public static boolean isNotValidType(Class<?> clazz) {
         if (clazz.isPrimitive()) return false;
         if (String.class.isAssignableFrom(clazz)) return false;

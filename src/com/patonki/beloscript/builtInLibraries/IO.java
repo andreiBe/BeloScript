@@ -14,6 +14,9 @@ import java.nio.file.Paths;
 
 @BeloScript
 public class IO extends CustomBeloClass {
+    private IO() {
+
+    }
     @BeloScript
     public static String input(String prompt, Settings settings) throws IOException {
         settings.getOutput().println(prompt);

@@ -15,6 +15,9 @@ import java.util.Random;
 
 @BeloScript
 public class BeloRandom extends CustomBeloClass {
+    private BeloRandom() {
+
+    }
     private static final Random RNG = new Random();
     @BeloScript
     public static int rand(int start, int end) {

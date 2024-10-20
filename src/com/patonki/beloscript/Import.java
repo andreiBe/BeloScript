@@ -20,6 +20,9 @@ import static com.patonki.beloscript.ClassImporter.addAllFieldsFromClass;
 import static com.patonki.beloscript.ClassImporter.addMarkedFieldsFromClass;
 
 public class Import {
+    private Import() {
+
+    }
     private static final ArrayList<BeloLibrary> libraries = new ArrayList<>();
     private static final ArrayList<Pair<String,BeloClass>> imported = new ArrayList<>();
 

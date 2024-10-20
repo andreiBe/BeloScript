@@ -8,6 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 
 public class FileUtil {
+    private FileUtil() {
+
+    }
     public static void writeToFile(String path, String content) throws BeloException {
         try (FileWriter writer = new FileWriter(path)) {
             writer.write(content);

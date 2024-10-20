@@ -6,6 +6,9 @@ import com.patonki.beloscript.interpreter.Settings;
 import java.util.Arrays;
 
 public class Main {
+    private Main() {
+        
+    }
     public static void main(String[] args) throws BeloException {
         if (args.length > 0) {
             String filename = args[0];

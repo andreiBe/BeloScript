@@ -6,6 +6,9 @@ import com.patonki.beloscript.datatypes.function.BeloScript;
 
 @BeloScript
 public class Util extends CustomBeloClass {
+    private Util() {
+
+    }
     @BeloScript
     public static double to_num(String b) {
         return Double.parseDouble(b);
